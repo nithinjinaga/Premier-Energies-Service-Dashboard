@@ -285,6 +285,9 @@ print("\nPer-month counts:")
 for m in sorted(mc):
     print(f"   {m}: {mc[m]:,}")
 
+KEEP = {"month","serial","complaint_by","customer_type","project","state","status",
+        "plant","category","subcategory","settle_days","weight","is_aggregate","complaint_no"}
+slim = [{k: r[k] for k in KEEP if k in r} for r in rows]
 with open("data.json", "w") as f:
-    json.dump(rows, f, separators=(",", ":"))
+    json.dump(slim, f, separators=(",", ":"))
 print("\nWrote data.json — now run build_dashboard.py")

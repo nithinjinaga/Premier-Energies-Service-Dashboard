@@ -201,7 +201,13 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
   <footer>Self-contained dashboard · all data embedded · generated from Feb/Mar/Apr/May 2026 monthly reports. Module counts use weighted aggregation (the Ayana inspection block counts as inspected volume).</footer>
 </div>
 
-<div id="loading" style="text-align:center;padding:60px;color:var(--txt2);font-size:16px">Loading dashboard data…</div>
+<div id="loading" style="text-align:center;padding:60px 20px">
+  <div style="font-size:16px;color:var(--txt);font-weight:600;margin-bottom:12px">Loading dashboard data…</div>
+  <div style="width:280px;height:6px;background:#e5e5e7;border-radius:3px;margin:0 auto;overflow:hidden">
+    <div id="load-bar" style="width:0%;height:100%;background:var(--accent);border-radius:3px;transition:width .2s"></div>
+  </div>
+  <div id="load-pct" style="font-size:12px;color:var(--txt2);margin-top:8px">0%</div>
+</div>
 <script>
 let RAW = [];
 const MONTHS = ["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06"];
@@ -548,13 +554,25 @@ document.getElementById('pgjumpbtn').onclick=jumpToPage;
 document.getElementById('pgjump').onkeydown=e=>{if(e.key==='Enter')jumpToPage();};
 
 // ---------- init ----------
-fetch('data.json')
-  .then(r=>r.json())
-  .then(data=>{
-    RAW=data;
-    // build subcategory map
+(async()=>{
+  try{
+    const resp=await fetch('data.json');
+    const total=+resp.headers.get('content-length')||0;
+    const reader=resp.body.getReader();
+    const chunks=[];let loaded=0;
+    const bar=document.getElementById('load-bar');
+    const pct=document.getElementById('load-pct');
+    while(true){
+      const{done,value}=await reader.read();
+      if(done)break;
+      chunks.push(value);loaded+=value.length;
+      if(total){const p=Math.round(loaded/total*100);bar.style.width=p+'%';pct.textContent=p+'%';}
+    }
+    bar.style.width='100%';pct.textContent='Building charts…';
+    const blob=new Blob(chunks);
+    const text=await blob.text();
+    RAW=JSON.parse(text);
     RAW.forEach(r=>{ if(r.category!=='No Issue'){ (SUBMAP[r.category]=SUBMAP[r.category]||new Set()).add(r.subcategory);} });
-    // build customer cascades
     RAW.forEach(r=>{
       if(r.customer_type&&r.complaint_by){
         (CUST_TYPE_TO_NAME[r.customer_type]=CUST_TYPE_TO_NAME[r.customer_type]||new Set()).add(r.complaint_by);
@@ -564,10 +582,10 @@ fetch('data.json')
     document.getElementById('loading').style.display='none';
     populateFilters();
     refresh();
-  })
-  .catch(err=>{
-    document.getElementById('loading').textContent='Failed to load data: '+err.message;
-  });
+  }catch(err){
+    document.getElementById('loading').innerHTML='<div style="color:var(--bad)">Failed to load data: '+err.message+'</div>';
+  }
+})();
 </script>
 </body>
 </html>"""
