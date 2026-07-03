@@ -213,7 +213,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
 
         if mapped is None:
             unmapped[raw_eval] = unmapped.get(raw_eval, 0) + 1
-            category, subcat = ("Unmapped", raw_eval)
+            category, subcat = ("Unmapped", raw_eval or "Unknown")
         else:
             category, subcat = mapped
 
