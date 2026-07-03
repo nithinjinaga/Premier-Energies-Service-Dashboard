@@ -1,9 +1,6 @@
 name: Build Dashboard Data
 
 on:
-  push:
-    paths:
-      - '*.xlsx'
   workflow_dispatch:
 
 jobs:
