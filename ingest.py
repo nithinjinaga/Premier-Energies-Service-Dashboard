@@ -227,7 +227,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
             "project":       clean(v[cm["project"]]) or "Unknown",
             "state":         clean(v[cm["state"]]) or "Unknown",
             "status":        clean(v[cm["status"]]) or "Unknown",
-            "plant":         {"P4":"P4 - PEIPL","P2":"P2 - PEPPL","P5":"P5 - PEGPL"}.get(clean(v[cm["plant"]]), clean(v[cm["plant"]])) or "Unknown",
+            "plant":         {"P4":"P4 - PEIPL","P2":"P2 - PEPPL","P5":"P5 - PEGPL","P1":"P1 - PEL"}.get(clean(v[cm["plant"]]), clean(v[cm["plant"]])) or "Unknown",
             "module_type":   clean(v[cm["module_type"]]) or "Unknown",
             "evaluation_raw":raw_eval,
             "category":      category,
