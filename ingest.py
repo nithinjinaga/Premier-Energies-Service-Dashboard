@@ -223,7 +223,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
             "month":         month,
             "serial":        serial,
             "complaint_by":  clean(v[cm["complaint_by"]]) or "Unknown",
-            "customer_type": clean(v[cm["customer_type"]]) or "Unknown",
+            "customer_type": {"Pump":"Solar Pump"}.get(clean(v[cm["customer_type"]]), clean(v[cm["customer_type"]])) or "Unknown",
             "project":       clean(v[cm["project"]]) or "Unknown",
             "state":         clean(v[cm["state"]]) or "Unknown",
             "status":        clean(v[cm["status"]]) or "Unknown",
