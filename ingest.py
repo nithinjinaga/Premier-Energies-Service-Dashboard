@@ -30,7 +30,7 @@ SOURCES = [
     ("April 26 - Daily & Monthly AnalyzedReport.xlsx",  "Monthly Report April-26 ",       "2026-04", 13, 15, 21),
     ("May 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report May-26 Cleaned",  "2026-05", 13, 15, 21),
     ("June 26 - Daily & Monthly Analyzed Report.xlsx",  " Monthly Report June-26",        "2026-06", 13, 15, 21),
-    # ("Jun_26_-_Daily___Monthly_Analyzed_Report.xlsx", "Monthly Report Jun-26",          "2026-06", 13, 15, 21),
+   
 ]
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -151,10 +151,12 @@ HIER = {
     "cleaning issue":               ("Aesthetic", "Aesthetic"),
     "asthetic issue":               ("Aesthetic", "Aesthetic"),
     # No Issue
-    "no issue":                     ("No Issue", "No Issue"),
-    "no issue found":               ("No Issue", "No Issue"),
-    "not found":                    ("No Issue", "No Issue"),
+    "no issue":                     ("Inspection", "No Issue"),
+    "no issue found":               ("Inspection", "No Issue Found"),
+    "not found":                    ("Inspection", "Not Found"),
     "no hotspot":                   ("No Issue", "No Issue"),
+    "issue found":                  ("Inspection","Issue Found"),
+    
 }
 # ─────────────────────────────────────────────────────────────────────────────
 
