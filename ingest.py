@@ -288,7 +288,7 @@ for m in sorted(mc):
     print(f"   {m}: {mc[m]:,}")
 
 KEEP = {"month","serial","complaint_by","customer_type","project","state","status",
-        "plant","category","subcategory","settle_days","weight","is_aggregate","complaint_no"}
+        "plant","category","subcategory","settle_days","weight","is_aggregate","complaint_no","resolution"}
 slim = [{k: r[k] for k in KEEP if k in r} for r in rows]
 with open("data.json", "w") as f:
     json.dump(slim, f, separators=(",", ":"))
