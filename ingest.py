@@ -154,7 +154,7 @@ HIER = {
     "no issue":                     ("Inspection", "No Issue"),
     "no issue found":               ("Inspection", "No Issue Found"),
     "not found":                    ("Inspection", "Not Found"),
-    "no hotspot":                   ("No Issue", "No Issue"),
+    "no hotspot":                   ("Inspection", "No Hotspot"),
     "issue found":                  ("Inspection","Issue Found"),
     
 }
@@ -245,7 +245,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
         }
 
         # Collapse large blank-serial No-Issue blocks into single aggregate rows
-        if category == "No Issue" and not serial:
+        if (category == "No Issue" or (category == "Inspection" and subcat != "Issue Found")) and not serial:
             akey = (rec["month"], rec["project"], rec["customer_type"],
                     rec["state"], rec["plant"], rec["module_type"])
             if akey not in agg:

@@ -215,7 +215,7 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
 let RAW = [];
 const MONTHS = ["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06"];
 const MLABEL = {"2026-01":"Jan-26","2026-02":"Feb-26","2026-03":"Mar-26","2026-04":"Apr-26","2026-05":"May-26","2026-06":"Jun-26"};
-const CAT_ORDER = ["Junction Box Defects","Ribbon Soldering Issue","Cell and Module Defects","Physical and External Damage","Transit Damage","Aesthetic","No Issue"];
+const CAT_ORDER = ["Junction Box Defects","Ribbon Soldering Issue","Cell and Module Defects","Physical and External Damage","Transit Damage","Aesthetic","No Issue","Inspection"];
 const COLORS = ['#3266ad','#e87f3a','#34c759','#ff3b30','#af52de','#ff6482','#00c7be','#ff9500'];
 Chart.defaults.color='#86868b';Chart.defaults.borderColor='#e5e5e7';Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif";
 
@@ -226,7 +226,7 @@ let sortK='month',sortDir=1,page=0,search='',lastPages=1;
 const PAGE=50;
 const charts={};
 
-const isDefect=r=>r.category!=='No Issue';
+const isDefect=r=>r.category!=='No Issue'&&!(r.category==='Inspection'&&r.subcategory!=='Issue Found');
 const W=r=>r.weight||1;
 
 // ---------- maps built after data loads ----------
