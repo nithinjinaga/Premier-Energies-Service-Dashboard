@@ -198,7 +198,6 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
       <button id="prev">Prev</button><button id="next">Next</button></div>
   </div>
 
-  <footer>Self-contained dashboard · all data embedded · generated from Feb/Mar/Apr/May 2026 monthly reports. Module counts use weighted aggregation (the Ayana inspection block counts as inspected volume).</footer>
 </div>
 
 <div id="loading" style="position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999">
