@@ -47,9 +47,26 @@ header .sub{color:var(--txt2);font-size:13px;margin-top:2px}
 .mbtn{padding:8px 16px;border:1px solid var(--line);background:var(--panel);color:var(--txt2);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;transition:.15s}
 .mbtn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .mbtn:hover{border-color:var(--accent)}
-.mode-toggle{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-right:6px;font-size:12px}
-.mode-toggle span{padding:6px 12px;cursor:pointer;color:var(--txt2);transition:.15s;user-select:none}
-.mode-toggle span.active{background:var(--accent);color:#fff}
+.hdr-search{display:flex;align-items:center;height:38px;border:1px solid #d2d2d7;border-radius:8px;background:var(--panel);overflow:hidden;width:40px;transition:width .28s cubic-bezier(.4,0,.2,1)}
+.hdr-search.open{width:248px}
+.hdr-search-btn{flex:none;width:38px;height:36px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;cursor:pointer;color:var(--txt2);padding:0}
+.hdr-search-btn.on{color:var(--accent)}
+.hdr-search-input{flex:1;min-width:0;height:36px;border:none;outline:none;background:transparent;font-size:13px;color:var(--txt);padding:0 12px 0 0}
+.cal-btn{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:1px solid #d2d2d7;background:var(--panel);color:var(--txt2);border-radius:8px;cursor:pointer;transition:.15s;padding:0;flex:none}
+.cal-btn:hover{border-color:var(--accent)}
+.cal-btn.active{border-color:var(--accent);background:var(--accent);color:#fff}
+.month-pop{display:none;position:absolute;top:48px;right:0;z-index:50;width:270px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.14);padding:14px}
+.month-pop.open{display:block}
+.mp-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.mp-title{font-size:13px;font-weight:600;color:var(--txt)}
+.mp-all{padding:4px 12px;border:1px solid #d2d2d7;background:var(--panel);color:var(--txt2);border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
+.mp-all.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mp-hint{font-size:11px;color:var(--txt2);margin-bottom:12px}
+.mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mp-chip{padding:11px 0;text-align:center;border-radius:8px;cursor:pointer;font-size:12.5px;font-weight:600;transition:.12s;border:1px solid var(--line);background:var(--panel2);color:var(--txt)}
+.mp-chip.sel{border-color:var(--accent);background:var(--accent);color:#fff}
+.mp-foot{margin-top:12px;padding-top:10px;border-top:1px solid #f0f0f2;font-size:11.5px;color:var(--txt2)}
+.mp-foot span{color:var(--txt);font-weight:600}
 .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;background:var(--panel);padding:16px;border-radius:var(--radius);margin-bottom:var(--gap);border:1px solid var(--line)}
 .fg{display:flex;flex-direction:column;gap:4px}
 .fg label{font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
@@ -103,6 +120,68 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
 .heatmap td{padding:0;border:none}
 .heatmap .cell{min-width:54px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;transition:.15s}
 .heatmap .cell:hover{outline:2px solid var(--accent)}
+
+/* --- Filter toggle (mobile) --- */
+.filter-toggle{display:none;width:100%;padding:12px 16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);cursor:pointer;font-size:14px;font-weight:600;color:var(--accent);text-align:left;margin-bottom:var(--gap)}
+.filter-toggle .arrow{float:right;transition:transform .2s}
+.filter-toggle.open .arrow{transform:rotate(180deg)}
+
+/* --- Responsive: Tablet (<=768px) --- */
+@media(max-width:768px){
+  body{padding:12px}
+  .wrap{max-width:100%}
+  header{flex-direction:column;align-items:flex-start;gap:8px}
+  header h1{font-size:16px;line-height:1.3}
+  header h1 img{height:24px!important;margin-right:8px!important}
+  header .sub{font-size:12px}
+  .months{width:100%;gap:6px}
+  .mbtn{padding:7px 12px;font-size:12px;flex:1;text-align:center;min-width:0}
+  .filter-toggle{display:block}
+  .filters{display:none;grid-template-columns:1fr 1fr;padding:12px;gap:10px;margin-top:-12px;border-top:none;border-top-left-radius:0;border-top-right-radius:0}
+  .filters.show{display:grid}
+  .fg select{padding:10px;font-size:14px}
+  .resetbtn{width:100%;grid-column:span 2;justify-content:center;text-align:center;padding:12px;font-size:14px;height:auto}
+  .kpis{grid-template-columns:1fr 1fr;gap:12px}
+  .kpi{padding:16px}
+  .kpi .val{font-size:24px}
+  .kpi .label{font-size:11px}
+  .section-title{font-size:14px;margin:12px 0 10px}
+  .g2,.g3{grid-template-columns:1fr}
+  .card.span2{grid-column:span 1}
+  .card{padding:16px}
+  .card h3{font-size:12px}
+  .chartbox{height:260px}
+  .chartbox.tall{height:280px}
+  .toptrend{padding:16px}
+  .badges{gap:6px}
+  .badge{font-size:11px;padding:4px 10px}
+  .tablebar{flex-direction:column;align-items:stretch}
+  .tablebar input{min-width:100%;padding:10px 12px;font-size:14px}
+  .pager{flex-wrap:wrap;justify-content:center;gap:6px}
+  .pager button{padding:8px 16px;font-size:13px}
+  thead th{font-size:10px;padding:6px 8px}
+  tbody td{font-size:12px;padding:6px 8px}
+  .heatmap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .note-box{font-size:11px;padding:8px 12px}
+}
+
+/* --- Responsive: Small phone (<=480px) --- */
+@media(max-width:480px){
+  body{padding:8px}
+  header h1{font-size:14px}
+  header h1 img{height:20px!important}
+  .months{gap:4px}
+  .mbtn{padding:8px 6px;font-size:11px}
+  .filters{grid-template-columns:1fr;gap:8px}
+  .resetbtn{grid-column:span 1}
+  .kpis{grid-template-columns:1fr}
+  .kpi .val{font-size:22px}
+  .chartbox{height:240px}
+  .chartbox.tall{height:260px}
+  .badge{font-size:10px;padding:3px 8px}
+  .pager button{padding:6px 12px;font-size:12px}
+  #pgjump{width:46px!important}
+}
 </style>
 </head>
 <body>
@@ -119,6 +198,7 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
     Note: March includes a large single-site inspection block (Ayana, ~178K modules, all "No Issue"). KPIs and charts exclude that block from defect calculations so charts stay readable.
   </div>
 
+  <button class="filter-toggle" id="filterToggle">Filters <span class="arrow">&#9660;</span></button>
   <div class="filters">
     <div class="fg"><label>Customer Type</label><select id="f-customer"></select></div>
     <div class="fg"><label>Customer Name</label><select id="f-custname"></select></div>
@@ -218,6 +298,7 @@ const MLABEL = {"2026-01":"Jan-26","2026-02":"Feb-26","2026-03":"Mar-26","2026-0
 const CAT_ORDER = ["Junction Box Defects","Ribbon Soldering Issue","Cell and Module Defects","Physical and External Damage","Transit Damage","Aesthetic","No Issue","Inspection"];
 const COLORS = ['#3266ad','#e87f3a','#34c759','#ff3b30','#af52de','#ff6482','#00c7be','#ff9500'];
 Chart.defaults.color='#86868b';Chart.defaults.borderColor='#e5e5e7';Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif";
+const isMobile=()=>window.innerWidth<=768;
 
 // ---------- state ----------
 let selMonths = new Set(MONTHS);
@@ -234,42 +315,92 @@ const SUBMAP={};
 const CUST_TYPE_TO_NAME={};
 const CUST_NAME_TO_TYPE={};
 
-// ---------- month buttons ----------
-let monthMode='single';
+// ---------- month picker + search ----------
 const monthsEl=document.getElementById('months');
-function renderMonthBtns(){
+const CAL_SVG='<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="16" y1="2" x2="16" y2="6"></line></svg>';
+const SEARCH_SVG='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>';
+let calOpen=false, hdrSearchOpen=false;
+let allBtnEl,hdrSearchWrap,hdrSearchBtn,hdrSearchInput,calBtnEl,monthPopEl,popAllEl,mpShowEl;
+const monthChipEls={};
+
+function summaryLabel(){
+  const sel=MONTHS.filter(m=>selMonths.has(m));
+  if(sel.length===MONTHS.length) return 'All months';
+  if(sel.length===1) return MLABEL[sel[0]];
+  return MLABEL[sel[0]].slice(0,3)+'–'+MLABEL[sel[sel.length-1]].slice(0,3)+' 26';
+}
+
+function setSearch(v){
+  search=v; page=0;
+  if(hdrSearchInput && hdrSearchInput.value!==v) hdrSearchInput.value=v;
+  const low=document.getElementById('search'); if(low && low.value!==v) low.value=v;
+  refresh();
+}
+
+function syncHeaderUI(){
+  if(!allBtnEl) return;
+  const allSel=selMonths.size===MONTHS.length;
+  allBtnEl.className='mbtn'+(allSel?' active':'');
+  hdrSearchWrap.className='hdr-search'+(hdrSearchOpen?' open':'');
+  hdrSearchBtn.classList.toggle('on',hdrSearchOpen);
+  calBtnEl.className='cal-btn'+((calOpen||!allSel)?' active':'');
+  monthPopEl.classList.toggle('open',calOpen);
+  popAllEl.classList.toggle('active',allSel);
+  MONTHS.forEach(m=>monthChipEls[m]&&monthChipEls[m].classList.toggle('sel',selMonths.has(m)));
+  mpShowEl.textContent=summaryLabel();
+  if(hdrSearchInput && document.activeElement!==hdrSearchInput && hdrSearchInput.value!==search) hdrSearchInput.value=search;
+}
+
+function buildHeaderTools(){
   monthsEl.innerHTML='';
-  const tog=document.createElement('div');
-  tog.className='mode-toggle';
-  ['Single','Compare'].forEach(label=>{
-    const s=document.createElement('span');
-    s.textContent=label;
-    const key=label.toLowerCase();
-    if(monthMode===key) s.classList.add('active');
-    s.onclick=()=>{monthMode=key;if(key==='single'){selMonths=new Set(MONTHS);}refresh();};
-    tog.appendChild(s);
-  });
-  monthsEl.appendChild(tog);
-  const all=document.createElement('button');
-  all.className='mbtn'+(selMonths.size===MONTHS.length?' active':'');
-  all.textContent='All';
-  all.onclick=()=>{selMonths=new Set(MONTHS);refresh();};
-  monthsEl.appendChild(all);
+  monthsEl.style.position='relative';
+
+  allBtnEl=document.createElement('button');
+  allBtnEl.type='button'; allBtnEl.className='mbtn'; allBtnEl.textContent='All';
+  allBtnEl.onclick=()=>{selMonths=new Set(MONTHS);refresh();};
+  monthsEl.appendChild(allBtnEl);
+
+  hdrSearchWrap=document.createElement('div'); hdrSearchWrap.className='hdr-search';
+  hdrSearchBtn=document.createElement('button'); hdrSearchBtn.type='button'; hdrSearchBtn.className='hdr-search-btn'; hdrSearchBtn.innerHTML=SEARCH_SVG;
+  hdrSearchInput=document.createElement('input'); hdrSearchInput.className='hdr-search-input'; hdrSearchInput.placeholder='Search serial, site, complaint no…';
+  hdrSearchBtn.onclick=e=>{e.stopPropagation();hdrSearchOpen=!hdrSearchOpen;syncHeaderUI();if(hdrSearchOpen)setTimeout(()=>hdrSearchInput.focus(),60);};
+  hdrSearchInput.oninput=e=>setSearch(e.target.value);
+  hdrSearchWrap.appendChild(hdrSearchBtn); hdrSearchWrap.appendChild(hdrSearchInput);
+  monthsEl.appendChild(hdrSearchWrap);
+
+  calBtnEl=document.createElement('button'); calBtnEl.type='button'; calBtnEl.className='cal-btn'; calBtnEl.title='Select month'; calBtnEl.innerHTML=CAL_SVG;
+  calBtnEl.onclick=e=>{e.stopPropagation();calOpen=!calOpen;syncHeaderUI();};
+  monthsEl.appendChild(calBtnEl);
+
+  monthPopEl=document.createElement('div'); monthPopEl.className='month-pop';
+  monthPopEl.onclick=e=>e.stopPropagation();
+  const head=document.createElement('div'); head.className='mp-head';
+  const ttl=document.createElement('span'); ttl.className='mp-title'; ttl.textContent='Select month'; head.appendChild(ttl);
+  popAllEl=document.createElement('button'); popAllEl.type='button'; popAllEl.className='mp-all'; popAllEl.textContent='All';
+  popAllEl.onclick=()=>{selMonths=new Set(MONTHS);refresh();};
+  head.appendChild(popAllEl); monthPopEl.appendChild(head);
+  const hint=document.createElement('div'); hint.className='mp-hint'; hint.innerHTML='Click a month · hold ⇧ Shift to compare several'; monthPopEl.appendChild(hint);
+  const grid=document.createElement('div'); grid.className='mp-grid';
   MONTHS.forEach(m=>{
-    const b=document.createElement('button');
-    b.className='mbtn'+(selMonths.has(m)?' active':'');
-    b.textContent=MLABEL[m];
-    b.onclick=()=>{
-      if(monthMode==='single'){
-        selMonths=new Set([m]);
-      } else {
-        if(selMonths.has(m)) selMonths.delete(m); else selMonths.add(m);
-        if(selMonths.size===0) selMonths.add(m);
-      }
+    const c=document.createElement('button'); c.type='button'; c.className='mp-chip'; c.textContent=MLABEL[m];
+    c.onclick=e=>{
+      if(e.shiftKey){
+        if(selMonths.has(m)){selMonths.delete(m); if(selMonths.size===0)selMonths.add(m);}
+        else selMonths.add(m);
+      } else selMonths=new Set([m]);
       refresh();
     };
-    monthsEl.appendChild(b);
+    grid.appendChild(c); monthChipEls[m]=c;
   });
+  monthPopEl.appendChild(grid);
+  const foot=document.createElement('div'); foot.className='mp-foot'; foot.innerHTML='Showing: <span id="mp-showing"></span>'; monthPopEl.appendChild(foot);
+  monthsEl.appendChild(monthPopEl);
+  mpShowEl=foot.querySelector('#mp-showing');
+
+  document.addEventListener('mousedown',e=>{
+    if(calOpen && !monthPopEl.contains(e.target) && !calBtnEl.contains(e.target)){calOpen=false;syncHeaderUI();}
+    if(hdrSearchOpen && !hdrSearchWrap.contains(e.target)){hdrSearchOpen=false;syncHeaderUI();}
+  },true);
 }
 
 // ---------- filter population ----------
@@ -343,33 +474,36 @@ function mkBar(id,labels,data,opts={}){
 }
 function mkDonut(id,labels,data){
   if(charts[id])charts[id].destroy();
+  const mob=isMobile();
   charts[id]=new Chart(document.getElementById(id),{type:'doughnut',
     data:{labels,datasets:[{data,backgroundColor:COLORS,borderColor:'#ffffff',borderWidth:2}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
-      plugins:{legend:{position:'right',labels:{boxWidth:12,padding:8,font:{size:11}}},
+      plugins:{legend:{position:mob?'bottom':'right',labels:{boxWidth:mob?10:12,padding:mob?6:8,font:{size:mob?10:11}}},
       tooltip:{callbacks:{label:c=>' '+c.label+': '+c.parsed.toLocaleString()}}}}});
 }
 function mkStacked(id,labels,datasets){
   if(charts[id])charts[id].destroy();
+  const mob=isMobile();
   charts[id]=new Chart(document.getElementById(id),{type:'bar',
     data:{labels,datasets},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'top',labels:{boxWidth:12,font:{size:11}}}},
-      scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{precision:0}}}}});
+      plugins:{legend:{position:'top',labels:{boxWidth:mob?10:12,padding:mob?6:8,font:{size:mob?10:11}}}},
+      scales:{x:{stacked:true,ticks:{font:{size:mob?10:12}}},y:{stacked:true,beginAtZero:true,ticks:{precision:0,font:{size:mob?10:12}}}}}});
 }
 function mkLines(id,labels,datasets){
   if(charts[id])charts[id].destroy();
+  const mob=isMobile();
   charts[id]=new Chart(document.getElementById(id),{type:'line',
     data:{labels,datasets},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'top',labels:{boxWidth:14,font:{size:12}}}},
-      scales:{y:{beginAtZero:true,ticks:{precision:0}}},
-      elements:{line:{tension:.3,borderWidth:3},point:{radius:4,hoverRadius:6}}}});
+      plugins:{legend:{position:'top',labels:{boxWidth:mob?10:14,padding:mob?6:8,font:{size:mob?10:12}}}},
+      scales:{x:{ticks:{font:{size:mob?10:12}}},y:{beginAtZero:true,ticks:{precision:0,font:{size:mob?10:12}}}},
+      elements:{line:{tension:.3,borderWidth:mob?2:3},point:{radius:mob?3:4,hoverRadius:mob?5:6}}}});
 }
 
 // ---------- main refresh ----------
 function refresh(){
-  renderMonthBtns();
+  syncHeaderUI();
   document.getElementById('march-note').style.display=selMonths.has('2026-03')?'block':'none';
   populateSub();
 
@@ -544,8 +678,8 @@ document.getElementById('f-state').onchange=e=>{state.stateF=e.target.value;page
 document.getElementById('f-status').onchange=e=>{state.status=e.target.value;page=0;refresh();};
 document.getElementById('f-plant').onchange=e=>{state.plant=e.target.value;page=0;refresh();};
 document.getElementById('f-resolution').onchange=e=>{state.resolution=e.target.value;page=0;refresh();};
-document.getElementById('reset').onclick=()=>{Object.assign(state,{customer:'All',custname:'All',category:'All',subcat:'All',stateF:'All',status:'All',plant:'All',resolution:'All'});selMonths=new Set(MONTHS);monthMode='single';page=0;populateFilters();refresh();};
-document.getElementById('search').oninput=e=>{search=e.target.value;page=0;refresh();};
+document.getElementById('reset').onclick=()=>{Object.assign(state,{customer:'All',custname:'All',category:'All',subcat:'All',stateF:'All',status:'All',plant:'All',resolution:'All'});selMonths=new Set(MONTHS);calOpen=false;hdrSearchOpen=false;search='';document.getElementById('search').value='';page=0;populateFilters();refresh();};
+document.getElementById('search').oninput=e=>setSearch(e.target.value);
 document.querySelectorAll('#tbl thead th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sortK===k)sortDir*=-1;else{sortK=k;sortDir=1;}refresh();});
 document.getElementById('prev').onclick=()=>{if(page>0){page--;refresh();}};
 document.getElementById('next').onclick=()=>{page++;refresh();};
@@ -587,11 +721,21 @@ document.getElementById('pgjump').onkeydown=e=>{if(e.key==='Enter')jumpToPage();
     });
     document.getElementById('loading').style.display='none';
     populateFilters();
+    buildHeaderTools();
     refresh();
   }catch(err){
     document.getElementById('loading').innerHTML='<div style="color:var(--bad)">Failed to load data: '+err.message+'</div>';
   }
 })();
+
+// --- Filter toggle (mobile) ---
+const ftBtn=document.getElementById('filterToggle');
+const ftPanel=document.querySelector('.filters');
+ftBtn.onclick=()=>{ftBtn.classList.toggle('open');ftPanel.classList.toggle('show');};
+
+// --- Re-render charts on resize (legend repositioning) ---
+let resizeTimer;
+window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>refresh(),250);});
 </script>
 </body>
 </html>"""

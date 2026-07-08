@@ -197,7 +197,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
     if not os.path.exists(fname):
         print(f"WARNING: {fname} not found — skipping")
         continue
-    print(f"Reading {fname} → sheet '{sheet}'...")
+    print(f"Reading {fname} -> sheet '{sheet}'...")
     wb = load_workbook(fname, read_only=True)
     ws = wb[sheet]
     cm = col_map(eval_idx)
