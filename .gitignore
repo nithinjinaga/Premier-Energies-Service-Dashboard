@@ -1,7 +1,10 @@
 __pycache__/
 *.pyc
 ~$*
+*.zip
+*.bat
+*.md
+!README.md
 Premier_AfterSales_Dashboard_2026.html
 na_plant_rows.csv
 .claude/
-CLAUDE.md
