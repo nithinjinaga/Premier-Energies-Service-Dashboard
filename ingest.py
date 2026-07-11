@@ -24,6 +24,7 @@ from openpyxl import load_workbook
 
 # ── ADD NEW MONTHS HERE ──────────────────────────────────────────────────────
 SOURCES = [
+    ("Dec 25 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report Dec-25",         "2025-12", 12, 14, 20),
     ("Jan 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report Jan-26",         "2026-01", 13, 15, 21),
     ("Feb 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report Feb-26",         "2026-02", 12, 14, 20),
     ("Mar 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report Mar-26",          "2026-03", 12, 14, 20),
@@ -140,6 +141,7 @@ HIER = {
     "external force applied":       ("Physical and External Damage", "Other Physical Damage"),
     "damage":                       ("Physical and External Damage", "Other Physical Damage"),
     "broken module":                ("Physical and External Damage", "Other Physical Damage"),
+    "module damaged":               ("Physical and External Damage", "Other Physical Damage"),
     "frame broken":                 ("Physical and External Damage", "Frame Damage"),
     # Transit Damage
     "transit breakage":             ("Transit Damage", "Transit Breakage"),
@@ -150,12 +152,14 @@ HIER = {
     "aesthetic":                    ("Aesthetic", "Aesthetic"),
     "cleaning issue":               ("Aesthetic", "Aesthetic"),
     "asthetic issue":               ("Aesthetic", "Aesthetic"),
+    "oil marks on the module":      ("Aesthetic", "Aesthetic"),
     # No Issue
     "no issue":                     ("Inspection", "No Issue"),
     "no issue found":               ("Inspection", "No Issue Found"),
     "not found":                    ("Inspection", "Not Found"),
     "no hotspot":                   ("Inspection", "No Hotspot"),
     "issue found":                  ("Inspection","Issue Found"),
+    "not related to premier complaints": ("Inspection", "No Issue"),
     
 }
 # ─────────────────────────────────────────────────────────────────────────────
