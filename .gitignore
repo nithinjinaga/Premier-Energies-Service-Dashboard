@@ -3,6 +3,7 @@ __pycache__/
 ~$*
 *.zip
 *.bat
+fix_names.py
 *.md
 !README.md
 Premier_AfterSales_Dashboard_2026.html
