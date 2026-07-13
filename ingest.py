@@ -160,7 +160,10 @@ HIER = {
     "no hotspot":                   ("Inspection", "No Hotspot"),
     "issue found":                  ("Inspection","Issue Found"),
     "not related to premier complaints": ("Inspection", "No Issue"),
-    
+    "module not found":                 ("Inspection", "Module not Found"),
+    "evidence collection":              ("Inspection", "Evidence Collection"),
+    "other manufacturer":               ("Inspection", "Other manufacturer"),
+    "module found open":                ("Inspection", "Module Found Open"),
 }
 # ─────────────────────────────────────────────────────────────────────────────
 
