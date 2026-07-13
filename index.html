@@ -498,7 +498,8 @@ function refresh(){
   const avgTAT=durations.length?Math.round(durations.reduce((a,r)=>a+(r.settle_days*W(r)),0)/sumW(durations)*10)/10:0;
 
   document.getElementById('k-closed').textContent=closed.toLocaleString();
-  document.getElementById('k-closed-note').textContent=[...selMonths].sort().map(m=>MLABEL[m]).join(', ');
+  const activeMonths=[...new Set(filtered.map(r=>r.month))].sort();
+  document.getElementById('k-closed-note').textContent=activeMonths.map(m=>MLABEL[m]).join(', ');
   document.getElementById('k-closure').textContent=closureRate+'%';
   const closureNote=document.getElementById('k-closure-note');
   closureNote.textContent=closed.toLocaleString()+' closed of '+total.toLocaleString();
