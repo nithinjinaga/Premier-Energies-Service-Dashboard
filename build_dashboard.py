@@ -522,7 +522,7 @@ function refresh(){
 
   document.getElementById('k-closed').textContent=closed.toLocaleString();
   const activeMonths=[...new Set(filtered.map(r=>r.month))].sort();
-  document.getElementById('k-closed-note').textContent=activeMonths.map(m=>MLABEL[m]).join(', ');
+  document.getElementById('k-closed-note').textContent=selMonths.size===1?MLABEL[[...selMonths][0]]:'';
   document.getElementById('k-closure').textContent=closureRate+'%';
   const closureNote=document.getElementById('k-closure-note');
   closureNote.textContent=closed.toLocaleString()+' closed of '+total.toLocaleString();
