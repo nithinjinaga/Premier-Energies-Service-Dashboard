@@ -31,7 +31,14 @@ SOURCES = [
     ("April 26 - Daily & Monthly AnalyzedReport.xlsx",  "Monthly Report April-26 ",       "2026-04", 13, 15, 21),
     ("May 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report May-26 Cleaned",  "2026-05", 13, 15, 21),
     ("June 26 - Daily & Monthly Analyzed Report.xlsx",  " Monthly Report June-26",        "2026-06", 13, 15, 21),
-   
+
+]
+
+# ── MULTI-MONTH TRACKER FILES ───────────────────────────────────────────────
+# Format: ("filename.xlsx", "Sheet Name", eval_col_index, min_month, max_month)
+# Month is derived from the date in column 0; only rows in [min_month, max_month] are kept
+TRACKER_SOURCES = [
+    ("Premier Complaint Tracker - 31 Jan 26 4.xlsx", "Complaint Tracker Details", 12, "2024-12", "2025-11"),
 ]
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -164,6 +171,71 @@ HIER = {
     "evidence collection":              ("Inspection", "Evidence Collection"),
     "other manufacturer":               ("Inspection", "Other manufacturer"),
     "module found open":                ("Inspection", "Module Found Open"),
+    "found ok":                         ("Inspection", "No Issue"),
+    "no problem found":                 ("Inspection", "No Issue Found"),
+    # Customer Issue
+    "wrong connection":             ("Customer Issue", "Wrong Connection"),
+    "lightning case":               ("Customer Issue", "Lightning Case"),
+    "customer issue":               ("Customer Issue", "Customer Issue"),
+    "out of warrenty":              ("Customer Issue", "Out Of Warranty"),
+    "installtion issue":            ("Customer Issue", "Installation Issue"),
+    "improper maintenance":         ("Customer Issue", "Improper Maintenance"),
+    # Additional Junction Box Defects
+    "n jb cold soldering":          ("Junction Box Defects", "JB Cold Soldering"),
+    "pjb cold soldering":           ("Junction Box Defects", "JB Cold Soldering"),
+    "p jb cold soldering":          ("Junction Box Defects", "JB Cold Soldering"),
+    "p & n cold soldering":         ("Junction Box Defects", "JB Cold Soldering"),
+    "p & m cold soldering":         ("Junction Box Defects", "JB Cold Soldering"),
+    "n jb issue":                   ("Junction Box Defects", "JB Issue"),
+    "p jb issue":                   ("Junction Box Defects", "JB Issue"),
+    "all jb issue":                 ("Junction Box Defects", "JB Issue"),
+    "p and n jb issue":             ("Junction Box Defects", "JB Issue"),
+    "p & n jb issue":               ("Junction Box Defects", "JB Issue"),
+    "p and m jb issue":             ("Junction Box Defects", "JB Issue"),
+    "n and m jb issue":             ("Junction Box Defects", "JB Issue"),
+    "jb pulled out":                ("Junction Box Defects", "JB Issue"),
+    "jb cap missing":               ("Junction Box Defects", "JB Issue"),
+    "mc4 connector issue":          ("Junction Box Defects", "MC4 Connectors Damaged"),
+    "mc4 connector were burn":      ("Junction Box Defects", "MC4 Connectors Damaged"),
+    "oxidation issue":              ("Junction Box Defects", "Oxidation Issue"),
+    # Additional Cell and Module Defects
+    "module burnt":                 ("Cell and Module Defects", "Module Burn"),
+    "panel burn":                   ("Cell and Module Defects", "Module Burn"),
+    "busbar burn":                  ("Cell and Module Defects", "String Busbar Open"),
+    "cell breakage":                ("Cell and Module Defects", "Cell Crack"),
+    "delamination":                 ("Cell and Module Defects", "Air Entrapment during Lamination"),
+    "cell gap overlapped":          ("Cell and Module Defects", "Cell Gap Issue"),
+    "spot on module":               ("Cell and Module Defects", "Burn Spot"),
+    "reverse current from inverter burn the module": ("Cell and Module Defects", "Module Burn"),
+    "a piece of paper (inside the glass)": ("Cell and Module Defects", "Foreign Particle - Cell Piece"),
+    "during the rework soldering process some solder residue got stuck on the cell": ("Cell and Module Defects", "Burn Spot"),
+    # Additional Physical and External Damage
+    "glass breakage at shorter frame": ("Physical and External Damage", "Glass Breakage"),
+    "glass breakage & burn":        ("Physical and External Damage", "Glass Breakage"),
+    "spontaneous breakage":         ("Physical and External Damage", "Glass Breakage"),
+    "spontaneous glass breakage.":  ("Physical and External Damage", "Glass Breakage"),
+    "module glass has been broken and moisture ingress": ("Physical and External Damage", "Glass Breakage"),
+    "cell/back sheet burn marks and glass breakage.": ("Physical and External Damage", "Glass Breakage"),
+    "breakage by external force":   ("Physical and External Damage", "Other Physical Damage"),
+    "clear hit mark/external force impact on the module": ("Physical and External Damage", "Other Physical Damage"),
+    "pull forcefully":              ("Physical and External Damage", "Other Physical Damage"),
+    "damaged":                      ("Physical and External Damage", "Other Physical Damage"),
+    "frame damaged":                ("Physical and External Damage", "Frame Damage"),
+    "dent on frame":                ("Physical and External Damage", "Frame Damage"),
+    "shading on the claimed modules": ("Physical and External Damage", "Other Physical Damage"),
+    "external scratches found on back sheet": ("Physical and External Damage", "Backsheet Scratches"),
+    "scratch found on backsheet":   ("Physical and External Damage", "Backsheet Scratches"),
+    # Additional Aesthetic
+    "snail trail":                  ("Aesthetic", "Snail Trail"),
+    "snail trail noticed":          ("Aesthetic", "Snail Trail"),
+    "asthetic":                     ("Aesthetic", "Aesthetic"),
+    "rma issue":                    ("Aesthetic", "RMA Issue"),
+    "cell gap sticker misplaced":   ("Aesthetic", "Aesthetic"),
+    # Additional Ribbon Soldering Issue
+    "backsheet burn due to poor soldering": ("Ribbon Soldering Issue", "Backsheet Burn"),
+    # Additional Transit Damage
+    "transit breakage":        ("Transit Damage", "Transit Breakage"),
+    "module damaged in transit":    ("Transit Damage", "Transit Breakage"),
 }
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -173,7 +245,8 @@ def norm_serial(v):
     return "" if s.lower() in ("n/a", "na", "none", "nan", "") else s
 
 def clean(v):
-    return "" if v is None else str(v).strip()
+    if v is None: return ""
+    return str(v).replace("\xa0", " ").strip()
 
 def fmt_date(v):
     if v is None: return ""
@@ -252,6 +325,93 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
         }
 
         # Collapse large blank-serial No-Issue blocks into single aggregate rows
+        if (category == "No Issue" or (category == "Inspection" and subcat != "Issue Found")) and not serial:
+            akey = (rec["month"], rec["project"], rec["customer_type"],
+                    rec["state"], rec["plant"], rec["module_type"])
+            if akey not in agg:
+                agg[akey] = dict(rec)
+                agg[akey]["weight"] = 0
+                agg[akey]["is_aggregate"] = True
+            agg[akey]["weight"] += 1
+        else:
+            rec["is_aggregate"] = False
+            rows.append(rec)
+
+    for akey, arec in agg.items():
+        if arec["weight"] >= 50:
+            rows.append(arec)
+        else:
+            base = dict(arec)
+            w = base.pop("weight")
+            base["weight"] = 1
+            base["is_aggregate"] = False
+            for _ in range(w):
+                rows.append(dict(base))
+    wb.close()
+
+for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
+    if not os.path.exists(fname):
+        print(f"WARNING: {fname} not found — skipping")
+        continue
+    print(f"Reading tracker {fname} -> sheet '{sheet}' (months {min_month} to {max_month})...")
+    wb = load_workbook(fname, read_only=True)
+    ws = wb[sheet]
+    cm = col_map(eval_idx)
+    agg = {}
+
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        v = list(row)
+        if len(v) <= cm["serial"]: continue
+
+        dt = v[0]
+        if dt is None: continue
+        if isinstance(dt, datetime):
+            month = dt.strftime("%Y-%m")
+        else:
+            try:
+                month = datetime.strptime(str(dt).split(" ")[0], "%Y-%m-%d").strftime("%Y-%m")
+            except (ValueError, TypeError):
+                continue
+        if not (min_month <= month <= max_month): continue
+
+        raw_eval = clean(v[cm["evaluation"]])
+        if not raw_eval and not norm_serial(v[cm["serial"]]): continue
+
+        key_eval = raw_eval.lower()
+        mapped = HIER.get(key_eval)
+        serial = norm_serial(v[cm["serial"]])
+
+        if mapped is None:
+            unmapped[raw_eval] = unmapped.get(raw_eval, 0) + 1
+            category, subcat = ("Unmapped", raw_eval or "Unknown")
+        else:
+            category, subcat = mapped
+
+        rec = {
+            "month":         month,
+            "serial":        serial,
+            "complaint_by":  clean(v[cm["complaint_by"]]) or "Unknown",
+            "customer_type": {"Pump":"Solar Pump"}.get(clean(v[cm["customer_type"]]), clean(v[cm["customer_type"]])) or "Unknown",
+            "project":       clean(v[cm["project"]]) or "Unknown",
+            "state":         clean(v[cm["state"]]) or "Unknown",
+            "status":        clean(v[cm["status"]]) or "Unknown",
+            "plant":         {"P4":"P4 - PEIPL","P2":"P2 - PEPPL","P5":"P5 - PEGPL","P1":"P1 - PEL"}.get(clean(v[cm["plant"]]), clean(v[cm["plant"]])) or "Unknown",
+            "module_type":   clean(v[cm["module_type"]]) or "Unknown",
+            "evaluation_raw":raw_eval,
+            "category":      category,
+            "subcategory":   subcat,
+            "complaint_no":  clean(v[cm["complaint_no"]]),
+            "action":        clean(v[cm["action"]]),
+            "resolution":    clean(v[cm["resolution"]]),
+            "wp":            clean(v[cm["wp"]]),
+            "make_year":     clean(v[cm["make_year"]]),
+            "location":      clean(v[cm["location"]]),
+            "settle_days":   calc_tat(v[cm["received_date"]], v[cm["settle_date"]]),
+            "visit_date":    fmt_date(v[cm["visit_date"]]),
+            "received_date": fmt_date(v[cm["received_date"]]),
+            "weight":        1,
+        }
+
         if (category == "No Issue" or (category == "Inspection" and subcat != "Issue Found")) and not serial:
             akey = (rec["month"], rec["project"], rec["customer_type"],
                     rec["state"], rec["plant"], rec["module_type"])
