@@ -359,19 +359,22 @@ for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
     cm = col_map(eval_idx)
     agg = {}
 
+    def parse_month(d):
+        if d is None: return None
+        if isinstance(d, datetime): return d.strftime("%Y-%m")
+        try: return datetime.strptime(str(d).split(" ")[0], "%Y-%m-%d").strftime("%Y-%m")
+        except (ValueError, TypeError): return None
+
     for row in ws.iter_rows(min_row=2, values_only=True):
         v = list(row)
         if len(v) <= cm["serial"]: continue
 
-        dt = v[0]
-        if dt is None: continue
-        if isinstance(dt, datetime):
-            month = dt.strftime("%Y-%m")
+        status = clean(v[cm["status"]])
+        if status.lower().startswith("closed"):
+            month = parse_month(v[cm["settle_date"]]) or parse_month(v[0])
         else:
-            try:
-                month = datetime.strptime(str(dt).split(" ")[0], "%Y-%m-%d").strftime("%Y-%m")
-            except (ValueError, TypeError):
-                continue
+            month = parse_month(v[0])
+        if month is None: continue
         if not (min_month <= month <= max_month): continue
 
         raw_eval = clean(v[cm["evaluation"]])
