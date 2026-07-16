@@ -55,17 +55,22 @@ header .sub{color:var(--txt2);font-size:13px;margin-top:2px}
 .cal-btn{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:1px solid #d2d2d7;background:var(--panel);color:var(--txt2);border-radius:8px;cursor:pointer;transition:.15s;padding:0;flex:none}
 .cal-btn:hover{border-color:var(--accent)}
 .cal-btn.active{border-color:var(--accent);background:var(--accent);color:#fff}
-.month-pop{display:none;position:absolute;top:48px;right:0;z-index:50;width:270px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.14);padding:14px}
+.month-pop{display:none;position:absolute;top:48px;right:0;z-index:50;width:340px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.16);padding:18px}
 .month-pop.open{display:block}
-.mp-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
-.mp-title{font-size:13px;font-weight:600;color:var(--txt)}
-.mp-all{padding:4px 12px;border:1px solid #d2d2d7;background:var(--panel);color:var(--txt2);border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
+.mp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.mp-title{font-size:14px;font-weight:600;color:var(--txt)}
+.mp-all{padding:5px 14px;border:1px solid #d2d2d7;background:var(--panel);color:var(--txt2);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:.12s}
+.mp-all:hover{border-color:var(--accent);color:var(--accent)}
 .mp-all.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.mp-hint{font-size:11px;color:var(--txt2);margin-bottom:12px}
-.mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.mp-chip{padding:11px 0;text-align:center;border-radius:8px;cursor:pointer;font-size:12.5px;font-weight:600;transition:.12s;border:1px solid var(--line);background:var(--panel2);color:var(--txt)}
+.mp-hint{font-size:11px;color:var(--txt2);margin-bottom:14px}
+.mp-year{margin-top:14px}
+.mp-year:first-of-type{margin-top:0}
+.mp-year-lbl{font-size:11px;font-weight:700;color:var(--txt2);letter-spacing:.5px;margin-bottom:8px}
+.mp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.mp-chip{padding:9px 0;text-align:center;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:.12s;border:1px solid var(--line);background:var(--panel2);color:var(--txt)}
+.mp-chip:hover{border-color:var(--accent)}
 .mp-chip.sel{border-color:var(--accent);background:var(--accent);color:#fff}
-.mp-foot{margin-top:12px;padding-top:10px;border-top:1px solid #f0f0f2;font-size:11.5px;color:var(--txt2)}
+.mp-foot{margin-top:16px;padding-top:12px;border-top:1px solid #f0f0f2;font-size:11.5px;color:var(--txt2)}
 .mp-foot span{color:var(--txt);font-weight:600}
 .filters{display:flex;flex-wrap:wrap;gap:10px;background:var(--panel);padding:14px 16px;border-radius:var(--radius);margin-bottom:var(--gap);border:1px solid var(--line);align-items:flex-end}
 .fg{display:flex;flex-direction:column;gap:3px;flex:1;min-width:120px}
@@ -189,7 +194,7 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
   <header>
     <div>
       <h1><img src="data:image/png;base64,__HEADER_LOGO__" alt="Premier Energies" style="height:32px;vertical-align:middle;margin-right:14px"> AFTER SALES SERVICE DASHBOARD</h1>
-      <div class="sub">Field service &amp; module defect tracking · Dec 2025–Jun 2026</div>
+      <div class="sub">Field service &amp; module defect tracking · Dec 2024–Jun 2026</div>
     </div>
     <div class="months" id="months"></div>
   </header>
@@ -293,8 +298,8 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
 </div>
 <script>
 let RAW = [];
-const MONTHS = ["2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06"];
-const MLABEL = {"2025-12":"Dec-25","2026-01":"Jan-26","2026-02":"Feb-26","2026-03":"Mar-26","2026-04":"Apr-26","2026-05":"May-26","2026-06":"Jun-26"};
+const MONTHS = ["2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06"];
+const MLABEL = {"2024-12":"Dec-24","2025-01":"Jan-25","2025-02":"Feb-25","2025-03":"Mar-25","2025-04":"Apr-25","2025-05":"May-25","2025-06":"Jun-25","2025-07":"Jul-25","2025-08":"Aug-25","2025-09":"Sep-25","2025-10":"Oct-25","2025-11":"Nov-25","2025-12":"Dec-25","2026-01":"Jan-26","2026-02":"Feb-26","2026-03":"Mar-26","2026-04":"Apr-26","2026-05":"May-26","2026-06":"Jun-26"};
 const CAT_ORDER = ["Junction Box Defects","Ribbon Soldering Issue","Cell and Module Defects","Physical and External Damage","Transit Damage","Aesthetic","No Issue","Inspection"];
 const COLORS = ['#3266ad','#e87f3a','#34c759','#ff3b30','#af52de','#ff6482','#00c7be','#ff9500'];
 Chart.defaults.color='#86868b';Chart.defaults.borderColor='#e5e5e7';Chart.defaults.font.family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif";
@@ -380,19 +385,25 @@ function buildHeaderTools(){
   popAllEl.onclick=()=>{selMonths=new Set(MONTHS);refresh();};
   head.appendChild(popAllEl); monthPopEl.appendChild(head);
   const hint=document.createElement('div'); hint.className='mp-hint'; hint.innerHTML='Click a month · hold ⇧ Shift to compare several'; monthPopEl.appendChild(hint);
-  const grid=document.createElement('div'); grid.className='mp-grid';
-  MONTHS.forEach(m=>{
-    const c=document.createElement('button'); c.type='button'; c.className='mp-chip'; c.textContent=MLABEL[m];
-    c.onclick=e=>{
-      if(e.shiftKey){
-        if(selMonths.has(m)){selMonths.delete(m); if(selMonths.size===0)selMonths.add(m);}
-        else selMonths.add(m);
-      } else selMonths=new Set([m]);
-      refresh();
-    };
-    grid.appendChild(c); monthChipEls[m]=c;
+  const SHORTM=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const years=[...new Set(MONTHS.map(m=>m.slice(0,4)))];
+  years.forEach(yr=>{
+    const grp=document.createElement('div'); grp.className='mp-year';
+    const lbl=document.createElement('div'); lbl.className='mp-year-lbl'; lbl.textContent=yr; grp.appendChild(lbl);
+    const grid=document.createElement('div'); grid.className='mp-grid';
+    MONTHS.filter(m=>m.slice(0,4)===yr).forEach(m=>{
+      const c=document.createElement('button'); c.type='button'; c.className='mp-chip'; c.textContent=SHORTM[parseInt(m.slice(5,7),10)-1];
+      c.onclick=e=>{
+        if(e.shiftKey){
+          if(selMonths.has(m)){selMonths.delete(m); if(selMonths.size===0)selMonths.add(m);}
+          else selMonths.add(m);
+        } else selMonths=new Set([m]);
+        refresh();
+      };
+      grid.appendChild(c); monthChipEls[m]=c;
+    });
+    grp.appendChild(grid); monthPopEl.appendChild(grp);
   });
-  monthPopEl.appendChild(grid);
   const foot=document.createElement('div'); foot.className='mp-foot'; foot.innerHTML='Showing: <span id="mp-showing"></span>'; monthPopEl.appendChild(foot);
   monthsEl.appendChild(monthPopEl);
   mpShowEl=foot.querySelector('#mp-showing');
@@ -522,7 +533,7 @@ function refresh(){
 
   document.getElementById('k-closed').textContent=closed.toLocaleString();
   const activeMonths=[...new Set(filtered.map(r=>r.month))].sort();
-  document.getElementById('k-closed-note').textContent=activeMonths.map(m=>MLABEL[m]).join(', ');
+  document.getElementById('k-closed-note').textContent=selMonths.size===1?MLABEL[[...selMonths][0]]:'';
   document.getElementById('k-closure').textContent=closureRate+'%';
   const closureNote=document.getElementById('k-closure-note');
   closureNote.textContent=closed.toLocaleString()+' closed of '+total.toLocaleString();
