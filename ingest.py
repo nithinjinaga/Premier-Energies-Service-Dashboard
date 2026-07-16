@@ -173,6 +173,7 @@ HIER = {
     "module found open":                ("Inspection", "Module Found Open"),
     "found ok":                         ("Inspection", "No Issue"),
     "no problem found":                 ("Inspection", "No Issue Found"),
+    "yet to evaluate":                  ("Inspection", "No Issue Found"),
     # Customer Issue
     "wrong connection":             ("Customer Issue", "Wrong Connection"),
     "lightning case":               ("Customer Issue", "Lightning Case"),
