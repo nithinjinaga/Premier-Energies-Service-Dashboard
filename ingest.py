@@ -240,6 +240,20 @@ HIER = {
 }
 # ─────────────────────────────────────────────────────────────────────────────
 
+STATE_MAP = {
+    "Tamil nadu": "Tamil Nadu", "Tamilnadu": "Tamil Nadu", " Tamilnadu": "Tamil Nadu",
+    "kerala": "Kerala",
+    "MP": "Madhya Pradesh",
+    "UP": "Uttar Pradesh",
+    "Bhuj": "Gujarat",
+    "Solapur": "Maharashtra",
+    "N/A": "Unknown",
+}
+
+def norm_state(v):
+    s = clean(v)
+    return STATE_MAP.get(s, s) or "Unknown"
+
 def norm_serial(v):
     if v is None: return ""
     s = str(v).strip()
@@ -306,7 +320,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
             "complaint_by":  clean(v[cm["complaint_by"]]) or "Unknown",
             "customer_type": {"Pump":"Solar Pump"}.get(clean(v[cm["customer_type"]]), clean(v[cm["customer_type"]])) or "Unknown",
             "project":       clean(v[cm["project"]]) or "Unknown",
-            "state":         clean(v[cm["state"]]) or "Unknown",
+            "state":         norm_state(v[cm["state"]]),
             "status":        clean(v[cm["status"]]) or "Unknown",
             "plant":         {"P4":"P4 - PEIPL","P2":"P2 - PEPPL","P5":"P5 - PEGPL","P1":"P1 - PEL"}.get(clean(v[cm["plant"]]), clean(v[cm["plant"]])) or "Unknown",
             "module_type":   clean(v[cm["module_type"]]) or "Unknown",
@@ -397,7 +411,7 @@ for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
             "complaint_by":  clean(v[cm["complaint_by"]]) or "Unknown",
             "customer_type": {"Pump":"Solar Pump"}.get(clean(v[cm["customer_type"]]), clean(v[cm["customer_type"]])) or "Unknown",
             "project":       clean(v[cm["project"]]) or "Unknown",
-            "state":         clean(v[cm["state"]]) or "Unknown",
+            "state":         norm_state(v[cm["state"]]),
             "status":        clean(v[cm["status"]]) or "Unknown",
             "plant":         {"P4":"P4 - PEIPL","P2":"P2 - PEPPL","P5":"P5 - PEGPL","P1":"P1 - PEL"}.get(clean(v[cm["plant"]]), clean(v[cm["plant"]])) or "Unknown",
             "module_type":   clean(v[cm["module_type"]]) or "Unknown",
