@@ -87,6 +87,7 @@ HIER = {
     # Ribbon Soldering Issue
     "tab lead burn":                ("Ribbon Soldering Issue", "Tab Lead Burn"),
     "improper ribbon soldering":    ("Ribbon Soldering Issue", "Improper Ribbon Soldering"),
+    "improper ribbon/tab lead soldering": ("Ribbon Soldering Issue", "Improper Ribbon Soldering"),
     "backsheet burn":               ("Ribbon Soldering Issue", "Backsheet Burn"),
     "back sheet burn":              ("Ribbon Soldering Issue", "Backsheet Burn"),
     "string cold soldering":        ("Ribbon Soldering Issue", "String Cold Soldering"),
