@@ -301,7 +301,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
 
     for row in ws.iter_rows(min_row=2, values_only=True):
         v = list(row)
-        if len(v) <= cm["serial"]: continue
+        if len(v) <= max(cm.values()): continue
         raw_eval = clean(v[cm["evaluation"]])
         if not raw_eval and not norm_serial(v[cm["serial"]]): continue
 
@@ -383,7 +383,7 @@ for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
 
     for row in ws.iter_rows(min_row=2, values_only=True):
         v = list(row)
-        if len(v) <= cm["serial"]: continue
+        if len(v) <= max(cm.values()): continue
 
         status = clean(v[cm["status"]])
         if status.lower().startswith("closed"):
