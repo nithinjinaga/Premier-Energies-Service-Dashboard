@@ -301,7 +301,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
 
     for row in ws.iter_rows(min_row=2, values_only=True):
         v = list(row)
-        if len(v) <= max(cm.values()): continue
+        if len(v) <= cm["serial"]: continue
         raw_eval = clean(v[cm["evaluation"]])
         if not raw_eval and not norm_serial(v[cm["serial"]]): continue
 
@@ -334,8 +334,8 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
             "wp":            clean(v[cm["wp"]]),
             "make_year":     clean(v[cm["make_year"]]),
             "location":      clean(v[cm["location"]]),
-            "settle_days":   calc_tat(v[cm["received_date"]], v[cm["settle_date"]]),
-            "visit_date":    fmt_date(v[cm["visit_date"]]),
+            "settle_days":   calc_tat(v[cm["received_date"]], v[cm["settle_date"]] if len(v) > cm["settle_date"] else None),
+            "visit_date":    fmt_date(v[cm["visit_date"]] if len(v) > cm["visit_date"] else None),
             "received_date": fmt_date(v[cm["received_date"]]),
             "weight":        1,
         }
@@ -425,8 +425,8 @@ for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
             "wp":            clean(v[cm["wp"]]),
             "make_year":     clean(v[cm["make_year"]]),
             "location":      clean(v[cm["location"]]),
-            "settle_days":   calc_tat(v[cm["received_date"]], v[cm["settle_date"]]),
-            "visit_date":    fmt_date(v[cm["visit_date"]]),
+            "settle_days":   calc_tat(v[cm["received_date"]], v[cm["settle_date"]] if len(v) > cm["settle_date"] else None),
+            "visit_date":    fmt_date(v[cm["visit_date"]] if len(v) > cm["visit_date"] else None),
             "received_date": fmt_date(v[cm["received_date"]]),
             "weight":        1,
         }
