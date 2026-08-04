@@ -31,6 +31,7 @@ SOURCES = [
     ("April 26 - Daily & Monthly AnalyzedReport.xlsx",  "Monthly Report April-26 ",       "2026-04", 13, 15, 21),
     ("May 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report May-26 Cleaned",  "2026-05", 13, 15, 21),
     ("June 26 - Daily & Monthly Analyzed Report.xlsx",  " Monthly Report June-26",        "2026-06", 13, 15, 21),
+    ("July 26 - Daily & Monthly Analyzed Report.xlsx",  " Monthly Report July-26",        "2026-07", 13, 15, 21),
 
 ]
 
@@ -211,6 +212,14 @@ HIER = {
     "reverse current from inverter burn the module": ("Cell and Module Defects", "Module Burn"),
     "a piece of paper (inside the glass)": ("Cell and Module Defects", "Foreign Particle - Cell Piece"),
     "during the rework soldering process some solder residue got stuck on the cell": ("Cell and Module Defects", "Burn Spot"),
+    "el failure":                   ("Cell and Module Defects", "EL Failure"),
+    "low voc":                      ("Junction Box Defects", "JB Issue"),
+    "cell/transparent backsheet burn": ("Cell and Module Defects", "Transparent Backsheet Melt Down"),
+    "tab lead burn & glass breakage": ("Ribbon Soldering Issue", "Tab Lead Burn"),
+    "backsheet damage":             ("Physical and External Damage", "Backsheet Scratches"),
+    "improper and loose clipping":  ("Physical and External Damage", "Frame Damage"),
+    "closed by client":             ("Inspection", "No Issue"),
+    "lightning strike / wrong connection": ("Customer Issue", "Wrong Connection"),
     # Additional Physical and External Damage
     "glass breakage at shorter frame": ("Physical and External Damage", "Glass Breakage"),
     "glass breakage & burn":        ("Physical and External Damage", "Glass Breakage"),
