@@ -190,7 +190,7 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
   <header>
     <div>
       <h1><img src="data:image/png;base64,__HEADER_LOGO__" alt="Premier Energies" style="height:32px;vertical-align:middle;margin-right:14px"> AFTER SALES SERVICE DASHBOARD</h1>
-      <div class="sub">Field service &amp; module defect tracking · Dec 2024–Jun 2026</div>
+      <div class="sub">Field service &amp; module defect tracking · Dec 2024–Jul 2026</div>
     </div>
     <div class="months" id="months"></div>
   </header>
