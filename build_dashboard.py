@@ -115,7 +115,7 @@ tbody tr:hover{background:#fafafa}
 .pager{display:flex;gap:8px;align-items:center;margin-top:12px;justify-content:flex-end;color:var(--txt2);font-size:12px}
 .pager button{padding:5px 12px;background:var(--panel);border:1px solid #d2d2d7;border-radius:8px;color:var(--accent);cursor:pointer}
 .pager button:disabled{opacity:.4;cursor:not-allowed}
-.tableScroll{overflow-x:auto}
+.tableScroll{overflow:auto;max-height:520px} .tableScroll thead{position:sticky;top:0;z-index:1}
 footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
 .note-box{background:#fff8f0;border:1px solid #ffd9a8;border-radius:8px;padding:10px 14px;font-size:12px;color:#86868b;margin-bottom:var(--gap)}
 .heatmap{height:340px;overflow:auto}
@@ -669,7 +669,7 @@ function renderTable(defects){
   const tb=document.getElementById('tbody');tb.innerHTML='';
   slice.forEach(r=>{const tr=document.createElement('tr');
     const stcls=/wip/i.test(r.status)?'wip':'closed';
-    tr.innerHTML=`<td>${MLABEL[r.month]}</td><td>${r.serial||'—'}</td><td>${r.project}</td>
+    tr.innerHTML=`<td>${MLABEL[r.month]}</td><td>${r.serial||'—'}</td>
       <td>${r.customer_type}</td><td>${r.state}</td><td>${r.category}</td><td>${r.subcategory}</td>
       <td>${r.plant}</td><td><span class="pill ${stcls}">${r.status}</span></td><td>${r.complaint_no||'—'}</td>`;
     tb.appendChild(tr);});
