@@ -31,7 +31,7 @@ SOURCES = [
     ("April 26 - Daily & Monthly AnalyzedReport.xlsx",  "Monthly Report April-26 ",       "2026-04", 13, 15, 21),
     ("May 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report May-26 Cleaned",  "2026-05", 13, 15, 21),
     ("June 26 - Daily & Monthly Analyzed Report.xlsx",  " Monthly Report June-26",        "2026-06", 13, 15, 21),
-    ("July 26 - Daily & Monthly Analyzed Report.xlsx",  " Monthly Report July-26",        "2026-07", 13, 15, 21),
+    ("July 26 - Daily & Monthly Analyzed Report.xlsx",  "Monthly Report July-26",         "2026-07", 13, 15, 21),
 
 ]
 
@@ -303,7 +303,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
         print(f"WARNING: {fname} not found — skipping")
         continue
     print(f"Reading {fname} -> sheet '{sheet}'...")
-    wb = load_workbook(fname, read_only=True)
+    wb = load_workbook(fname, read_only=True, data_only=True)
     ws = wb[sheet]
     cm = col_map(eval_idx)
     agg = {}
@@ -379,7 +379,7 @@ for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
         print(f"WARNING: {fname} not found — skipping")
         continue
     print(f"Reading tracker {fname} -> sheet '{sheet}' (months {min_month} to {max_month})...")
-    wb = load_workbook(fname, read_only=True)
+    wb = load_workbook(fname, read_only=True, data_only=True)
     ws = wb[sheet]
     cm = col_map(eval_idx)
     agg = {}
