@@ -505,7 +505,7 @@ function refresh(){
   const wip=sumW(filtered.filter(r=>/wip/i.test(r.status)));
   const total=closed+wip;
   const closureRate=total?Math.round(closed/total*1000)/10:0;
-  const durations=filtered.filter(r=>r.settle_days&&r.settle_days>0);
+  const durations=filtered.filter(r=>r.settle_days!=null&&r.settle_days>=0);
   const avgTAT=durations.length?Math.round(durations.reduce((a,r)=>a+(r.settle_days*W(r)),0)/sumW(durations)*10)/10:0;
 
   document.getElementById('k-closed').textContent=closed.toLocaleString();
@@ -585,7 +585,7 @@ function refresh(){
 
   // ---- Defect resolution timeline (avg TAT per month) ----
   const tatByM=selM.map(m=>{
-    const mr=applyAll(RAW).filter(r=>r.month===m&&r.settle_days&&r.settle_days>0);
+    const mr=applyAll(RAW).filter(r=>r.month===m&&r.settle_days!=null&&r.settle_days>=0);
     if(!mr.length)return 0;
     return Math.round(mr.reduce((a,r)=>a+(r.settle_days*W(r)),0)/sumW(mr)*10)/10;
   });
