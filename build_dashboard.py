@@ -113,6 +113,9 @@ tbody tr:hover{background:#fafafa}
 .tablebar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
 .tablebar input{padding:8px 12px;background:var(--panel);border:1px solid #d2d2d7;border-radius:8px;color:var(--txt);font-size:13px;min-width:240px}
 .tableScroll{overflow:auto;max-height:520px} .tableScroll thead{position:sticky;top:0;z-index:1}
+.pager{display:flex;gap:8px;align-items:center;margin-top:12px;justify-content:flex-end;color:var(--txt2);font-size:12px}
+.pager button{padding:5px 12px;background:var(--panel);border:1px solid #d2d2d7;border-radius:8px;color:var(--accent);cursor:pointer}
+.pager button:disabled{opacity:.4;cursor:not-allowed}
 footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
 .note-box{background:#fff8f0;border:1px solid #ffd9a8;border-radius:8px;padding:10px 14px;font-size:12px;color:#86868b;margin-bottom:var(--gap)}
 .heatmap{height:340px;overflow:auto}
@@ -271,6 +274,10 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
         <tbody id="tbody"></tbody>
       </table>
     </div>
+    <div class="pager"><span id="pginfo"></span>
+      <input type="number" id="pgjump" min="1" style="width:54px;padding:5px 6px;border:1px solid #d2d2d7;border-radius:6px;text-align:center" placeholder="#">
+      <button id="pgjumpbtn">Go</button>
+      <button id="prev">Prev</button><button id="next">Next</button></div>
   </div>
 
 </div>
@@ -297,7 +304,7 @@ const isMobile=()=>window.innerWidth<=768;
 // ---------- state ----------
 let selMonths = new Set(MONTHS);
 const state={customer:'All',custname:'All',category:'All',subcat:'All',stateF:'All',status:'All',plant:'All',resolution:'All'};
-let sortK='month',sortDir=1,search='';
+let sortK='month',sortDir=1,search='',page=0;
 const PAGE=50;
 let tblRows=[],tblShown=0;
 const charts={};
@@ -326,7 +333,7 @@ function summaryLabel(){
 }
 
 function setSearch(v){
-  search=v;
+  search=v;page=0;
   if(hdrSearchInput && hdrSearchInput.value!==v) hdrSearchInput.value=v;
   const low=document.getElementById('search'); if(low && low.value!==v) low.value=v;
   refresh();
@@ -648,44 +655,59 @@ function buildHeatmap(defects,catLabels){
 }
 
 // ---------- table ----------
-function appendRows(n){
-  const tb=document.getElementById('tbody');
-  const end=Math.min(tblShown+n,tblRows.length);
-  for(let i=tblShown;i<end;i++){const r=tblRows[i];const tr=document.createElement('tr');
-    const stcls=/wip/i.test(r.status)?'wip':'closed';
-    tr.innerHTML=`<td>${MLABEL[r.month]}</td><td>${r.serial||'—'}</td>
-      <td>${r.customer_type}</td><td>${r.state}</td><td>${r.category}</td><td>${r.subcategory}</td>
-      <td>${r.plant}</td><td><span class="pill ${stcls}">${r.status}</span></td><td>${r.complaint_no||'—'}</td>`;
-    tb.appendChild(tr);}
-  tblShown=end;
-  document.getElementById('tcount').textContent=tblRows.length.toLocaleString()+' defect records'+(tblShown<tblRows.length?' (showing '+tblShown+')':'');
+let allFilteredRows=[];
+function renderRow(r){
+  const tr=document.createElement('tr');
+  const stcls=/wip/i.test(r.status)?'wip':'closed';
+  tr.innerHTML=`<td>${MLABEL[r.month]}</td><td>${r.serial||'—'}</td>
+    <td>${r.customer_type}</td><td>${r.state}</td><td>${r.category}</td><td>${r.subcategory}</td>
+    <td>${r.plant}</td><td><span class="pill ${stcls}">${r.status}</span></td><td>${r.complaint_no||'—'}</td>`;
+  return tr;
+}
+function loadPage(){
+  const tb=document.getElementById('tbody');tb.innerHTML='';
+  tblRows=allFilteredRows.slice(page*PAGE,(page+1)*PAGE);
+  tblShown=0;
+  tblRows.forEach(r=>tb.appendChild(renderRow(r)));
+  tblShown=tblRows.length;
+  document.querySelector('.tableScroll').scrollTop=0;
+  updatePager();
+}
+function updatePager(){
+  const total=allFilteredRows.length,pages=Math.max(1,Math.ceil(total/PAGE));
+  document.getElementById('tcount').textContent=total.toLocaleString()+' defect records';
+  document.getElementById('pginfo').textContent=`Page ${page+1} of ${pages}`;
+  document.getElementById('prev').disabled=page===0;
+  document.getElementById('next').disabled=page>=pages-1;
+  document.getElementById('pgjump').max=pages;
 }
 function renderTable(defects){
   let rows=defects.filter(r=>!r.is_aggregate);
   if(search){const q=search.toLowerCase();
     rows=rows.filter(r=>(r.serial+' '+r.project+' '+r.complaint_no+' '+r.subcategory).toLowerCase().includes(q));}
   rows.sort((a,b)=>{const x=(a[sortK]||'') ,y=(b[sortK]||'');return (x>y?1:x<y?-1:0)*sortDir;});
-  tblRows=rows;tblShown=0;
-  document.getElementById('tbody').innerHTML='';
-  appendRows(PAGE);
+  allFilteredRows=rows;
+  if(page>=Math.max(1,Math.ceil(rows.length/PAGE)))page=Math.max(0,Math.ceil(rows.length/PAGE)-1);
+  loadPage();
 }
-document.querySelector('.tableScroll').addEventListener('scroll',function(){
-  if(tblShown>=tblRows.length)return;
-  if(this.scrollTop+this.clientHeight>=this.scrollHeight-50)appendRows(PAGE);
-});
 
 // ---------- events ----------
-document.getElementById('f-customer').onchange=e=>{state.customer=e.target.value;state.custname='All';populateCustCascade();refresh();};
-document.getElementById('f-custname').onchange=e=>{state.custname=e.target.value;state.customer='All';populateCustCascade();refresh();};
-document.getElementById('f-category').onchange=e=>{state.category=e.target.value;state.subcat='All';populateSub();refresh();};
-document.getElementById('f-subcat').onchange=e=>{state.subcat=e.target.value;refresh();};
-document.getElementById('f-state').onchange=e=>{state.stateF=e.target.value;refresh();};
-document.getElementById('f-status').onchange=e=>{state.status=e.target.value;refresh();};
-document.getElementById('f-plant').onchange=e=>{state.plant=e.target.value;refresh();};
-document.getElementById('f-resolution').onchange=e=>{state.resolution=e.target.value;refresh();};
-document.getElementById('reset').onclick=()=>{Object.assign(state,{customer:'All',custname:'All',category:'All',subcat:'All',stateF:'All',status:'All',plant:'All',resolution:'All'});selMonths=new Set(MONTHS);calOpen=false;hdrSearchOpen=false;search='';document.getElementById('search').value='';populateFilters();refresh();};
+document.getElementById('f-customer').onchange=e=>{state.customer=e.target.value;state.custname='All';page=0;populateCustCascade();refresh();};
+document.getElementById('f-custname').onchange=e=>{state.custname=e.target.value;state.customer='All';page=0;populateCustCascade();refresh();};
+document.getElementById('f-category').onchange=e=>{state.category=e.target.value;state.subcat='All';page=0;populateSub();refresh();};
+document.getElementById('f-subcat').onchange=e=>{state.subcat=e.target.value;page=0;refresh();};
+document.getElementById('f-state').onchange=e=>{state.stateF=e.target.value;page=0;refresh();};
+document.getElementById('f-status').onchange=e=>{state.status=e.target.value;page=0;refresh();};
+document.getElementById('f-plant').onchange=e=>{state.plant=e.target.value;page=0;refresh();};
+document.getElementById('f-resolution').onchange=e=>{state.resolution=e.target.value;page=0;refresh();};
+document.getElementById('reset').onclick=()=>{Object.assign(state,{customer:'All',custname:'All',category:'All',subcat:'All',stateF:'All',status:'All',plant:'All',resolution:'All'});selMonths=new Set(MONTHS);calOpen=false;hdrSearchOpen=false;search='';document.getElementById('search').value='';page=0;populateFilters();refresh();};
 document.getElementById('search').oninput=e=>setSearch(e.target.value);
 document.querySelectorAll('#tbl thead th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sortK===k)sortDir*=-1;else{sortK=k;sortDir=1;}refresh();});
+document.getElementById('prev').onclick=()=>{if(page>0){page--;loadPage();}};
+document.getElementById('next').onclick=()=>{if((page+1)*PAGE<allFilteredRows.length){page++;loadPage();}};
+function jumpToPage(){const v=parseInt(document.getElementById('pgjump').value,10);if(!v||v<1)return;const pages=Math.ceil(allFilteredRows.length/PAGE);page=Math.min(Math.max(v,1),pages)-1;document.getElementById('pgjump').value='';loadPage();}
+document.getElementById('pgjumpbtn').onclick=jumpToPage;
+document.getElementById('pgjump').onkeydown=e=>{if(e.key==='Enter')jumpToPage();};
 
 // ---------- init ----------
 (async()=>{
