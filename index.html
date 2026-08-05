@@ -89,9 +89,6 @@ tbody tr:hover{background:#fafafa}
 .pill.wip{background:#fff8f0;color:var(--warn)}
 .tablebar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
 .tablebar input{padding:8px 12px;background:var(--panel);border:1px solid #d2d2d7;border-radius:8px;color:var(--txt);font-size:13px;min-width:240px}
-.pager{display:flex;gap:8px;align-items:center;margin-top:12px;justify-content:flex-end;color:var(--txt2);font-size:12px}
-.pager button{padding:5px 12px;background:var(--panel);border:1px solid #d2d2d7;border-radius:8px;color:var(--accent);cursor:pointer}
-.pager button:disabled{opacity:.4;cursor:not-allowed}
 .tableScroll{overflow:auto;max-height:520px} .tableScroll thead{position:sticky;top:0;z-index:1}
 footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
 .note-box{background:#fff8f0;border:1px solid #ffd9a8;border-radius:8px;padding:10px 14px;font-size:12px;color:#86868b;margin-bottom:var(--gap)}
@@ -140,8 +137,6 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
   .badge{font-size:11px;padding:4px 10px}
   .tablebar{flex-direction:column;align-items:stretch}
   .tablebar input{min-width:100%;padding:10px 12px;font-size:14px}
-  .pager{flex-wrap:wrap;justify-content:center;gap:6px}
-  .pager button{padding:8px 16px;font-size:13px}
   thead th{font-size:10px;padding:6px 8px}
   tbody td{font-size:12px;padding:6px 8px}
   .heatmap{overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -161,8 +156,6 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
   .chartbox{height:240px}
   .chartbox.tall{height:260px}
   .badge{font-size:10px;padding:3px 8px}
-  .pager button{padding:6px 12px;font-size:12px}
-  #pgjump{width:46px!important}
 }
 </style>
 </head>
@@ -255,10 +248,6 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
         <tbody id="tbody"></tbody>
       </table>
     </div>
-    <div class="pager"><span id="pginfo"></span>
-      <input type="number" id="pgjump" min="1" style="width:54px;padding:5px 6px;border:1px solid #d2d2d7;border-radius:6px;text-align:center" placeholder="#">
-      <button id="pgjumpbtn">Go</button>
-      <button id="prev">Prev</button><button id="next">Next</button></div>
   </div>
 
 </div>
@@ -285,8 +274,7 @@ const isMobile=()=>window.innerWidth<=768;
 // ---------- state ----------
 let selMonths = new Set(MONTHS);
 const state={customer:'All',custname:'All',category:'All',subcat:'All',stateF:'All',status:'All',plant:'All',resolution:'All'};
-let sortK='month',sortDir=1,page=0,search='',lastPages=1;
-const PAGE=50;
+let sortK='month',sortDir=1,search='';
 const charts={};
 
 const isDefect=r=>r.category!=='No Issue'&&!(r.category==='Inspection'&&r.subcategory!=='Issue Found');
@@ -313,7 +301,7 @@ function summaryLabel(){
 }
 
 function setSearch(v){
-  search=v; page=0;
+  search=v;
   if(hdrSearchInput && hdrSearchInput.value!==v) hdrSearchInput.value=v;
   const low=document.getElementById('search'); if(low && low.value!==v) low.value=v;
   refresh();
@@ -640,47 +628,29 @@ function renderTable(defects){
   if(search){const q=search.toLowerCase();
     rows=rows.filter(r=>(r.serial+' '+r.project+' '+r.complaint_no+' '+r.subcategory).toLowerCase().includes(q));}
   rows.sort((a,b)=>{const x=(a[sortK]||'') ,y=(b[sortK]||'');return (x>y?1:x<y?-1:0)*sortDir;});
-  const total=rows.length,pages=Math.max(1,Math.ceil(total/PAGE));
-  if(page>=pages)page=pages-1;
-  const slice=rows.slice(page*PAGE,page*PAGE+PAGE);
+  const total=rows.length;
   const tb=document.getElementById('tbody');tb.innerHTML='';
-  slice.forEach(r=>{const tr=document.createElement('tr');
+  rows.forEach(r=>{const tr=document.createElement('tr');
     const stcls=/wip/i.test(r.status)?'wip':'closed';
     tr.innerHTML=`<td>${MLABEL[r.month]}</td><td>${r.serial||'—'}</td>
       <td>${r.customer_type}</td><td>${r.state}</td><td>${r.category}</td><td>${r.subcategory}</td>
       <td>${r.plant}</td><td><span class="pill ${stcls}">${r.status}</span></td><td>${r.complaint_no||'—'}</td>`;
     tb.appendChild(tr);});
   document.getElementById('tcount').textContent=total.toLocaleString()+' defect records';
-  document.getElementById('pginfo').textContent=`Page ${page+1} of ${pages}`;
-  document.getElementById('prev').disabled=page===0;
-  document.getElementById('next').disabled=page>=pages-1;
-  lastPages=pages;
-  document.getElementById('pgjump').max=pages;
 }
 
 // ---------- events ----------
-document.getElementById('f-customer').onchange=e=>{state.customer=e.target.value;state.custname='All';page=0;populateCustCascade();refresh();};
-document.getElementById('f-custname').onchange=e=>{state.custname=e.target.value;state.customer='All';page=0;populateCustCascade();refresh();};
-document.getElementById('f-category').onchange=e=>{state.category=e.target.value;state.subcat='All';page=0;populateSub();refresh();};
-document.getElementById('f-subcat').onchange=e=>{state.subcat=e.target.value;page=0;refresh();};
-document.getElementById('f-state').onchange=e=>{state.stateF=e.target.value;page=0;refresh();};
-document.getElementById('f-status').onchange=e=>{state.status=e.target.value;page=0;refresh();};
-document.getElementById('f-plant').onchange=e=>{state.plant=e.target.value;page=0;refresh();};
-document.getElementById('f-resolution').onchange=e=>{state.resolution=e.target.value;page=0;refresh();};
-document.getElementById('reset').onclick=()=>{Object.assign(state,{customer:'All',custname:'All',category:'All',subcat:'All',stateF:'All',status:'All',plant:'All',resolution:'All'});selMonths=new Set(MONTHS);calOpen=false;hdrSearchOpen=false;search='';document.getElementById('search').value='';page=0;populateFilters();refresh();};
+document.getElementById('f-customer').onchange=e=>{state.customer=e.target.value;state.custname='All';populateCustCascade();refresh();};
+document.getElementById('f-custname').onchange=e=>{state.custname=e.target.value;state.customer='All';populateCustCascade();refresh();};
+document.getElementById('f-category').onchange=e=>{state.category=e.target.value;state.subcat='All';populateSub();refresh();};
+document.getElementById('f-subcat').onchange=e=>{state.subcat=e.target.value;refresh();};
+document.getElementById('f-state').onchange=e=>{state.stateF=e.target.value;refresh();};
+document.getElementById('f-status').onchange=e=>{state.status=e.target.value;refresh();};
+document.getElementById('f-plant').onchange=e=>{state.plant=e.target.value;refresh();};
+document.getElementById('f-resolution').onchange=e=>{state.resolution=e.target.value;refresh();};
+document.getElementById('reset').onclick=()=>{Object.assign(state,{customer:'All',custname:'All',category:'All',subcat:'All',stateF:'All',status:'All',plant:'All',resolution:'All'});selMonths=new Set(MONTHS);calOpen=false;hdrSearchOpen=false;search='';document.getElementById('search').value='';populateFilters();refresh();};
 document.getElementById('search').oninput=e=>setSearch(e.target.value);
 document.querySelectorAll('#tbl thead th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sortK===k)sortDir*=-1;else{sortK=k;sortDir=1;}refresh();});
-document.getElementById('prev').onclick=()=>{if(page>0){page--;refresh();}};
-document.getElementById('next').onclick=()=>{page++;refresh();};
-function jumpToPage(){
-  const v=parseInt(document.getElementById('pgjump').value,10);
-  if(!v||v<1)return;
-  page=Math.min(Math.max(v,1),lastPages)-1;
-  document.getElementById('pgjump').value='';
-  refresh();
-}
-document.getElementById('pgjumpbtn').onclick=jumpToPage;
-document.getElementById('pgjump').onkeydown=e=>{if(e.key==='Enter')jumpToPage();};
 
 // ---------- init ----------
 (async()=>{
