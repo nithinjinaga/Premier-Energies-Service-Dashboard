@@ -241,12 +241,12 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
   <div class="card">
     <div class="tablebar">
       <div class="hint" id="tcount" style="margin:0"></div>
-      <input id="search" placeholder="Search serial, site, complaint no…">
+      <input id="search" placeholder="Search serial, complaint no…">
     </div>
     <div class="tableScroll">
       <table id="tbl">
         <thead><tr>
-          <th data-k="month">Month</th><th data-k="serial">Serial</th><th data-k="project">Site</th>
+          <th data-k="month">Month</th><th data-k="serial">Serial</th>
           <th data-k="customer_type">Customer</th><th data-k="state">State</th>
           <th data-k="category">Category</th><th data-k="subcategory">Sub-category</th>
           <th data-k="plant">Plant</th><th data-k="status">Status</th>
@@ -344,7 +344,7 @@ function buildHeaderTools(){
 
   hdrSearchWrap=document.createElement('div'); hdrSearchWrap.className='hdr-search';
   hdrSearchBtn=document.createElement('button'); hdrSearchBtn.type='button'; hdrSearchBtn.className='hdr-search-btn'; hdrSearchBtn.innerHTML=SEARCH_SVG;
-  hdrSearchInput=document.createElement('input'); hdrSearchInput.className='hdr-search-input'; hdrSearchInput.placeholder='Search serial, site, complaint no…';
+  hdrSearchInput=document.createElement('input'); hdrSearchInput.className='hdr-search-input'; hdrSearchInput.placeholder='Search serial, complaint no…';
   hdrSearchBtn.onclick=e=>{e.stopPropagation();hdrSearchOpen=!hdrSearchOpen;syncHeaderUI();if(hdrSearchOpen)setTimeout(()=>hdrSearchInput.focus(),60);};
   hdrSearchInput.oninput=e=>setSearch(e.target.value);
   hdrSearchWrap.appendChild(hdrSearchBtn); hdrSearchWrap.appendChild(hdrSearchInput);
