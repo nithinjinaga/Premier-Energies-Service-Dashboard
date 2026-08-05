@@ -275,6 +275,8 @@ const isMobile=()=>window.innerWidth<=768;
 let selMonths = new Set(MONTHS);
 const state={customer:'All',custname:'All',category:'All',subcat:'All',stateF:'All',status:'All',plant:'All',resolution:'All'};
 let sortK='month',sortDir=1,search='';
+const PAGE=50;
+let tblRows=[],tblShown=0;
 const charts={};
 
 const isDefect=r=>r.category!=='No Issue'&&!(r.category==='Inspection'&&r.subcategory!=='Issue Found');
@@ -623,21 +625,31 @@ function buildHeatmap(defects,catLabels){
 }
 
 // ---------- table ----------
+function appendRows(n){
+  const tb=document.getElementById('tbody');
+  const end=Math.min(tblShown+n,tblRows.length);
+  for(let i=tblShown;i<end;i++){const r=tblRows[i];const tr=document.createElement('tr');
+    const stcls=/wip/i.test(r.status)?'wip':'closed';
+    tr.innerHTML=`<td>${MLABEL[r.month]}</td><td>${r.serial||'—'}</td>
+      <td>${r.customer_type}</td><td>${r.state}</td><td>${r.category}</td><td>${r.subcategory}</td>
+      <td>${r.plant}</td><td><span class="pill ${stcls}">${r.status}</span></td><td>${r.complaint_no||'—'}</td>`;
+    tb.appendChild(tr);}
+  tblShown=end;
+  document.getElementById('tcount').textContent=tblRows.length.toLocaleString()+' defect records'+(tblShown<tblRows.length?' (showing '+tblShown+')':'');
+}
 function renderTable(defects){
   let rows=defects.filter(r=>!r.is_aggregate);
   if(search){const q=search.toLowerCase();
     rows=rows.filter(r=>(r.serial+' '+r.project+' '+r.complaint_no+' '+r.subcategory).toLowerCase().includes(q));}
   rows.sort((a,b)=>{const x=(a[sortK]||'') ,y=(b[sortK]||'');return (x>y?1:x<y?-1:0)*sortDir;});
-  const total=rows.length;
-  const tb=document.getElementById('tbody');tb.innerHTML='';
-  rows.forEach(r=>{const tr=document.createElement('tr');
-    const stcls=/wip/i.test(r.status)?'wip':'closed';
-    tr.innerHTML=`<td>${MLABEL[r.month]}</td><td>${r.serial||'—'}</td>
-      <td>${r.customer_type}</td><td>${r.state}</td><td>${r.category}</td><td>${r.subcategory}</td>
-      <td>${r.plant}</td><td><span class="pill ${stcls}">${r.status}</span></td><td>${r.complaint_no||'—'}</td>`;
-    tb.appendChild(tr);});
-  document.getElementById('tcount').textContent=total.toLocaleString()+' defect records';
+  tblRows=rows;tblShown=0;
+  document.getElementById('tbody').innerHTML='';
+  appendRows(PAGE);
 }
+document.querySelector('.tableScroll').addEventListener('scroll',function(){
+  if(tblShown>=tblRows.length)return;
+  if(this.scrollTop+this.clientHeight>=this.scrollHeight-50)appendRows(PAGE);
+});
 
 // ---------- events ----------
 document.getElementById('f-customer').onchange=e=>{state.customer=e.target.value;state.custname='All';populateCustCascade();refresh();};
