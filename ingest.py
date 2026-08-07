@@ -373,18 +373,30 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
 
         # Collapse large blank-serial No-Issue blocks into single aggregate rows
         if (category == "No Issue" or (category == "Inspection" and subcat != "Issue Found")) and not serial:
-            akey = (rec["month"], rec["project"], rec["customer_type"],
+            akey = (rec_month, rec["project"], rec["customer_type"],
                     rec["state"], rec["plant"], rec["module_type"])
             if akey not in agg:
                 agg[akey] = dict(rec)
                 agg[akey]["weight"] = 0
                 agg[akey]["is_aggregate"] = True
+                agg[akey]["_tat_sum"] = 0.0
+                agg[akey]["_tat_count"] = 0
             agg[akey]["weight"] += 1
+            sd = rec.get("settle_days")
+            if sd is not None and sd >= 0:
+                agg[akey]["_tat_sum"] += sd
+                agg[akey]["_tat_count"] += 1
         else:
             rec["is_aggregate"] = False
             rows.append(rec)
 
     for akey, arec in agg.items():
+        if arec["_tat_count"] > 0:
+            arec["settle_days"] = round(arec["_tat_sum"] / arec["_tat_count"], 1)
+        else:
+            arec["settle_days"] = None
+        del arec["_tat_sum"]
+        del arec["_tat_count"]
         if arec["weight"] >= 50:
             rows.append(arec)
         else:
