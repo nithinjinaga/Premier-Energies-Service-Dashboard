@@ -295,6 +295,15 @@ def calc_tat(received_raw, settle_raw):
     except (ValueError, TypeError):
         return None
 
+def read_tat(val):
+    if val is None:
+        return None
+    try:
+        n = float(val)
+        return n if n >= 0 else None
+    except (ValueError, TypeError):
+        return None
+
 unmapped = {}
 rows = []
 
@@ -343,7 +352,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
             "wp":            clean(v[cm["wp"]]),
             "make_year":     clean(v[cm["make_year"]]),
             "location":      clean(v[cm["location"]]),
-            "settle_days":   calc_tat(v[cm["received_date"]], v[cm["settle_date"]] if len(v) > cm["settle_date"] else None),
+            "settle_days":   read_tat(v[cm["settle_days"]] if len(v) > cm["settle_days"] else None),
             "visit_date":    fmt_date(v[cm["visit_date"]] if len(v) > cm["visit_date"] else None),
             "received_date": fmt_date(v[cm["received_date"]]),
             "weight":        1,
@@ -434,7 +443,7 @@ for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
             "wp":            clean(v[cm["wp"]]),
             "make_year":     clean(v[cm["make_year"]]),
             "location":      clean(v[cm["location"]]),
-            "settle_days":   calc_tat(v[cm["received_date"]], v[cm["settle_date"]] if len(v) > cm["settle_date"] else None),
+            "settle_days":   read_tat(v[cm["settle_days"]] if len(v) > cm["settle_days"] else None),
             "visit_date":    fmt_date(v[cm["visit_date"]] if len(v) > cm["visit_date"] else None),
             "received_date": fmt_date(v[cm["received_date"]]),
             "weight":        1,
