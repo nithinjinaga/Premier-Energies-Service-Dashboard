@@ -278,6 +278,12 @@ def fmt_date(v):
     s = str(v)
     return s.split(" ")[0] if " " in s else s
 
+def date_month(d):
+    if d is None: return None
+    if isinstance(d, datetime): return d.strftime("%Y-%m")
+    try: return datetime.strptime(str(d).split(" ")[0], "%Y-%m-%d").strftime("%Y-%m")
+    except (ValueError, TypeError): return None
+
 def calc_tat(received_raw, settle_raw):
     if received_raw is None or settle_raw is None:
         return None
@@ -333,14 +339,21 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
         else:
             category, subcat = mapped
 
+        status = clean(v[cm["status"]]) or "Unknown"
+        if status.lower() == "closed":
+            settle_date_raw = v[cm["settle_date"]] if len(v) > cm["settle_date"] else None
+            rec_month = date_month(settle_date_raw) or month
+        else:
+            rec_month = month
+
         rec = {
-            "month":         month,
+            "month":         rec_month,
             "serial":        serial,
             "complaint_by":  clean(v[cm["complaint_by"]]) or "Unknown",
             "customer_type": {"Pump":"Solar Pump"}.get(clean(v[cm["customer_type"]]), clean(v[cm["customer_type"]])) or "Unknown",
             "project":       clean(v[cm["project"]]) or "Unknown",
             "state":         norm_state(v[cm["state"]]),
-            "status":        clean(v[cm["status"]]) or "Unknown",
+            "status":        status,
             "plant":         {"P4":"P4 - PEIPL","P2":"P2 - PEPPL","P5":"P5 - PEGPL","P1":"P1 - PEL"}.get(clean(v[cm["plant"]]), clean(v[cm["plant"]])) or "Unknown",
             "module_type":   clean(v[cm["module_type"]]) or "Unknown",
             "evaluation_raw":raw_eval,
