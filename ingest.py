@@ -327,7 +327,9 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
         v = list(row)
         if len(v) <= cm["serial"]: continue
         raw_eval = clean(v[cm["evaluation"]])
-        if not raw_eval and not norm_serial(v[cm["serial"]]): continue
+        if not raw_eval:
+            raw_eval = clean(v[cm["reported_problem"]]) if len(v) > cm["reported_problem"] else ""
+        if not raw_eval and not norm_serial(v[cm["serial"]]) and not clean(v[cm["status"]]): continue
 
         key_eval = raw_eval.lower()
         mapped = HIER.get(key_eval)
@@ -437,7 +439,9 @@ for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
         if not (min_month <= month <= max_month): continue
 
         raw_eval = clean(v[cm["evaluation"]])
-        if not raw_eval and not norm_serial(v[cm["serial"]]): continue
+        if not raw_eval:
+            raw_eval = clean(v[cm["reported_problem"]]) if len(v) > cm["reported_problem"] else ""
+        if not raw_eval and not norm_serial(v[cm["serial"]]) and not clean(v[cm["status"]]): continue
 
         key_eval = raw_eval.lower()
         mapped = HIER.get(key_eval)
