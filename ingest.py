@@ -375,7 +375,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
 
         # Collapse large blank-serial No-Issue blocks into single aggregate rows
         if (category == "No Issue" or (category == "Inspection" and subcat != "Issue Found")) and not serial:
-            akey = (rec_month, rec["project"], rec["customer_type"],
+            akey = (rec_month, rec["complaint_by"], rec["project"], rec["customer_type"],
                     rec["state"], rec["plant"], rec["module_type"])
             if akey not in agg:
                 agg[akey] = dict(rec)
@@ -479,7 +479,7 @@ for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
         }
 
         if (category == "No Issue" or (category == "Inspection" and subcat != "Issue Found")) and not serial:
-            akey = (rec["month"], rec["project"], rec["customer_type"],
+            akey = (rec["month"], rec["complaint_by"], rec["project"], rec["customer_type"],
                     rec["state"], rec["plant"], rec["module_type"])
             if akey not in agg:
                 agg[akey] = dict(rec)
