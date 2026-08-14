@@ -213,7 +213,7 @@ footer{color:var(--txt2);font-size:11px;text-align:center;padding:16px 0}
   </div>
 
   <div class="kpis">
-    <div class="kpi"><div class="label">Modules Serviced (Closed)</div><div class="val" id="k-closed">0</div><div class="note" id="k-closed-note"></div></div>
+    <div class="kpi"><div class="label" id="k-closed-label">Modules Serviced</div><div class="val" id="k-closed">0</div><div class="note" id="k-closed-note"></div></div>
     <div class="kpi amber"><div class="label">Closure Rate</div><div class="val" id="k-closure">0%</div><div class="note" id="k-closure-note"></div></div>
     <div class="kpi red"><div class="label">Avg TAT (days)</div><div class="val" id="k-tat">0</div><div class="note" id="k-tat-note"></div></div>
     <div class="kpi"><div class="label">Open (WIP)</div><div class="val" id="k-wip">0</div><div class="note" id="k-wip-note">awaiting resolution</div></div>
@@ -426,7 +426,7 @@ function populateFilters(){
   fill('f-state',uniq('state',HIDE_NA),state.stateF);
   fill('f-status',uniq('status'),state.status);
   fill('f-plant',uniq('plant',HIDE_NA),state.plant);
-  fill('f-resolution',uniq('resolution',HIDE_NA),state.resolution);
+  fill('f-resolution',uniq('resolution',v=>HIDE_NA(v)&&v!=='WIP'),state.resolution);
 }
 function populateSub(){
   let subs=[];
@@ -523,12 +523,15 @@ function refresh(){
   // KPIs
   const closed=sumW(filtered.filter(r=>/closed/i.test(r.status)));
   const wip=sumW(filtered.filter(r=>/wip/i.test(r.status)));
-  const total=closed+wip;
+  const total=sumW(filtered);
   const closureRate=total?Math.round(closed/total*1000)/10:0;
   const durations=filtered.filter(r=>r.settle_days!=null&&r.settle_days>=0);
   const avgTAT=durations.length?Math.round(durations.reduce((a,r)=>a+(r.settle_days*W(r)),0)/sumW(durations)*10)/10:0;
 
-  document.getElementById('k-closed').textContent=closed.toLocaleString();
+  const kLabel=state.status==='All'?'Modules Serviced (Closed)':('Modules Serviced ('+state.status+')');
+  document.getElementById('k-closed-label').textContent=kLabel;
+  const kVal=state.status==='All'?closed:sumW(filtered);
+  document.getElementById('k-closed').textContent=kVal.toLocaleString();
   const activeMonths=[...new Set(filtered.map(r=>r.month))].sort();
   document.getElementById('k-closed-note').textContent=selMonths.size===1?MLABEL[[...selMonths][0]]:'';
   document.getElementById('k-closure').textContent=closureRate+'%';

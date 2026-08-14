@@ -278,6 +278,12 @@ def fmt_date(v):
     s = str(v)
     return s.split(" ")[0] if " " in s else s
 
+def date_month(d):
+    if d is None: return None
+    if isinstance(d, datetime): return d.strftime("%Y-%m")
+    try: return datetime.strptime(str(d).split(" ")[0], "%Y-%m-%d").strftime("%Y-%m")
+    except (ValueError, TypeError): return None
+
 def calc_tat(received_raw, settle_raw):
     if received_raw is None or settle_raw is None:
         return None
@@ -292,6 +298,15 @@ def calc_tat(received_raw, settle_raw):
             d2 = datetime.strptime(str(settle_raw).split(" ")[0], "%Y-%m-%d")
         diff = (d2 - d1).days
         return diff if diff >= 0 else None
+    except (ValueError, TypeError):
+        return None
+
+def read_tat(val):
+    if val is None:
+        return None
+    try:
+        n = float(val)
+        return n if n >= 0 else None
     except (ValueError, TypeError):
         return None
 
@@ -312,7 +327,9 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
         v = list(row)
         if len(v) <= cm["serial"]: continue
         raw_eval = clean(v[cm["evaluation"]])
-        if not raw_eval and not norm_serial(v[cm["serial"]]): continue
+        if not raw_eval:
+            raw_eval = clean(v[cm["reported_problem"]]) if len(v) > cm["reported_problem"] else ""
+        if not raw_eval and not norm_serial(v[cm["serial"]]) and not clean(v[cm["status"]]): continue
 
         key_eval = raw_eval.lower()
         mapped = HIER.get(key_eval)
@@ -324,14 +341,21 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
         else:
             category, subcat = mapped
 
+        status = clean(v[cm["status"]]) or "Unknown"
+        if status.lower() == "closed":
+            settle_date_raw = v[cm["settle_date"]] if len(v) > cm["settle_date"] else None
+            rec_month = date_month(settle_date_raw) or month
+        else:
+            rec_month = month
+
         rec = {
-            "month":         month,
+            "month":         rec_month,
             "serial":        serial,
             "complaint_by":  clean(v[cm["complaint_by"]]) or "Unknown",
             "customer_type": {"Pump":"Solar Pump"}.get(clean(v[cm["customer_type"]]), clean(v[cm["customer_type"]])) or "Unknown",
             "project":       clean(v[cm["project"]]) or "Unknown",
             "state":         norm_state(v[cm["state"]]),
-            "status":        clean(v[cm["status"]]) or "Unknown",
+            "status":        status,
             "plant":         {"P4":"P4 - PEIPL","P2":"P2 - PEPPL","P5":"P5 - PEGPL","P1":"P1 - PEL"}.get(clean(v[cm["plant"]]), clean(v[cm["plant"]])) or "Unknown",
             "module_type":   clean(v[cm["module_type"]]) or "Unknown",
             "evaluation_raw":raw_eval,
@@ -343,7 +367,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
             "wp":            clean(v[cm["wp"]]),
             "make_year":     clean(v[cm["make_year"]]),
             "location":      clean(v[cm["location"]]),
-            "settle_days":   calc_tat(v[cm["received_date"]], v[cm["settle_date"]] if len(v) > cm["settle_date"] else None),
+            "settle_days":   read_tat(v[cm["settle_days"]] if len(v) > cm["settle_days"] else None),
             "visit_date":    fmt_date(v[cm["visit_date"]] if len(v) > cm["visit_date"] else None),
             "received_date": fmt_date(v[cm["received_date"]]),
             "weight":        1,
@@ -351,18 +375,30 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
 
         # Collapse large blank-serial No-Issue blocks into single aggregate rows
         if (category == "No Issue" or (category == "Inspection" and subcat != "Issue Found")) and not serial:
-            akey = (rec["month"], rec["project"], rec["customer_type"],
+            akey = (rec_month, rec["complaint_by"], rec["project"], rec["customer_type"],
                     rec["state"], rec["plant"], rec["module_type"])
             if akey not in agg:
                 agg[akey] = dict(rec)
                 agg[akey]["weight"] = 0
                 agg[akey]["is_aggregate"] = True
+                agg[akey]["_tat_sum"] = 0.0
+                agg[akey]["_tat_count"] = 0
             agg[akey]["weight"] += 1
+            sd = rec.get("settle_days")
+            if sd is not None and sd >= 0:
+                agg[akey]["_tat_sum"] += sd
+                agg[akey]["_tat_count"] += 1
         else:
             rec["is_aggregate"] = False
             rows.append(rec)
 
     for akey, arec in agg.items():
+        if arec["_tat_count"] > 0:
+            arec["settle_days"] = round(arec["_tat_sum"] / arec["_tat_count"], 1)
+        else:
+            arec["settle_days"] = None
+        del arec["_tat_sum"]
+        del arec["_tat_count"]
         if arec["weight"] >= 50:
             rows.append(arec)
         else:
@@ -403,7 +439,9 @@ for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
         if not (min_month <= month <= max_month): continue
 
         raw_eval = clean(v[cm["evaluation"]])
-        if not raw_eval and not norm_serial(v[cm["serial"]]): continue
+        if not raw_eval:
+            raw_eval = clean(v[cm["reported_problem"]]) if len(v) > cm["reported_problem"] else ""
+        if not raw_eval and not norm_serial(v[cm["serial"]]) and not clean(v[cm["status"]]): continue
 
         key_eval = raw_eval.lower()
         mapped = HIER.get(key_eval)
@@ -434,14 +472,14 @@ for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
             "wp":            clean(v[cm["wp"]]),
             "make_year":     clean(v[cm["make_year"]]),
             "location":      clean(v[cm["location"]]),
-            "settle_days":   calc_tat(v[cm["received_date"]], v[cm["settle_date"]] if len(v) > cm["settle_date"] else None),
+            "settle_days":   read_tat(v[cm["settle_days"]] if len(v) > cm["settle_days"] else None),
             "visit_date":    fmt_date(v[cm["visit_date"]] if len(v) > cm["visit_date"] else None),
             "received_date": fmt_date(v[cm["received_date"]]),
             "weight":        1,
         }
 
         if (category == "No Issue" or (category == "Inspection" and subcat != "Issue Found")) and not serial:
-            akey = (rec["month"], rec["project"], rec["customer_type"],
+            akey = (rec["month"], rec["complaint_by"], rec["project"], rec["customer_type"],
                     rec["state"], rec["plant"], rec["module_type"])
             if akey not in agg:
                 agg[akey] = dict(rec)
