@@ -150,7 +150,6 @@ HIER = {
     "external force applied":       ("Physical and External Damage", "Other Physical Damage"),
     "damage":                       ("Physical and External Damage", "Other Physical Damage"),
     "broken module":                ("Physical and External Damage", "Other Physical Damage"),
-    "module damaged":               ("Physical and External Damage", "Other Physical Damage"),
     "frame broken":                 ("Physical and External Damage", "Frame Damage"),
     # Transit Damage
     "transit breakage":             ("Transit Damage", "Transit Breakage"),
@@ -485,12 +484,24 @@ for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
                 agg[akey] = dict(rec)
                 agg[akey]["weight"] = 0
                 agg[akey]["is_aggregate"] = True
+                agg[akey]["_tat_sum"] = 0.0
+                agg[akey]["_tat_count"] = 0
             agg[akey]["weight"] += 1
+            sd = rec.get("settle_days")
+            if sd is not None and sd >= 0:
+                agg[akey]["_tat_sum"] += sd
+                agg[akey]["_tat_count"] += 1
         else:
             rec["is_aggregate"] = False
             rows.append(rec)
 
     for akey, arec in agg.items():
+        if arec["_tat_count"] > 0:
+            arec["settle_days"] = round(arec["_tat_sum"] / arec["_tat_count"], 1)
+        else:
+            arec["settle_days"] = None
+        del arec["_tat_sum"]
+        del arec["_tat_count"]
         if arec["weight"] >= 50:
             rows.append(arec)
         else:
