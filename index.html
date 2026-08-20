@@ -509,7 +509,6 @@ function refresh(){
   document.getElementById('k-closed-label').textContent=kLabel;
   const kVal=state.status==='All'?closed:sumW(filtered);
   document.getElementById('k-closed').textContent=kVal.toLocaleString();
-  const activeMonths=[...new Set(filtered.map(r=>r.month))].sort();
   document.getElementById('k-closed-note').textContent=selMonths.size===1?MLABEL[[...selMonths][0]]:'';
   document.getElementById('k-closure').textContent=closureRate+'%';
   const closureNote=document.getElementById('k-closure-note');
