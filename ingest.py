@@ -32,6 +32,7 @@ SOURCES = [
     ("May 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report May-26 Cleaned",  "2026-05", 13, 15, 21),
     ("June 26 - Daily & Monthly Analyzed Report.xlsx",  " Monthly Report June-26",        "2026-06", 13, 15, 21),
     ("July 26 - Daily & Monthly Analyzed Report.xlsx",  "Monthly Report July-26",         "2026-07", 13, 15, 21),
+    ("Aug 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report Aug-26",          "2026-08", 13, 15, 21),
 
 ]
 
@@ -246,6 +247,23 @@ HIER = {
     # Additional Transit Damage
     "transit breakage":        ("Transit Damage", "Transit Breakage"),
     "module damaged in transit":    ("Transit Damage", "Transit Breakage"),
+    # Additional (Aug 2026)
+    "discoloration issue":          ("Aesthetic", "Discoloration"),
+    "back sheet scratch":           ("Physical and External Damage", "Backsheet Scratches"),
+    "front glass breakage":         ("Physical and External Damage", "Glass Breakage"),
+    "glass breakage & visible burn marks": ("Physical and External Damage", "Glass Breakage"),
+    "glass breakage with shorter frame with burn spot": ("Physical and External Damage", "Glass Breakage"),
+    "hit by something":             ("Physical and External Damage", "Other Physical Damage"),
+    "broken by external":           ("Physical and External Damage", "Other Physical Damage"),
+    "boat marks":                   ("Physical and External Damage", "Other Physical Damage"),
+    "bee trap inside panel":        ("Physical and External Damage", "Other Physical Damage"),
+    "damaged during handling, lifting or installation at site": ("Physical and External Damage", "Other Physical Damage"),
+    "hotspot issue":                ("Cell and Module Defects", "Hotspot"),
+    "improper installation":        ("Customer Issue", "Installation Issue"),
+    "jb burn & glass breakage":     ("Junction Box Defects", "JB Issue"),
+    "lightening issue":             ("Customer Issue", "Lightning Case"),
+    "mc4 connector damaged":        ("Physical and External Damage", "MC4 Connectors Damaged"),
+    "p & n jb damaged by theft/riot incident": ("Junction Box Defects", "JB Issue"),
 }
 # ─────────────────────────────────────────────────────────────────────────────
 
