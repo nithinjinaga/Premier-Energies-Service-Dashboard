@@ -264,6 +264,18 @@ HIER = {
     "lightening issue":             ("Customer Issue", "Lightning Case"),
     "mc4 connector damaged":        ("Physical and External Damage", "MC4 Connectors Damaged"),
     "p & n jb damaged by theft/riot incident": ("Junction Box Defects", "JB Issue"),
+    # Additional (Sep 2026)
+    "discoloration":                ("Aesthetic", "Discoloration"),
+    "dust observed":                ("Aesthetic", "Aesthetic"),
+    "bird dropping on the module":  ("Aesthetic", "Aesthetic"),
+    "white/grey marks were observed on the glass, which appear to be surface dirt or dried water/mineral deposits": ("Aesthetic", "Aesthetic"),
+    "hardened potting material was observed on the front glass": ("Aesthetic", "Aesthetic"),
+    "jb wire cutting":              ("Junction Box Defects", "JB Wire Cutting"),
+    "under evalution":              ("Inspection", "Under Evaluation"),
+    "back glass broken by external": ("Physical and External Damage", "Glass Breakage"),
+    "hot spot issue":               ("Cell and Module Defects", "Hotspot"),
+    "c23 cell damaged":             ("Cell and Module Defects", "Cell Damage"),
+    "module breakage and burn":     ("Physical and External Damage", "Glass Breakage"),
 }
 # ─────────────────────────────────────────────────────────────────────────────
 
