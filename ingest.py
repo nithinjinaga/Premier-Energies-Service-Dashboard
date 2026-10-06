@@ -33,7 +33,7 @@ SOURCES = [
     ("June 26 - Daily & Monthly Analyzed Report.xlsx",  " Monthly Report June-26",        "2026-06", 13, 15, 21),
     ("July 26 - Daily & Monthly Analyzed Report.xlsx",  "Monthly Report July-26",         "2026-07", 13, 15, 21),
     ("Aug 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report Aug-26",          "2026-08", 13, 15, 21),
-
+    ("Sep 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report Sep-26 ",         "2026-09", 13, 15, 21),
 ]
 
 # ── MULTI-MONTH TRACKER FILES ───────────────────────────────────────────────
