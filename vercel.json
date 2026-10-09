@@ -8,6 +8,12 @@
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
       ]
+    },
+    {
+      "source": "/data.db",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
+      ]
     }
   ]
 }

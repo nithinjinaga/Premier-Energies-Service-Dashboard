@@ -19,6 +19,7 @@ pip install openpyxl
 """
 import json
 import os
+import sqlite3
 from datetime import datetime
 from openpyxl import load_workbook
 
@@ -566,4 +567,28 @@ KEEP = {"month","serial","complaint_by","customer_type","project","state","statu
 slim = [{k: r[k] for k in KEEP if k in r} for r in rows]
 with open("data.json", "w") as f:
     json.dump(slim, f, separators=(",", ":"))
-print("\nWrote data.json — now run build_dashboard.py")
+print("\nWrote data.json")
+
+COLS = ["month","serial","complaint_by","customer_type","project","state","status",
+        "plant","category","subcategory","settle_days","weight","is_aggregate","complaint_no","resolution"]
+db_path = "data.db"
+if os.path.exists(db_path):
+    os.remove(db_path)
+conn = sqlite3.connect(db_path)
+cur = conn.cursor()
+cur.execute("""CREATE TABLE complaints (
+    month TEXT NOT NULL, serial TEXT, complaint_by TEXT,
+    customer_type TEXT, project TEXT, state TEXT, status TEXT,
+    plant TEXT, category TEXT, subcategory TEXT,
+    settle_days REAL, weight REAL NOT NULL DEFAULT 1,
+    is_aggregate INTEGER NOT NULL DEFAULT 0,
+    complaint_no TEXT, resolution TEXT
+)""")
+cur.executemany(
+    f"INSERT INTO complaints ({','.join(COLS)}) VALUES ({','.join('?' for _ in COLS)})",
+    [tuple(int(r.get(c)) if c == "is_aggregate" else r.get(c) for c in COLS) for r in slim]
+)
+conn.commit()
+conn.close()
+db_size = os.path.getsize(db_path) / (1024 * 1024)
+print(f"Wrote data.db ({db_size:.1f} MB) — now run build_dashboard.py")
