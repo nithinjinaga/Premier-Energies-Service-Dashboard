@@ -16,15 +16,17 @@ jobs:
       - run: pip install openpyxl
 
       - name: Run ingest
+        working-directory: backend
         run: python ingest.py
 
       - name: Build dashboard
+        working-directory: backend
         run: python build_dashboard.py
 
       - name: Commit updated files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json data.db index.html
+          git add frontend/data.db frontend/index.html
           git diff --cached --quiet || git commit -m "Auto-update dashboard from Excel files"
           git push
