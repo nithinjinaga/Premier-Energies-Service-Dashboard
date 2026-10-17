@@ -98,7 +98,7 @@ HTML = r"""<!DOCTYPE html>
   --shadow-3:0 12px 32px rgba(16,24,40,.12);
   --focus-ring:0 0 0 3px rgba(40,97,255,.25);
   /* component dims */
-  --rail-w:256px;
+  --rail-w:216px;
   --topbar-h:56px;    /* sampled 57px */
   --h-nav:44px;
   --h-kpi:192px;
@@ -123,7 +123,7 @@ HTML = r"""<!DOCTYPE html>
   --w-search-min:240px;
   --w-jump:56px;
   --logo:96px;        /* loading logo */
-  --logo-s:28px;      /* rail/topbar brand mark */
+  --logo-s:30px;      /* rail/topbar brand mark */
   --bw:1px;
   --bw-2:2px;
   /* glass skin literals */
@@ -133,7 +133,7 @@ HTML = r"""<!DOCTYPE html>
   --knob-slide:calc(var(--knob-w) - var(--knob-d) - 6px);
   --mark:linear-gradient(135deg,#4d9bff,#0a84ff); --mark-glow:0 4px 14px rgba(10,132,255,.3);
   --icon-badge:36px; --icon-badge-m:32px; --icon-pad:8px; --icon-pad-m:7px; --icon-r:10px; --chip-r:7px;
-  --h-nav-lg:48px; --fs-nav:15px; --nav-s:26px; --mark-s:34px;
+  --fs-nav:12.5px; --fs-label:9.5px; --fs-brand:13px; --fs-foot:10px; --nav-py:8px; --nav-px:10px; --nav-r:9px; --nav-ic:16px; --nav-ic-r:5px;
   --knob-shadow:0 2px 8px rgba(0,0,0,.35); --pad-tiny:2px;
 }
 /* ---------- dark theme (Liquid Glass) ---------- */
@@ -467,12 +467,18 @@ tbody tr:hover td{background:var(--row-tint)}
 .kpi .sub{display:flex;align-items:center;gap:var(--s-3);margin-top:var(--s-4);min-height:var(--h-pill)}
 .kpi .sub .note{flex:1;margin-top:0}
 .kpi .sub .chip{margin-top:0}
-/* nav chips */
-.rl{height:var(--h-nav-lg);font-size:var(--fs-nav);font-weight:600}
-.rl svg{width:var(--nav-s);height:var(--nav-s);box-sizing:border-box;padding:var(--icon-pad);border-radius:var(--chip-r);background:var(--chip-bg)}
-.rl.active{color:var(--primary-600)}
-.rl.active svg{background:var(--primary-100);color:var(--primary-600)}
-.rail-mark{width:var(--mark-s);height:var(--mark-s);flex:none;border-radius:var(--icon-r);background:var(--mark);box-shadow:var(--mark-glow)}
+/* nav rows — prototype v2: compact rows, bolted-square markers */
+.rl{height:auto;padding:var(--nav-py) var(--nav-px);border-radius:var(--nav-r);font-size:var(--fs-nav);font-weight:500;color:var(--text-2)}
+.rl svg{display:none}
+.rl-ic{width:var(--nav-ic);height:var(--nav-ic);flex:none;border-radius:var(--nav-ic-r);background:currentColor;opacity:.5}
+.rl.active{background:color-mix(in srgb,var(--primary) 16%,transparent);box-shadow:inset 0 0 0 var(--bw) color-mix(in srgb,var(--primary) 28%,transparent);color:var(--primary);font-weight:600}
+.rl.active .rl-ic{opacity:1}
+.rail-logo{width:var(--logo-s);height:var(--logo-s);flex:none;object-fit:contain;border-radius:var(--r-md)}
+.rail-brand{height:auto;border-bottom:0;padding:var(--s-1) var(--s-3) var(--s-4)}
+.rail-name{font-size:var(--fs-brand);font-weight:700}
+.rail-label{padding:var(--s-3) var(--s-3) var(--s-2)}
+.rail-foot-k{font-size:var(--fs-foot)}
+.rail-foot-v{font-size:var(--fs-small);color:var(--text-2)}
 /* toolbar pills */
 .cal-btn{display:inline-flex;align-items:center;gap:var(--s-2);height:var(--h-touch);width:auto;padding:0 var(--s-4) 0 var(--s-3);font-size:var(--fs-body);font-weight:600;color:var(--text-1)}
 .cal-btn svg{width:var(--s-5);height:var(--s-5);color:var(--text-2);flex:none}
@@ -505,18 +511,18 @@ html[data-theme='dark'] .knobbtn .knob{transform:translateX(var(--knob-slide))}
 <body>
 <aside class="rail" aria-label="Section navigation">
   <div class="rail-brand">
-    <span class="rail-mark" aria-hidden="true"></span>
+    <img class="rail-logo" src="data:image/png;base64,__FAVICON__" alt="">
     <span class="rail-name">Premier Energies</span>
   </div>
   <div class="rail-label">Menu</div>
   <nav class="rail-nav">
-    <a class="rl active" href="#sec-overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>Overview</a>
-    <a class="rl" href="#sec-defects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Defect Breakdown</a>
-    <a class="rl" href="#sec-segments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Segments</a>
-    <a class="rl" href="#sec-geo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Geography &amp; TAT</a>
-    <a class="rl" href="#sec-production"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg>Production</a>
-    <a class="rl" href="#sec-trend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Volume &amp; Trend</a>
-    <a class="rl" href="#sec-records"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"/><path d="M3 10h18"/><path d="M8 15h.01"/></svg>Records</a>
+    <a class="rl active" href="#sec-overview"><div class="rl-ic" aria-hidden="true"></div>Overview</a>
+    <a class="rl" href="#sec-defects"><div class="rl-ic" aria-hidden="true"></div>Defect Breakdown</a>
+    <a class="rl" href="#sec-segments"><div class="rl-ic" aria-hidden="true"></div>Segments</a>
+    <a class="rl" href="#sec-geo"><div class="rl-ic" aria-hidden="true"></div>Geography &amp; TAT</a>
+    <a class="rl" href="#sec-production"><div class="rl-ic" aria-hidden="true"></div>Production</a>
+    <a class="rl" href="#sec-trend"><div class="rl-ic" aria-hidden="true"></div>Volume &amp; Trend</a>
+    <a class="rl" href="#sec-records"><div class="rl-ic" aria-hidden="true"></div>Records</a>
   </nav>
   <div class="rail-foot">
     <div class="rail-foot-k">Data through</div>
