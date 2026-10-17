@@ -282,3 +282,43 @@ First build read denser than the prototype; second pass aligned the anatomy:
   slide, light/dark/700/400 shots) + computed-style checks; no JS page errors.
 
 
+
+### 11.7 Prototype v2 exact match (round 3)
+
+Round 3 matches the approved prototype served live at :64734 byte-for-byte on
+layout metrics. Spec = `brainstorm/content/prototype-v2.html`. User-confirmed
+decisions: All+search fold into the month popover; filters = floating glass
+panel; rail icons = literal plain squares (no glyphs); system-ui font.
+
+- **Type**: h1 21px/800 (−.022em), sub 12px text-2, body system-ui (Inter dropped,
+  no webfont), canvas chart fonts switched too.
+- **Rail**: 216px, nav rows 12.5px/500 (8×10 pad, 9px radius), `--nav-ic` 16px
+  currentColor squares (.5 / 1 active), active row = primary 16% bg + 28% inset
+  ring, label 9.5px, brand name 13px, logo = repo `favicon.png` (30px, rounded).
+- **Toolbar**: shared tool pill scale `--tool-fs 12px` @600, 7×12 pad; month chip
+  5/10 radius 6 primary-50 + 26% inset ring; filters chip green `on` badge same
+  size; knob flipped to prototype logic (dark = left gold, light = right blue
+  `--knob-light`), knob 52×30 r15, grip 23px.
+- **All + search**: removed from toolbar, live inside the month popover
+  (search always-open, full width; popover keeps its own `All` chip).
+- **KPI cards**: value 27px/800 (−.032em) 8/4 margins, label 11.5px, badge
+  26px r8 (glyph = badge−2×6 pad), sub row 11px text-3 inline with chip
+  (10.5px/700, 2×7, r7), card pad 16/16/12, no fixed height, grid gap 12,
+  `.kpi-top` flex-start.
+- **Note removed**: `#march-note` + JS month toggle + `.note-box` CSS deleted
+  (user instruction overrides the prototype's one-liner).
+- **Filters**: panel pulled from flow, `position:fixed` glass card under the
+  toolbar (`--fpanel-w 880px`, `--fpanel-vacant 180px`), `display:none` until
+  the `N filters on` chip toggles `.show` + aria-expanded; ESC and outside-click
+  (in the existing popover `mousedown` gate) close it; 400px = full-width sheet.
+  `filterToggle` button, its JS and CSS deleted.
+- **Rhythm (desktop ≥48em)**: main frame 16px (left = rail + 32), `.page` pad 0
+  (bottom 16), pagehead 4/8/12 + toolbar inset 16 both sides + 12px toolbar→KPIs
+  gap, section titles 12/8, grid gap 12.
+- **Deviations (all ≤2px or token-scale)**: brand pad 8/12/16 vs 6/10/14;
+  mo-chip uses `--primary-50`/`--primary` tokens (identical dark, solid tint in
+  light); KPI badge tint 15% vs prototype 16%; KPI sub keeps real computed
+  note strings (mock's "▲ 98.7% vs Oct–Dec 25" is mock data); charts grid
+  unchanged (real data, layout per existing hero/stat cards).
+- **Mojibake**: python scan — none; ▲/▼/⇧ intact; ⚠ gone with the note.
+- Scan: 0 raw px/hex violations, 147 tokens. Regression `pwglass2.js` green.

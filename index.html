@@ -111,7 +111,7 @@
   --mark:linear-gradient(135deg,#4d9bff,#0a84ff); --mark-glow:0 4px 14px rgba(10,132,255,.3);
   --icon-badge:26px; --icon-badge-m:26px; --icon-pad:6px; --icon-pad-m:6px; --icon-r:8px; --chip-r:7px; --chip-px:7px;
   --fs-nav:12.5px; --fs-label:9.5px; --fs-brand:13px; --fs-foot:10px; --nav-py:8px; --nav-px:10px; --nav-r:9px; --nav-ic:16px; --nav-ic-r:5px;
-  --knob-shadow:0 2px 8px rgba(0,0,0,.35); --pad-tiny:2px;
+  --knob-shadow:0 2px 8px rgba(0,0,0,.35); --pad-tiny:2px; --fpanel-vacant:180px; --fpanel-w:880px;
 }
 /* ---------- dark theme (Liquid Glass) ---------- */
 html[data-theme='dark']{
@@ -366,7 +366,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
 .rail-foot{border-top:var(--bw) solid var(--glass-brd-2)}
 @media (min-width:48em){
   .main{margin-left:calc(var(--rail-w) + var(--s-8));padding:0 var(--edge)}
-  .topbar{position:sticky;top:var(--edge);margin:0 var(--edge) 0 0;padding:var(--s-2) var(--s-4);background:var(--glass);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:var(--bw) solid var(--glass-brd-2);border-radius:var(--r-md);box-shadow:var(--shadow-card);justify-content:space-between}
+  .topbar{position:sticky;top:var(--edge);margin:0 var(--edge) 0 var(--edge);padding:var(--s-2) var(--s-4);background:var(--glass);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:var(--bw) solid var(--glass-brd-2);border-radius:var(--r-md);box-shadow:var(--shadow-card);justify-content:space-between}
   .topbar-end{flex:1;display:flex;justify-content:flex-start;align-items:center;gap:var(--s-3)}
   .topbar-end .tbl-btn.wide{margin-left:auto}
   [id^="sec-"]{scroll-margin-top:calc(var(--topbar-h) + var(--s-8))}
@@ -423,13 +423,8 @@ tbody tr:hover td{background:var(--row-tint)}
   .rail,.topbar,.filters,.kpi,.card,.badge,.month-pop,thead th{backdrop-filter:none;-webkit-backdrop-filter:none}
   .rail,.topbar,.kpi,.card,.filters,.month-pop{background:var(--bg-surface);border:var(--bw) solid var(--border-strong)}
 }
-/* ==========================================================================
-   PROTOTYPE MATCH ROUND 2 — Overview head order, big KPI cards, pill toolbar
+/* PROTOTYPE MATCH ROUND 2 — Overview head order, big KPI cards, pill toolbar
    ========================================================================== */
-@media (min-width:48em){
-  .kpis{grid-template-columns:repeat(4,1fr);gap:var(--s-3);margin-bottom:var(--s-3)}
-  .pagehead{padding:var(--s-6) 0 var(--s-4)}
-}
 /* KPI cards — prototype v2 scale */
 .kpi{padding:var(--s-4) var(--s-4) var(--s-3)}
 .kpi .kpi-top{align-items:flex-start}
@@ -439,6 +434,16 @@ tbody tr:hover td{background:var(--row-tint)}
 .kpi .sub{display:flex;align-items:center;gap:var(--s-2);margin-top:var(--s-1);min-height:0;font-size:var(--fs-kpi-sub)}
 .kpi .sub .note{flex:1;margin-top:0;font-size:var(--fs-kpi-sub);color:var(--text-3)}
 .kpi .sub .chip{margin-top:0;height:auto;padding:var(--pad-tiny) var(--chip-px);border-radius:var(--chip-r);font-weight:700}
+/* layout rhythm — prototype v2: 16px frame, 12px block gaps (desktop) */
+@media (min-width:48em){
+  .main{margin:var(--edge);margin-left:calc(var(--rail-w) + var(--s-8));padding:0}
+  .page{padding:0 0 var(--edge)}
+  .pagehead{padding:var(--s-1) var(--s-2) var(--s-3);margin-bottom:0}
+  .topbar{margin-bottom:var(--s-3)}
+  .kpis{grid-template-columns:repeat(4,1fr);gap:var(--s-3);margin-bottom:var(--s-3)}
+}
+.section-title{margin:var(--s-3) 0 var(--s-2)}
+.grid{gap:var(--s-3);margin-bottom:var(--s-3)}
 /* nav rows — prototype v2: compact rows, bolted-square markers */
 .rl{height:auto;padding:var(--nav-py) var(--nav-px);border-radius:var(--nav-r);font-size:var(--fs-nav);font-weight:500;color:var(--text-2)}
 .rl svg{display:none}
@@ -471,7 +476,7 @@ tbody tr:hover td{background:var(--row-tint)}
 html[data-theme='light'] .knobbtn .knob{transform:translateX(var(--knob-slide));background:var(--knob-light)}
 /* note band removed in prototype v2 match */
 /* filters: on-demand floating panel (prototype v2) */
-.filters{position:fixed;display:none;top:calc(var(--edge) + var(--topbar-h) + var(--s-3));right:var(--edge);left:auto;width:min(880px,calc(100vw - var(--rail-w) - var(--s-8)));max-height:calc(100vh - 180px);overflow:auto;z-index:45;margin-bottom:0}
+.filters{position:fixed;display:none;top:calc(var(--edge) + var(--topbar-h) + var(--s-3));right:var(--edge);left:auto;width:min(var(--fpanel-w),calc(100vw - var(--rail-w) - var(--s-8)));max-height:calc(100vh - var(--fpanel-vacant));overflow:auto;z-index:45;margin-bottom:0}
 .filters.show{display:flex}
 @media(max-width:48em){
   .filters{left:var(--edge);right:var(--edge);width:auto}
