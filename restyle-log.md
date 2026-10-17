@@ -322,3 +322,13 @@ panel; rail icons = literal plain squares (no glyphs); system-ui font.
   unchanged (real data, layout per existing hero/stat cards).
 - **Mojibake**: python scan — none; ▲/▼/⇧ intact; ⚠ gone with the note.
 - Scan: 0 raw px/hex violations, 147 tokens. Regression `pwglass2.js` green.
+
+### 11.8 Hero photo background (round 4)
+- Source: user-provided "Solar Energy Dashboard Landscape.png" (18 MB) → downscale
+  1920w JPEG q82 (162 KB) → base64 → `hero_b64.txt`, embedded via `__HERO_BG__`
+  (favicon pattern).
+- `body{background:var(--hero-scrim),var(--hero-photo) var(--bg-app)}` — photo
+  token root-only (`url(...) center/cover no-repeat fixed`), veil per theme:
+  dark = rgba(11,13,17,.58→.80), light = rgba(246,249,252,.66→rgba(238,243,250,.80)).
+- Rail + solid-surface fallbacks untouched; topbar/filters/popover glass already
+  blur the photo. Verified: suite 40/40 (block H), scan 0 (149 tokens).

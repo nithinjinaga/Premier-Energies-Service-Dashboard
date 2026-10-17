@@ -17,6 +17,8 @@ No extra packages needed beyond standard Python
 
 with open("favicon_b64.txt", encoding="utf-8") as f:
     favicon_b64 = f.read().strip()
+with open("hero_b64.txt", encoding="utf-8") as f:
+    hero_b64 = f.read().strip()
 
 with open("header_b64.txt", encoding="utf-8") as f:
     header_b64 = f.read().strip()
@@ -134,7 +136,7 @@ HTML = r"""<!DOCTYPE html>
   --mark:linear-gradient(135deg,#4d9bff,#0a84ff); --mark-glow:0 4px 14px rgba(10,132,255,.3);
   --icon-badge:26px; --icon-badge-m:26px; --icon-pad:6px; --icon-pad-m:6px; --icon-r:8px; --chip-r:7px; --chip-px:7px;
   --fs-nav:12.5px; --fs-label:9.5px; --fs-brand:13px; --fs-foot:10px; --nav-py:8px; --nav-px:10px; --nav-r:9px; --nav-ic:16px; --nav-ic-r:5px;
-  --knob-shadow:0 2px 8px rgba(0,0,0,.35); --pad-tiny:2px; --fpanel-vacant:180px; --fpanel-w:880px;
+  --knob-shadow:0 2px 8px rgba(0,0,0,.35); --pad-tiny:2px; --fpanel-vacant:180px; --fpanel-w:880px; --hero-photo:url("data:image/jpeg;base64,__HERO_BG__") center/cover no-repeat fixed; --hero-scrim:linear-gradient(rgba(246,249,252,.66),rgba(238,243,250,.80));
 }
 /* ---------- dark theme (Liquid Glass) ---------- */
 html[data-theme='dark']{
@@ -153,6 +155,7 @@ html[data-theme='dark']{
   --border-strong:rgba(255,255,255,.12);
   --grid:rgba(255,255,255,.07);
   --text-1:#f5f5f7;
+  --hero-scrim:linear-gradient(rgba(11,13,17,.58),rgba(11,13,17,.80));
   --text-2:#b8b8c0;
   --text-3:#8e8e97;
   --text-4:#63636b;
@@ -186,7 +189,7 @@ html[data-theme='dark']{
 /* ---------- base ---------- */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--font);font-size:var(--fs-body);line-height:1.5;color:var(--text-1);background:var(--bg-app);-webkit-font-smoothing:antialiased;transition:background .45s cubic-bezier(.34,1.3,.64,1),color .45s cubic-bezier(.34,1.3,.64,1)}
+body{font-family:var(--font);font-size:var(--fs-body);line-height:1.5;color:var(--text-1);background:var(--hero-scrim),var(--hero-photo) var(--bg-app);-webkit-font-smoothing:antialiased;transition:background .45s cubic-bezier(.34,1.3,.64,1),color .45s cubic-bezier(.34,1.3,.64,1)}
 button,input,select{font-family:var(--font)}
 :focus-visible{outline:none;box-shadow:var(--focus-ring)}
 [id^="sec-"]{scroll-margin-top:calc(var(--topbar-h) + var(--s-4))}
@@ -1208,7 +1211,7 @@ window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setT
 </body>
 </html>"""
 
-out = HTML.replace("__FAVICON__", favicon_b64).replace("__HEADER_LOGO__", header_b64)
+out = HTML.replace("__FAVICON__", favicon_b64).replace("__HEADER_LOGO__", header_b64).replace("__HERO_BG__", hero_b64)
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(out)
 print("Dashboard written: index.html (fetches data.json at runtime)")
