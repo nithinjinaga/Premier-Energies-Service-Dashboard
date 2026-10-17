@@ -29,9 +29,7 @@ HTML = r"""<!DOCTYPE html>
 <title>Dashboard 2026</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,__FAVICON__">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="data:,">
 <style>
 /* ==========================================================================
    Design tokens — sampled from design reference/Shopeers dashboard — editable.png
@@ -85,8 +83,8 @@ HTML = r"""<!DOCTYPE html>
   --c0:#2861ff; --c1:#ea6a10; --c2:#2ea276; --c3:#eb4776;
   --c4:#8b5cf6; --c5:#0f9aa5; --c6:#f5b400; --c7:#94949d;
   /* type */
-  --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  --fs-display:36px; --fs-h1:26px; --fs-kpi:38px; --fs-h2:16px; --fs-h3:15px;
+  --font:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --fs-display:36px; --fs-h1:21px; --fs-kpi:38px; --fs-h2:16px; --fs-h3:15px;
   --fs-body:14px; --fs-small:12px; --fs-micro:11px; --fs-chip:12px;
   /* spacing (4px scale) */
   --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px;
@@ -217,8 +215,8 @@ button,input,select{font-family:var(--font)}
 .topbar-end{display:flex;align-items:center}
 .page{padding:var(--s-6) var(--s-8) var(--s-10);max-width:var(--w-page)}
 .pagehead{margin-bottom:var(--s-5)}
-.pagehead h1{font-size:var(--fs-h1);font-weight:700;letter-spacing:-.02em;line-height:1.25}
-.pagehead .sub{color:var(--text-3);font-size:var(--fs-small);margin-top:var(--s-1)}
+.pagehead h1{font-size:var(--fs-h1);font-weight:800;letter-spacing:-.022em;line-height:1.25}
+.pagehead .sub{color:var(--text-2);font-size:var(--fs-small);margin-top:var(--s-1)}
 
 /* ---------- note banner ---------- */
 .note-box{display:none;background:var(--primary-50);border:var(--bw) solid var(--primary-100);border-radius:var(--r-lg);padding:var(--s-3) var(--s-4);font-size:var(--fs-small);color:var(--text-2);margin-bottom:var(--s-5)}
@@ -884,9 +882,9 @@ const centerTxt={id:'ctr',afterDraw(c){
   const a=c.chartArea,x=(a.left+a.right)/2,y=(a.top+a.bottom)/2,ctx=c.ctx;
   ctx.save();
   ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.font='700 20px Inter, sans-serif';ctx.fillStyle=V('--text-1');
+  ctx.font='700 20px system-ui, sans-serif';ctx.fillStyle=V('--text-1');
   ctx.fillText(total.toLocaleString(),x,y-7);
-  ctx.font='600 10px Inter, sans-serif';ctx.fillStyle=V('--text-3');
+  ctx.font='600 10px system-ui, sans-serif';ctx.fillStyle=V('--text-3');
   ctx.fillText(o.label||'',x,y+13);
   ctx.restore();
 }};
