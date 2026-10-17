@@ -332,3 +332,10 @@ panel; rail icons = literal plain squares (no glyphs); system-ui font.
   dark = rgba(11,13,17,.58→.80), light = rgba(246,249,252,.66→rgba(238,243,250,.80)).
 - Rail + solid-surface fallbacks untouched; topbar/filters/popover glass already
   blur the photo. Verified: suite 40/40 (block H), scan 0 (149 tokens).
+
+### 11.9 Full-visibility background (round 4b)
+- User wants the photo raw: both `--hero-scrim` tokens deleted, body = photo layer only
+  (`var(--hero-photo) var(--bg-app)`), both themes share the token. Suite block H
+  updated (gradient must be absent) → RED 2 → GREEN 40/40, scan 0 (148 tokens).
+- Known readability hit: card/section labels over the bright sky-sun band (esp.
+  dark theme) — flagged to user with options (frost bump / thin veil) not applied.
