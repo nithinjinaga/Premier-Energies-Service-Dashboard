@@ -86,7 +86,7 @@ HTML = r"""<!DOCTYPE html>
   --c4:#8b5cf6; --c5:#0f9aa5; --c6:#f5b400; --c7:#94949d;
   /* type */
   --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  --fs-display:36px; --fs-h1:26px; --fs-kpi:30px; --fs-h2:16px; --fs-h3:15px;
+  --fs-display:36px; --fs-h1:26px; --fs-kpi:38px; --fs-h2:16px; --fs-h3:15px;
   --fs-body:14px; --fs-small:12px; --fs-micro:11px; --fs-chip:12px;
   /* spacing (4px scale) */
   --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px;
@@ -100,10 +100,10 @@ HTML = r"""<!DOCTYPE html>
   --shadow-3:0 12px 32px rgba(16,24,40,.12);
   --focus-ring:0 0 0 3px rgba(40,97,255,.25);
   /* component dims */
-  --rail-w:243px;
+  --rail-w:256px;
   --topbar-h:56px;    /* sampled 57px */
   --h-nav:44px;
-  --h-kpi:128px;
+  --h-kpi:192px;
   --h-chart:280px;
   --h-chart-tall:300px;
   --h-hero:340px;
@@ -130,6 +130,13 @@ HTML = r"""<!DOCTYPE html>
   --bw-2:2px;
   /* glass skin literals */
   --edge:16px; --blur:19px; --blur-sm:14px; --blur-lg:24px; --n-lift:-1px; --ring-inset:inset 0 0 0 1px var(--primary-100);
+  /* prototype-match round 2 */
+  --chip-bg:rgba(0,0,0,.05); --knob:#ffd60a; --knob-w:52px; --knob-d:24px;
+  --knob-slide:calc(var(--knob-w) - var(--knob-d) - 6px);
+  --mark:linear-gradient(135deg,#4d9bff,#0a84ff); --mark-glow:0 4px 14px rgba(10,132,255,.3);
+  --icon-badge:36px; --icon-badge-m:32px; --icon-pad:8px; --icon-pad-m:7px; --icon-r:10px; --chip-r:7px;
+  --h-nav-lg:48px; --fs-nav:15px; --nav-s:26px; --mark-s:34px;
+  --knob-shadow:0 2px 8px rgba(0,0,0,.35); --pad-tiny:2px;
 }
 /* ---------- dark theme (Liquid Glass) ---------- */
 html[data-theme='dark']{
@@ -174,6 +181,8 @@ html[data-theme='dark']{
   --shadow-2:0 4px 16px rgba(0,0,0,.4);
   --shadow-3:0 12px 32px rgba(0,0,0,.5);
   --focus-ring:0 0 0 3px rgba(79,140,255,.35);
+  --chip-bg:rgba(255,255,255,.08);
+  --mark-glow:0 4px 16px rgba(10,132,255,.45);
 }
 
 /* ---------- base ---------- */
@@ -300,7 +309,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
 .hdr-search-input::placeholder{color:var(--text-3)}
 .cal-btn{width:var(--s-10);height:var(--s-10);display:flex;align-items:center;justify-content:center;border:var(--bw) solid var(--border);background:var(--bg-subtle);color:var(--text-3);border-radius:var(--r-pill);cursor:pointer;transition:.15s;padding:0;flex:none}
 .cal-btn:hover{border-color:var(--primary);color:var(--text-1)}
-.cal-btn.active{border-color:var(--primary);background:var(--primary);color:var(--bg-surface)}
+.cal-btn.active{border-color:var(--glass-brd-2);background:var(--glass-2);color:var(--text-1)}
 .month-pop{display:none;position:absolute;top:calc(var(--s-10) + var(--s-1));right:0;z-index:50;width:var(--w-pop);background:var(--bg-surface);border:var(--bw) solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-3);padding:var(--s-5)}
 .month-pop.open{display:block}
 .mp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s-1)}
@@ -338,7 +347,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
 .loading-title{font-size:var(--fs-h3);color:var(--text-1);font-weight:600;margin-bottom:var(--s-2)}
 .loading-pct{font-size:var(--fs-small);color:var(--text-3)}
 
-/* ---------- responsive: â‰¤768 (matches isMobile() threshold) ---------- */
+/* ---------- responsive: ≤768 (matches isMobile() threshold) ---------- */
 @media (max-width:48em){
   :root{--topbar-h:52px;--fs-h1:20px;--fs-kpi:24px;--fs-h2:15px;--h-chart:240px;--h-chart-tall:260px;--h-kpi:0px;--h-hero:260px;--h-table:440px}
   .rail{display:none}
@@ -367,7 +376,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
   .heatmap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 }
 
-/* ---------- responsive: â‰¤480 ---------- */
+/* ---------- responsive: ≤480 ---------- */
 @media (max-width:30em){
   :root{--fs-h1:18px;--fs-kpi:22px;--h-chart:230px;--h-chart-tall:250px;--h-hero:250px}
   .page{padding:var(--s-3)}
@@ -379,7 +388,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
 /* ==========================================================================
    LIQUID GLASS RESKIN — v2 (overrides cascade above in one block).
    Floating glass rail + toolbar, glass cards, dual theme. Data logic untouched.
-   See restyle-log.md Â§Glass + prototype: brainstorm/content/prototype-v2.html
+   See restyle-log.md §Glass + prototype: brainstorm/content/prototype-v2.html
    ========================================================================== */
 .rail{left:var(--edge);top:var(--edge);bottom:var(--edge);width:var(--rail-w);background:var(--glass);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:var(--bw) solid var(--glass-brd-2);border-right:var(--bw) solid var(--glass-brd-2);border-radius:var(--r-lg);box-shadow:var(--shadow-card)}
 .rail-brand{border-bottom:var(--bw) solid var(--glass-brd-2)}
@@ -390,7 +399,8 @@ tbody tr:hover td{background:var(--bg-subtle)}
 @media (min-width:48em){
   .main{margin-left:calc(var(--rail-w) + var(--s-8));padding:0 var(--edge)}
   .topbar{position:sticky;top:var(--edge);margin:0 var(--edge) 0 0;padding:var(--s-2) var(--s-4);background:var(--glass);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:var(--bw) solid var(--glass-brd-2);border-radius:var(--r-md);box-shadow:var(--shadow-card);justify-content:space-between}
-  .topbar-end{flex:1;display:flex;justify-content:space-between;align-items:center;gap:var(--s-3)}
+  .topbar-end{flex:1;display:flex;justify-content:flex-start;align-items:center;gap:var(--s-3)}
+  .topbar-end .tbl-btn.wide{margin-left:auto}
   [id^="sec-"]{scroll-margin-top:calc(var(--topbar-h) + var(--s-8))}
   .pagehead{padding-top:var(--s-5)}
 }
@@ -430,8 +440,6 @@ tbody tr:hover td{background:var(--row-tint)}
 .tbl-btn{flex:none;width:var(--s-10);height:var(--h-btn-sm);display:flex;align-items:center;justify-content:center;border:var(--bw) solid var(--glass-brd-2);background:var(--glass-2);border-radius:var(--r-pill);color:var(--text-2);cursor:pointer;transition:background .2s,border-color .2s;padding:0}
 .tbl-btn:hover{border-color:var(--primary);color:var(--text-1)}
 .tbl-btn svg{width:var(--s-4);height:var(--s-4);stroke:currentColor;fill:none;stroke-width:var(--bw-2);stroke-linecap:round;stroke-linejoin:round}
-html[data-theme='dark'] .tbl-btn .i-moon{display:none}
-html[data-theme='light'] .tbl-btn .i-sun{display:none}
 /* motion + accessibility gates */
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
@@ -447,12 +455,59 @@ html[data-theme='light'] .tbl-btn .i-sun{display:none}
   .rail,.topbar,.filters,.kpi,.card,.badge,.month-pop,thead th{backdrop-filter:none;-webkit-backdrop-filter:none}
   .rail,.topbar,.kpi,.card,.filters,.month-pop{background:var(--bg-surface);border:var(--bw) solid var(--border-strong)}
 }
+/* ==========================================================================
+   PROTOTYPE MATCH ROUND 2 — Overview head order, big KPI cards, pill toolbar
+   ========================================================================== */
+@media (min-width:48em){
+  .kpis{grid-template-columns:repeat(4,1fr)}
+  .pagehead{padding:var(--s-6) 0 var(--s-4)}
+}
+.kpi{padding:var(--s-6)}
+.kpi .label{font-size:var(--fs-h3);font-weight:600;color:var(--text-2)}
+.kpi .kpi-icon{width:var(--icon-badge);height:var(--icon-badge);box-sizing:border-box;padding:var(--icon-pad);border-radius:var(--icon-r);background:color-mix(in srgb,currentColor 15%,transparent);color:var(--k,var(--primary))}
+.kpi .val{margin-top:var(--s-3)}
+.kpi .sub{display:flex;align-items:center;gap:var(--s-3);margin-top:var(--s-4);min-height:var(--h-pill)}
+.kpi .sub .note{flex:1;margin-top:0}
+.kpi .sub .chip{margin-top:0}
+/* nav chips */
+.rl{height:var(--h-nav-lg);font-size:var(--fs-nav);font-weight:600}
+.rl svg{width:var(--nav-s);height:var(--nav-s);box-sizing:border-box;padding:var(--icon-pad);border-radius:var(--chip-r);background:var(--chip-bg)}
+.rl.active{color:var(--primary-600)}
+.rl.active svg{background:var(--primary-100);color:var(--primary-600)}
+.rail-mark{width:var(--mark-s);height:var(--mark-s);flex:none;border-radius:var(--icon-r);background:var(--mark);box-shadow:var(--mark-glow)}
+/* toolbar pills */
+.cal-btn{display:inline-flex;align-items:center;gap:var(--s-2);height:var(--h-touch);width:auto;padding:0 var(--s-4) 0 var(--s-3);font-size:var(--fs-body);font-weight:600;color:var(--text-1)}
+.cal-btn svg{width:var(--s-5);height:var(--s-5);color:var(--text-2);flex:none}
+.cal-btn .rng{white-space:nowrap}
+.cal-btn .mo-chip{padding:var(--pad-tiny) var(--s-2);border-radius:var(--r-pill);background:var(--primary-50);color:var(--primary-600);font-size:var(--fs-micro);font-weight:700;white-space:nowrap}
+.fchip{display:inline-flex;align-items:center;gap:var(--s-2);height:var(--h-touch);padding:0 var(--s-4);border-radius:var(--r-md);background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2);color:var(--text-2);font-size:var(--fs-body);font-weight:500;cursor:pointer;white-space:nowrap;transition:background .2s,border-color .2s}
+.fchip:hover{border-color:var(--primary);color:var(--text-1)}
+.fchip svg{width:var(--s-4);height:var(--s-4);flex:none;fill:currentColor;stroke:none}
+.fchip b{background:var(--success-50);color:var(--success);padding:var(--pad-tiny) var(--s-1);border-radius:var(--r-pill);font-weight:700}
+.fchip.zero b{background:var(--bg-muted);color:var(--text-3)}
+.tbl-btn{height:var(--h-touch);width:auto}
+.tbl-btn.wide{padding:0 var(--s-4);color:var(--text-1);font-weight:600;font-size:var(--fs-body)}
+.tbl-btn.knobbtn{width:var(--knob-w);display:flex;align-items:center;padding:0 var(--s-1);flex:none}
+.knobbtn .knob{width:var(--knob-d);height:var(--knob-d);border-radius:50%;background:var(--knob);box-shadow:var(--knob-shadow);transition:transform .35s cubic-bezier(.34,1.4,.64,1)}
+html[data-theme='dark'] .knobbtn .knob{transform:translateX(var(--knob-slide))}
+/* note band */
+.note-box{display:flex;gap:var(--s-3);align-items:flex-start;background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2);border-radius:var(--r-lg);padding:var(--s-4) var(--s-5);color:var(--text-2);font-size:var(--fs-body);margin-bottom:var(--s-6)}
+.note-box .ni{color:var(--warning);flex:none;font-style:normal}
+@media (max-width:48em){
+  .kpi{padding:var(--s-4);min-height:0}
+  .kpi .kpi-icon{width:var(--icon-badge-m);height:var(--icon-badge-m);padding:var(--icon-pad-m)}
+  .fchip span{display:none}
+  .cal-btn .rng{max-width:34vw;overflow:hidden;text-overflow:ellipsis}
+  .topbar-end .tbl-btn.wide{display:none}
+  .knobbtn{margin-left:auto}
+  .topbar-end{flex-wrap:wrap;gap:var(--s-2)}
+}
 </style>
 </head>
 <body>
 <aside class="rail" aria-label="Section navigation">
   <div class="rail-brand">
-    <img src="data:image/png;base64,__FAVICON__" alt="" class="rail-logo">
+    <span class="rail-mark" aria-hidden="true"></span>
     <span class="rail-name">Premier Energies</span>
   </div>
   <div class="rail-label">Menu</div>
@@ -471,19 +526,23 @@ html[data-theme='light'] .tbl-btn .i-sun{display:none}
   </div>
 </aside>
 <div class="main">
+  <header class="pagehead" id="sec-overview">
+    <h1>Overview</h1>
+    <div class="sub">Field service &amp; module defect tracking · Dec 2024–Aug 2026</div>
+  </header>
   <div class="topbar">
     <div class="topbar-brand"><img src="data:image/png;base64,__FAVICON__" alt="Premier Energies"></div>
-    <div class="topbar-end"><div class="months" id="months"></div><button id="themeBtn" class="tbl-btn" title="Toggle theme" aria-label="Toggle theme"><svg class="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button></div>
+    <div class="topbar-end"><div class="months" id="months"></div><button id="f-on" class="fchip" type="button" title="Show filters"><svg viewBox="0 0 24 24"><path d="M22 3H2l10 10v8l2-2v-6z"/></svg><span><b id="f-on-n">0</b> filters on</span></button><button id="rst-top" class="tbl-btn wide" type="button">Reset</button><button id="themeBtn" class="tbl-btn knobbtn" title="Toggle theme" aria-label="Toggle theme"><span class="knob"></span></button></div>
   </div>
   <main class="page">
-    <header class="pagehead" id="sec-overview">
-      <h1>After-Sales Dashboard</h1>
-      <div class="sub">Field service &amp; module defect tracking · Dec 2024–Aug 2026</div>
-    </header>
-
-    <div class="note-box" id="march-note" style="display:none">
-      Note: March includes a large single-site inspection block (Ayana, ~178K modules, all "No Issue"). KPIs and charts exclude that block from defect calculations so charts stay readable.
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-top"><div class="label" id="k-closed-label">Modules Serviced</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="val" id="k-closed">0</div><div class="sub"><div class="note" id="k-closed-note"></div><div class="chip" id="k-closed-chip"></div></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="label">Closure Rate</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div><div class="val" id="k-closure">0%</div><div class="sub"><div class="note" id="k-closure-note"></div><div class="chip" id="k-closure-chip"></div></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="label">Avg TAT (days)</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg></div><div class="val" id="k-tat">0</div><div class="sub"><div class="note" id="k-tat-note"></div><div class="chip" id="k-tat-chip"></div></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="label">Open (WIP)</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div><div class="val" id="k-wip">0</div><div class="sub"><div class="note" id="k-wip-note">awaiting resolution</div><div class="chip" id="k-wip-chip"></div></div></div>
     </div>
+
+    <div class="note-box" id="march-note" style="display:none"><span class="ni">⚠</span> March includes a large single-site inspection block (Ayana, ~178K modules, all "No Issue"). KPIs and charts exclude that block from defect calculations so charts stay readable.</div>
 
     <button class="filter-toggle" id="filterToggle">Filters <span class="arrow">&#9660;</span></button>
     <div class="filters">
@@ -496,13 +555,6 @@ html[data-theme='light'] .tbl-btn .i-sun{display:none}
       <div class="fg"><label>Manufacturing Plant</label><select id="f-plant"></select></div>
       <div class="fg"><label>Resolution Type</label><select id="f-resolution"></select></div>
       <button class="resetbtn" id="reset">Reset filters</button>
-    </div>
-
-    <div class="kpis">
-      <div class="kpi"><div class="kpi-top"><div class="label" id="k-closed-label">Modules Serviced</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="val" id="k-closed">0</div><div class="chip" id="k-closed-chip"></div><div class="note" id="k-closed-note"></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="label">Closure Rate</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div><div class="val" id="k-closure">0%</div><div class="chip" id="k-closure-chip"></div><div class="note" id="k-closure-note"></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="label">Avg TAT (days)</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg></div><div class="val" id="k-tat">0</div><div class="chip" id="k-tat-chip"></div><div class="note" id="k-tat-note"></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="label">Open (WIP)</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div><div class="val" id="k-wip">0</div><div class="chip" id="k-wip-chip"></div><div class="note" id="k-wip-note">awaiting resolution</div></div>
     </div>
 
     <div class="card toptrend">
@@ -660,9 +712,15 @@ function syncHeaderUI(){
   hdrSearchWrap.className='hdr-search'+(hdrSearchOpen?' open':'');
   hdrSearchBtn.classList.toggle('on',hdrSearchOpen);
   calBtnEl.className='cal-btn'+((calOpen||!allSel)?' active':'');
+  calBtnEl.querySelector('.rng').textContent=allSel?'All months':summaryLabel();
+  const cnt=calBtnEl.querySelector('.mo-chip');
+  cnt.textContent=allSel?'':selMonths.size+' mo'; cnt.hidden=allSel;
   monthPopEl.classList.toggle('open',calOpen);
   popAllEl.classList.toggle('active',allSel);
   MONTHS.forEach(m=>monthChipEls[m]&&monthChipEls[m].classList.toggle('sel',selMonths.has(m)));
+  const fN=[...document.querySelectorAll('.filters select')].filter(s=>s.value!=='All').length;
+  const fEl=document.getElementById('f-on-n'); if(fEl)fEl.textContent=fN;
+  const fc=document.getElementById('f-on'); if(fc)fc.classList.toggle('zero',!fN);
   mpShowEl.textContent=summaryLabel();
   if(hdrSearchInput && document.activeElement!==hdrSearchInput && hdrSearchInput.value!==search) hdrSearchInput.value=search;
 }
@@ -670,6 +728,10 @@ function syncHeaderUI(){
 function buildHeaderTools(){
   monthsEl.innerHTML='';
   monthsEl.style.position='relative';
+
+  calBtnEl=document.createElement('button'); calBtnEl.type='button'; calBtnEl.className='cal-btn'; calBtnEl.title='Select month'; calBtnEl.innerHTML=CAL_SVG+'<span class="rng"></span><span class="mo-chip"></span>';
+  calBtnEl.onclick=e=>{e.stopPropagation();calOpen=!calOpen;syncHeaderUI();};
+  monthsEl.appendChild(calBtnEl);
 
   allBtnEl=document.createElement('button');
   allBtnEl.type='button'; allBtnEl.className='mbtn'; allBtnEl.textContent='All';
@@ -683,10 +745,6 @@ function buildHeaderTools(){
   hdrSearchInput.oninput=e=>setSearch(e.target.value);
   hdrSearchWrap.appendChild(hdrSearchBtn); hdrSearchWrap.appendChild(hdrSearchInput);
   monthsEl.appendChild(hdrSearchWrap);
-
-  calBtnEl=document.createElement('button'); calBtnEl.type='button'; calBtnEl.className='cal-btn'; calBtnEl.title='Select month'; calBtnEl.innerHTML=CAL_SVG;
-  calBtnEl.onclick=e=>{e.stopPropagation();calOpen=!calOpen;syncHeaderUI();};
-  monthsEl.appendChild(calBtnEl);
 
   monthPopEl=document.createElement('div'); monthPopEl.className='month-pop';
   monthPopEl.onclick=e=>e.stopPropagation();
@@ -797,13 +855,13 @@ function prevMonths(){
   const pidx=MONTHS.slice(i0-idx.length,i0);
   return {set:new Set(pidx),label:pidx.length===1?MLABEL[pidx[0]]:MLABEL[pidx[0]]+'–'+MLABEL[pidx[pidx.length-1]]};
 }
-// KPI trend chip: â–²/â–¼ % vs prior period, colored by whether the move is good
+// KPI trend chip: ▲/▼ % vs prior period, colored by whether the move is good
 function chip(id,goodUp,cur,prev){
   const el=document.getElementById(id);
   if(prev==null||prev===0||!isFinite((cur-prev)/prev)){el.className='chip';el.textContent='';return;}
   const d=(cur-prev)/prev*100,up=d>=0,good=up===goodUp;
   el.className='chip on '+(good?'good':'bad');
-  el.textContent=(up?'â–² ':'â–¼ ')+Math.abs(d).toFixed(1)+'%';
+  el.textContent=(up?'▲ ':'▼ ')+Math.abs(d).toFixed(1)+'%';
 }
 
 // ----------
@@ -875,7 +933,7 @@ function mkLines(id,labels,datasets){
 // ---------- main refresh ----------
 function refresh(){
   syncHeaderUI();
-  document.getElementById('march-note').style.display=selMonths.has('2026-03')?'block':'none';
+  const mN=document.getElementById('march-note');mN.style.cssText=selMonths.has('2026-03')?'':'display:none';
   populateSub();
 
   const mrows=monthFiltered();
@@ -1089,6 +1147,8 @@ document.getElementById('f-status').onchange=e=>{state.status=e.target.value;pag
 document.getElementById('f-plant').onchange=e=>{state.plant=e.target.value;page=0;refresh();};
 document.getElementById('f-resolution').onchange=e=>{state.resolution=e.target.value;page=0;refresh();};
 document.getElementById('reset').onclick=()=>{Object.assign(state,{customer:'All',custname:'All',category:'All',subcat:'All',stateF:'All',status:'All',plant:'All',resolution:'All'});selMonths=new Set(MONTHS);calOpen=false;hdrSearchOpen=false;search='';document.getElementById('search').value='';page=0;populateFilters();refresh();};
+document.getElementById('rst-top').onclick=document.getElementById('reset').onclick;
+document.getElementById('f-on').onclick=()=>{document.querySelector('.filters').scrollIntoView({behavior:'smooth',block:'center'});};
 document.getElementById('search').oninput=e=>setSearch(e.target.value);
 document.querySelectorAll('#tbl thead th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sortK===k)sortDir*=-1;else{sortK=k;sortDir=1;}refresh();});
 document.getElementById('prev').onclick=()=>{if(page>0){page--;loadPage();}};

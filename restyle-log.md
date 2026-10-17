@@ -258,3 +258,27 @@ Playwright (Chrome headless, real worktree build + `data.json`):
   surfaces; `--primary` #0a84ff with white bold labels ~4.0:1 — large/bold UI text tier,
   matches Apple system blue precedent (documented; `-600` carries text-on-dark roles at 6+).
 
+### 11.6 Prototype-match round 2 (user A/B feedback)
+
+First build read denser than the prototype; second pass aligned the anatomy:
+
+- **Page order**: `Overview` title + subtitle first, glass toolbar below (sticky through
+  scroll). KPI row directly after toolbar; note band after; filters panel after the note.
+- **KPI cards**: `--fs-kpi 38px` value, `--h-kpi 192px`, roomy padding, label text-2 600,
+  icon = 36px tinted rounded-square (color-mix of per-metric accent `--k1..k4`),
+  note text + trend chip share a bottom row (`.kpi .sub`). Grid = 4 columns ≥768.
+- **Toolbar**: month pill (calendar glyph + range label + blue `N mo` count chip, opens the
+  same popover), `All` quiet chip, expandable search, `N filters on` chip (green count badge,
+  tap scrolls to filters), glass `Reset`, gold toggle knob (dark → slides right, light → left).
+  Active month pill stays glass; accent lives only in the count chip.
+- **Note band**: neutral glass strip with amber ⚠ glyph (was blue primary-50 box).
+- **Rail**: gradient squircle brand mark (`--mark` + glow), 256px width, 48px nav rows with
+  icon chips (`--chip-bg`), blue active chip.
+- **Mojibake fix**: chip arrows ▲/▼ (and ≤ § · × ÷) were double-encoded on disk by an earlier
+  PowerShell rewrite — restored; chips render proper glyphs.
+- All new sizes tokenized (`--icon-badge/r/pad`, `--nav-s`, `--mark-s`, `--knob*`,
+  `--h-nav-lg`, `--fs-nav`); scan still 0 raw px/hex (127 tokens).
+- Verified: regression (8 filters, chips, no-result, March note, popover, `f-on` count, knob
+  slide, light/dark/700/400 shots) + computed-style checks; no JS page errors.
+
+
