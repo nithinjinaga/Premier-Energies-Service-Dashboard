@@ -221,9 +221,6 @@ button,input,select{font-family:var(--font)}
 /* ---------- note banner (removed in prototype v2 match) ---------- */
 
 /* ---------- filter bar ---------- */
-.filter-toggle{display:none;width:100%;padding:var(--s-3) var(--s-4);background:var(--bg-surface);border:var(--bw) solid var(--border);border-radius:var(--r-lg);cursor:pointer;font-size:var(--fs-body);font-weight:600;color:var(--primary);text-align:left;margin-bottom:var(--s-5)}
-.filter-toggle .arrow{float:right;transition:transform .2s}
-.filter-toggle.open .arrow{transform:rotate(180deg)}
 .filters{display:flex;flex-wrap:wrap;gap:var(--s-3) var(--s-4);background:var(--bg-surface);padding:var(--s-4) var(--s-5);border-radius:var(--r-xl);border:var(--bw) solid var(--border);margin-bottom:var(--s-6);align-items:flex-end}
 .fg{display:flex;flex-direction:column;gap:var(--s-2);flex:1;min-width:var(--w-fg-min)}
 .fg label{font-size:var(--fs-micro);font-weight:500;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em}
@@ -354,9 +351,6 @@ tbody tr:hover td{background:var(--bg-subtle)}
   .page{padding:var(--s-4)}
   .months{width:100%;gap:var(--s-2)}
   .mbtn{padding:var(--s-2) var(--s-3);font-size:var(--fs-small);flex:1;text-align:center;min-width:0}
-  .filter-toggle{display:block}
-  .filters{display:none;flex-wrap:wrap;padding:var(--s-3);gap:var(--s-3);margin-top:calc(-1 * var(--s-5))}
-  .filters.show{display:flex}
   .fg{min-width:calc((100% - var(--s-3)) / 2)}
   .fg select{height:var(--h-touch);font-size:var(--fs-body)}
   .resetbtn{width:100%;text-align:center;height:var(--h-touch)}
@@ -407,7 +401,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
   .tbl-btn{width:var(--h-touch);height:var(--h-touch)}
 }
 .filters{background:var(--glass);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:var(--bw) solid var(--glass-brd);box-shadow:var(--shadow-card)}
-.filter-toggle,.tablebar input{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
+.tablebar input{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
 .fg select{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
 .fg select option{background:var(--bg-surface);color:var(--text-1)}
 .resetbtn{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
@@ -499,6 +493,12 @@ tbody tr:hover td{background:var(--row-tint)}
 .knobbtn .knob{position:absolute;top:var(--knob-oy);left:var(--knob-ox);width:var(--knob-d);height:var(--knob-d);border-radius:50%;background:var(--knob);box-shadow:var(--knob-shadow);transition:transform .4s cubic-bezier(.34,1.4,.64,1),background .4s}
 html[data-theme='light'] .knobbtn .knob{transform:translateX(var(--knob-slide));background:var(--knob-light)}
 /* note band removed in prototype v2 match */
+/* filters: on-demand floating panel (prototype v2) */
+.filters{position:fixed;display:none;top:calc(var(--edge) + var(--topbar-h) + var(--s-3));right:var(--edge);left:auto;width:min(880px,calc(100vw - var(--rail-w) - var(--s-8)));max-height:calc(100vh - 180px);overflow:auto;z-index:45;margin-bottom:0}
+.filters.show{display:flex}
+@media(max-width:48em){
+  .filters{left:var(--edge);right:var(--edge);width:auto}
+}
 @media (max-width:48em){
   .kpi{padding:var(--s-4);min-height:0}
   .kpi .kpi-icon{width:var(--icon-badge-m);height:var(--icon-badge-m);padding:var(--icon-pad-m)}
@@ -548,7 +548,6 @@ html[data-theme='light'] .knobbtn .knob{transform:translateX(var(--knob-slide));
       <div class="kpi"><div class="kpi-top"><div class="label">Open (WIP)</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div><div class="val" id="k-wip">0</div><div class="sub"><div class="note" id="k-wip-note">awaiting resolution</div><div class="chip" id="k-wip-chip"></div></div></div>
     </div>
 
-    <button class="filter-toggle" id="filterToggle">Filters <span class="arrow">&#9660;</span></button>
     <div class="filters">
       <div class="fg"><label>Customer Type</label><select id="f-customer"></select></div>
       <div class="fg"><label>Customer Name</label><select id="f-custname"></select></div>
@@ -778,6 +777,8 @@ function buildHeaderTools(){
   document.addEventListener('mousedown',e=>{
     if(calOpen && !monthPopEl.contains(e.target) && !calBtnEl.contains(e.target)){calOpen=false;syncHeaderUI();}
     if(hdrSearchOpen && !hdrSearchWrap.contains(e.target)){hdrSearchOpen=false;syncHeaderUI();}
+    const fB=document.getElementById('f-on'),fP=document.querySelector('.filters');
+    if(fP.classList.contains('show') && !fP.contains(e.target) && !fB.contains(e.target)){fP.classList.remove('show');fB.classList.remove('open');fB.setAttribute('aria-expanded','false');}
   },true);
 }
 
@@ -1189,10 +1190,11 @@ document.getElementById('pgjump').onkeydown=e=>{if(e.key==='Enter')jumpToPage();
   }
 })();
 
-// --- Filter toggle (mobile) ---
-const ftBtn=document.getElementById('filterToggle');
+// --- Filters: on-demand floating panel (prototype v2) ---
+const ftBtn=document.getElementById('f-on');
 const ftPanel=document.querySelector('.filters');
-ftBtn.onclick=()=>{ftBtn.classList.toggle('open');ftPanel.classList.toggle('show');};
+ftBtn.onclick=()=>{ftBtn.classList.toggle('open');ftPanel.classList.toggle('show');ftBtn.setAttribute('aria-expanded',ftPanel.classList.contains('show'));};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ftPanel.classList.contains('show')){ftPanel.classList.remove('show');ftBtn.classList.remove('open');ftBtn.setAttribute('aria-expanded','false');}});
 
 // --- Re-render charts on resize (legend repositioning) ---
 let resizeTimer;
