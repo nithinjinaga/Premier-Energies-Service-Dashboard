@@ -84,8 +84,8 @@ HTML = r"""<!DOCTYPE html>
   --c4:#8b5cf6; --c5:#0f9aa5; --c6:#f5b400; --c7:#94949d;
   /* type */
   --font:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  --fs-display:36px; --fs-h1:21px; --fs-kpi:38px; --fs-h2:16px; --fs-h3:15px;
-  --fs-body:14px; --fs-small:12px; --fs-micro:11px; --fs-chip:12px;
+  --fs-display:36px; --fs-h1:21px; --fs-kpi:27px; --fs-h2:16px; --fs-h3:15px; --fs-kpi-label:11.5px; --fs-kpi-sub:11px;
+  --fs-body:14px; --fs-small:12px; --fs-micro:11px; --fs-chip:10.5px;
   /* spacing (4px scale) */
   --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:20px;
   --s-6:24px; --s-8:32px; --s-10:40px;
@@ -101,7 +101,7 @@ HTML = r"""<!DOCTYPE html>
   --rail-w:216px;
   --topbar-h:56px;    /* sampled 57px */
   --h-nav:44px;
-  --h-kpi:192px;
+  --h-kpi:0px;
   --h-chart:280px;
   --h-chart-tall:300px;
   --h-hero:340px;
@@ -132,7 +132,7 @@ HTML = r"""<!DOCTYPE html>
   --chip-bg:rgba(0,0,0,.05); --knob:linear-gradient(135deg,#ffd60a,#ff9f0a); --knob-w:52px; --knob-d:23px;
   --knob-h:30px; --knob-r:15px; --knob-oy:2.5px; --knob-ox:3px; --knob-slide:22px; --knob-light:linear-gradient(135deg,#4f8cff,#0a84ff); --tool-fs:12px; --tool-py:7px; --tool-px:12px; --mchip-py:5px; --mchip-px:10px;
   --mark:linear-gradient(135deg,#4d9bff,#0a84ff); --mark-glow:0 4px 14px rgba(10,132,255,.3);
-  --icon-badge:36px; --icon-badge-m:32px; --icon-pad:8px; --icon-pad-m:7px; --icon-r:10px; --chip-r:7px;
+  --icon-badge:26px; --icon-badge-m:26px; --icon-pad:6px; --icon-pad-m:6px; --icon-r:8px; --chip-r:7px; --chip-px:7px;
   --fs-nav:12.5px; --fs-label:9.5px; --fs-brand:13px; --fs-foot:10px; --nav-py:8px; --nav-px:10px; --nav-r:9px; --nav-ic:16px; --nav-ic-r:5px;
   --knob-shadow:0 2px 8px rgba(0,0,0,.35); --pad-tiny:2px;
 }
@@ -457,16 +457,18 @@ tbody tr:hover td{background:var(--row-tint)}
    PROTOTYPE MATCH ROUND 2 — Overview head order, big KPI cards, pill toolbar
    ========================================================================== */
 @media (min-width:48em){
-  .kpis{grid-template-columns:repeat(4,1fr)}
+  .kpis{grid-template-columns:repeat(4,1fr);gap:var(--s-3);margin-bottom:var(--s-3)}
   .pagehead{padding:var(--s-6) 0 var(--s-4)}
 }
-.kpi{padding:var(--s-6)}
-.kpi .label{font-size:var(--fs-h3);font-weight:600;color:var(--text-2)}
+/* KPI cards — prototype v2 scale */
+.kpi{padding:var(--s-4) var(--s-4) var(--s-3)}
+.kpi .kpi-top{align-items:flex-start}
+.kpi .label{font-size:var(--fs-kpi-label);font-weight:600;color:var(--text-2)}
 .kpi .kpi-icon{width:var(--icon-badge);height:var(--icon-badge);box-sizing:border-box;padding:var(--icon-pad);border-radius:var(--icon-r);background:color-mix(in srgb,currentColor 15%,transparent);color:var(--k,var(--primary))}
-.kpi .val{margin-top:var(--s-3)}
-.kpi .sub{display:flex;align-items:center;gap:var(--s-3);margin-top:var(--s-4);min-height:var(--h-pill)}
-.kpi .sub .note{flex:1;margin-top:0}
-.kpi .sub .chip{margin-top:0}
+.kpi .val{margin:var(--s-2) 0 var(--s-1);font-weight:800;letter-spacing:-.032em}
+.kpi .sub{display:flex;align-items:center;gap:var(--s-2);margin-top:var(--s-1);min-height:0;font-size:var(--fs-kpi-sub)}
+.kpi .sub .note{flex:1;margin-top:0;font-size:var(--fs-kpi-sub);color:var(--text-3)}
+.kpi .sub .chip{margin-top:0;height:auto;padding:var(--pad-tiny) var(--chip-px);border-radius:var(--chip-r);font-weight:700}
 /* nav rows — prototype v2: compact rows, bolted-square markers */
 .rl{height:auto;padding:var(--nav-py) var(--nav-px);border-radius:var(--nav-r);font-size:var(--fs-nav);font-weight:500;color:var(--text-2)}
 .rl svg{display:none}
