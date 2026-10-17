@@ -484,6 +484,9 @@ tbody tr:hover td{background:var(--row-tint)}
 .cal-btn svg{width:var(--s-4);height:var(--s-4);color:var(--text-2);flex:none}
 .cal-btn .rng{white-space:nowrap}
 .cal-btn .mo-chip{padding:var(--mchip-py) var(--mchip-px);border-radius:var(--r-sm);background:var(--primary-50);color:var(--primary);font-size:var(--fs-micro);font-weight:600;white-space:nowrap;box-shadow:inset 0 0 0 var(--bw) color-mix(in srgb,var(--primary) 26%,transparent)}
+/* search lives inside the month popover now (prototype v2: clean toolbar) */
+.month-pop .hdr-search,.month-pop .hdr-search.open{width:100%}
+.month-pop .hdr-search{margin-bottom:var(--s-2)}
 .fchip{display:inline-flex;align-items:center;gap:var(--s-2);padding:var(--tool-py) var(--tool-px);border-radius:var(--r-md);background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2);color:var(--text-2);font-size:var(--tool-fs);font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s,border-color .2s}
 .fchip:hover{border-color:var(--primary);color:var(--text-1)}
 .fchip svg{width:var(--s-4);height:var(--s-4);flex:none;fill:currentColor;stroke:none}
@@ -692,7 +695,7 @@ const monthsEl=document.getElementById('months');
 const CAL_SVG='<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="16" y1="2" x2="16" y2="6"></line></svg>';
 const SEARCH_SVG='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>';
 let calOpen=false, hdrSearchOpen=false;
-let allBtnEl,hdrSearchWrap,hdrSearchBtn,hdrSearchInput,calBtnEl,monthPopEl,popAllEl,mpShowEl;
+let hdrSearchWrap,hdrSearchBtn,hdrSearchInput,calBtnEl,monthPopEl,popAllEl,mpShowEl;
 const monthChipEls={};
 
 function summaryLabel(){
@@ -710,9 +713,7 @@ function setSearch(v){
 }
 
 function syncHeaderUI(){
-  if(!allBtnEl) return;
   const allSel=selMonths.size===MONTHS.length;
-  allBtnEl.className='mbtn'+(allSel?' active':'');
   hdrSearchWrap.className='hdr-search'+(hdrSearchOpen?' open':'');
   hdrSearchBtn.classList.toggle('on',hdrSearchOpen);
   calBtnEl.className='cal-btn'+((calOpen||!allSel)?' active':'');
@@ -737,18 +738,12 @@ function buildHeaderTools(){
   calBtnEl.onclick=e=>{e.stopPropagation();calOpen=!calOpen;syncHeaderUI();};
   monthsEl.appendChild(calBtnEl);
 
-  allBtnEl=document.createElement('button');
-  allBtnEl.type='button'; allBtnEl.className='mbtn'; allBtnEl.textContent='All';
-  allBtnEl.onclick=()=>{selMonths=new Set(MONTHS);refresh();};
-  monthsEl.appendChild(allBtnEl);
-
   hdrSearchWrap=document.createElement('div'); hdrSearchWrap.className='hdr-search';
   hdrSearchBtn=document.createElement('button'); hdrSearchBtn.type='button'; hdrSearchBtn.className='hdr-search-btn'; hdrSearchBtn.innerHTML=SEARCH_SVG;
   hdrSearchInput=document.createElement('input'); hdrSearchInput.className='hdr-search-input'; hdrSearchInput.placeholder='Search serial, complaint no…';
   hdrSearchBtn.onclick=e=>{e.stopPropagation();hdrSearchOpen=!hdrSearchOpen;syncHeaderUI();if(hdrSearchOpen)setTimeout(()=>hdrSearchInput.focus(),60);};
   hdrSearchInput.oninput=e=>setSearch(e.target.value);
   hdrSearchWrap.appendChild(hdrSearchBtn); hdrSearchWrap.appendChild(hdrSearchInput);
-  monthsEl.appendChild(hdrSearchWrap);
 
   monthPopEl=document.createElement('div'); monthPopEl.className='month-pop';
   monthPopEl.onclick=e=>e.stopPropagation();
@@ -757,7 +752,9 @@ function buildHeaderTools(){
   popAllEl=document.createElement('button'); popAllEl.type='button'; popAllEl.className='mp-all'; popAllEl.textContent='All';
   popAllEl.onclick=()=>{selMonths=new Set(MONTHS);refresh();};
   head.appendChild(popAllEl); monthPopEl.appendChild(head);
-  const hint=document.createElement('div'); hint.className='mp-hint'; hint.innerHTML='Click a month · hold ⇧ Shift to compare several'; monthPopEl.appendChild(hint);
+  const hint=document.createElement('div'); hint.className='mp-hint'; hint.innerHTML='Click a month · hold ⇧ Shift to compare several';
+  monthPopEl.appendChild(hdrSearchWrap);
+  monthPopEl.appendChild(hint);
   const SHORTM=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const years=[...new Set(MONTHS.map(m=>m.slice(0,4)))];
   years.forEach(yr=>{
