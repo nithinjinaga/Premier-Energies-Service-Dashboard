@@ -4,7 +4,9 @@ __pycache__/
 *.zip
 *.bat
 fix_names.py
+# markdown docs are per-developer scratch, except deliverable docs
 *.md
+!restyle-log.md
 !README.md
 Premier_AfterSales_Dashboard_2026.html
 na_plant_rows.csv
