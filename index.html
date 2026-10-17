@@ -73,6 +73,7 @@
   --h-kpi:128px;
   --h-chart:280px;
   --h-chart-tall:300px;
+  --h-hero:340px;
   --h-table:520px;
   --h-row:56px;
   --h-pill:24px;
@@ -155,6 +156,10 @@ button,input,select{font-family:var(--font)}
 .kpi-icon{width:var(--s-5);height:var(--s-5);color:var(--primary);flex:none}
 .kpi .val{font-size:var(--fs-kpi);font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-top:var(--s-4);font-variant-numeric:tabular-nums}
 .kpi .note{font-size:var(--fs-small);color:var(--text-3);margin-top:var(--s-5)}
+.kpi .chip{display:none;margin-top:var(--s-3);height:var(--h-pill);padding:0 var(--s-2);border-radius:var(--r-pill);font-size:var(--fs-chip);font-weight:600;width:max-content;align-items:center;letter-spacing:.01em}
+.kpi .chip.on{display:inline-flex}
+.kpi .chip.good{background:var(--success-50);color:var(--success)}
+.kpi .chip.bad{background:var(--danger-50);color:var(--danger)}
 
 /* ---------- cards / grids ---------- */
 .section-title{font-size:var(--fs-micro);font-weight:500;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin:var(--s-6) 0 var(--s-3)}
@@ -168,14 +173,16 @@ button,input,select{font-family:var(--font)}
 .card.span2{grid-column:span 2}
 .chartbox{position:relative;height:var(--h-chart)}
 .chartbox.tall{height:var(--h-chart-tall)}
-.toptrend{margin-bottom:var(--s-6)}
+.chartbox.hero{height:var(--h-hero)}
+.toptrend{margin-bottom:var(--s-6);box-shadow:var(--shadow-2)}
 
 /* ---------- top-3 strip ---------- */
 .badges{display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--w-badge-min),1fr));gap:var(--s-3);margin-bottom:var(--s-4)}
 .badge{display:flex;align-items:center;gap:var(--s-2);background:var(--bg-surface);border:var(--bw) solid var(--border);border-left:var(--bw-2) solid var(--c0);border-radius:var(--r-lg);padding:var(--s-3) var(--s-4);font-size:var(--fs-body);font-weight:500;color:var(--text-1)}
 .badge.b1{border-left-color:var(--c1)}
 .badge.b2{border-left-color:var(--c2)}
-.badge .rank{width:var(--s-5);height:var(--s-5);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:var(--fs-micro);font-weight:600;color:var(--text-3);background:var(--bg-muted);flex:none}
+.badge .rank{width:var(--s-5);height:var(--s-5);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:var(--fs-micro);font-weight:700;color:var(--rk,var(--text-3));background:var(--bg-subtle);flex:none}
+.badge b{font-weight:700;color:var(--text-1);font-variant-numeric:tabular-nums}
 
 /* ---------- table ---------- */
 table{width:100%;border-collapse:collapse;font-size:var(--fs-body)}
@@ -254,7 +261,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
 
 /* ---------- responsive: ≤768 (matches isMobile() threshold) ---------- */
 @media (max-width:48em){
-  :root{--topbar-h:52px;--fs-h1:20px;--fs-kpi:24px;--fs-h2:15px;--h-chart:240px;--h-chart-tall:260px;--h-kpi:0px;--h-table:440px}
+  :root{--topbar-h:52px;--fs-h1:20px;--fs-kpi:24px;--fs-h2:15px;--h-chart:240px;--h-chart-tall:260px;--h-kpi:0px;--h-hero:260px;--h-table:440px}
   .rail{display:none}
   .main{margin-left:0}
   .topbar{justify-content:space-between;padding:0 var(--s-4)}
@@ -283,7 +290,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
 
 /* ---------- responsive: ≤480 ---------- */
 @media (max-width:30em){
-  :root{--fs-h1:18px;--fs-kpi:22px;--h-chart:230px;--h-chart-tall:250px}
+  :root{--fs-h1:18px;--fs-kpi:22px;--h-chart:230px;--h-chart-tall:250px;--h-hero:250px}
   .page{padding:var(--s-3)}
   .fg{min-width:100%}
   .kpis{grid-template-columns:1fr}
@@ -341,17 +348,17 @@ tbody tr:hover td{background:var(--bg-subtle)}
     </div>
 
     <div class="kpis">
-      <div class="kpi"><div class="kpi-top"><div class="label" id="k-closed-label">Modules Serviced</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="val" id="k-closed">0</div><div class="note" id="k-closed-note"></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="label">Closure Rate</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div><div class="val" id="k-closure">0%</div><div class="note" id="k-closure-note"></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="label">Avg TAT (days)</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg></div><div class="val" id="k-tat">0</div><div class="note" id="k-tat-note"></div></div>
-      <div class="kpi"><div class="kpi-top"><div class="label">Open (WIP)</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div><div class="val" id="k-wip">0</div><div class="note" id="k-wip-note">awaiting resolution</div></div>
+      <div class="kpi"><div class="kpi-top"><div class="label" id="k-closed-label">Modules Serviced</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="val" id="k-closed">0</div><div class="chip" id="k-closed-chip"></div><div class="note" id="k-closed-note"></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="label">Closure Rate</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div><div class="val" id="k-closure">0%</div><div class="chip" id="k-closure-chip"></div><div class="note" id="k-closure-note"></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="label">Avg TAT (days)</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg></div><div class="val" id="k-tat">0</div><div class="chip" id="k-tat-chip"></div><div class="note" id="k-tat-note"></div></div>
+      <div class="kpi"><div class="kpi-top"><div class="label">Open (WIP)</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div><div class="val" id="k-wip">0</div><div class="chip" id="k-wip-chip"></div><div class="note" id="k-wip-note">awaiting resolution</div></div>
     </div>
 
     <div class="card toptrend">
       <h3>Top 3 Problems — Trend</h3>
       <div class="hint">The 3 largest defect types for the current month selection, tracked across all months. Recalculates as you change filters.</div>
       <div class="badges" id="top3badges"></div>
-      <div class="chartbox tall"><canvas id="chTop3"></canvas></div>
+      <div class="chartbox hero"><canvas id="chTop3"></canvas></div>
     </div>
 
     <div class="section-title" id="sec-defects">Defect Breakdown</div>
@@ -427,7 +434,18 @@ const MLABEL = {"2024-12":"Dec-24","2025-01":"Jan-25","2025-02":"Feb-25","2025-0
 const CAT_ORDER = ["Junction Box Defects","Ribbon Soldering Issue","Cell and Module Defects","Physical and External Damage","Transit Damage","Aesthetic","No Issue","Inspection"];
 const ROOT=getComputedStyle(document.documentElement);
 const V=n=>ROOT.getPropertyValue(n).trim();
-const A=(n,a)=>{const m=V(n).match(/\d+/g);return 'rgba('+m[0]+','+m[1]+','+m[2]+','+a+')';};
+// custom properties are not pre-converted; resolve via a probe element (cached)
+const rgbCache={};let rgbProbe=null;
+function rgb(n){
+  if(rgbCache[n])return rgbCache[n];
+  if(!rgbProbe){rgbProbe=document.createElement('i');
+    rgbProbe.style.cssText='position:absolute;left:-9999px;width:0;height:0';
+    document.body.appendChild(rgbProbe);}
+  rgbProbe.style.color='var('+n+')';
+  const m=getComputedStyle(rgbProbe).color.match(/\d+/g);
+  return rgbCache[n]=m?m.slice(0,3).join(','):'40,97,255';
+}
+const A=(n,a)=>'rgba('+rgb(n)+','+a+')';
 const COLORS=['--c0','--c1','--c2','--c3','--c4','--c5','--c6','--c7'].map(V);
 Chart.defaults.color=V('--text-3');Chart.defaults.borderColor=V('--grid');Chart.defaults.font.family=V('--font');Chart.defaults.animation=false;
 const isMobile=()=>window.innerWidth<=768;
@@ -602,6 +620,54 @@ function sumW(rows){return rows.reduce((a,r)=>a+W(r),0);}
 // ---------- aggregation helpers ----------
 function groupSum(rows,key){const m={};rows.forEach(r=>{m[r[key]]=(m[r[key]]||0)+W(r);});return m;}
 
+// prior period for KPI chips: the contiguous run of the same number of months
+// immediately before the selection (hidden when selection spans gaps or hits the start)
+function prevMonths(){
+  const selM=MONTHS.filter(m=>selMonths.has(m));
+  if(!selM.length)return null;
+  const idx=selM.map(m=>MONTHS.indexOf(m));
+  for(let i=1;i<idx.length;i++)if(idx[i]!==idx[i-1]+1)return null;
+  const i0=idx[0];
+  if(i0<idx.length)return null;
+  const pidx=MONTHS.slice(i0-idx.length,i0);
+  return {set:new Set(pidx),label:pidx.length===1?MLABEL[pidx[0]]:MLABEL[pidx[0]]+'–'+MLABEL[pidx[pidx.length-1]]};
+}
+// KPI trend chip: ▲/▼ % vs prior period, colored by whether the move is good
+function chip(id,goodUp,cur,prev){
+  const el=document.getElementById(id);
+  if(prev==null||prev===0||!isFinite((cur-prev)/prev)){el.className='chip';el.textContent='';return;}
+  const d=(cur-prev)/prev*100,up=d>=0,good=up===goodUp;
+  el.className='chip on '+(good?'good':'bad');
+  el.textContent=(up?'▲ ':'▼ ')+Math.abs(d).toFixed(1)+'%';
+}
+
+// ----------
+/* vertical (or horizontal for indexAxis:y) token-tinted ramps for bars & area fills */
+function grads(sctx,n,t1,t0){
+  const c=(sctx&&sctx.chart&&sctx.chart.ctx)?sctx.chart.ctx:(sctx&&sctx.canvas?sctx.ctx:null);
+  if(!c)return'rgba('+rgb(n)+','+t1+')';
+  const horiz=sctx.chart&&sctx.chart.options&&sctx.chart.options.indexAxis==='y';
+  const g=horiz?c.createLinearGradient(0,0,c.canvas.width,0):c.createLinearGradient(0,0,0,c.canvas.height);
+  const r=rgb(n);
+  g.addColorStop(0,'rgba('+r+','+t1+')');
+  g.addColorStop(1,'rgba('+r+','+t0+')');
+  return g;
+}
+// draws the running total in the doughnut hole + a small caption
+const centerTxt={id:'ctr',afterDraw(c){
+  const o=(c.config.options.plugins&&c.config.options.plugins.ctr)||{};
+  const total=o.total||0;
+  if(!total)return;
+  const a=c.chartArea,x=(a.left+a.right)/2,y=(a.top+a.bottom)/2,ctx=c.ctx;
+  ctx.save();
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font='700 20px Inter, sans-serif';ctx.fillStyle=V('--text-1');
+  ctx.fillText(total.toLocaleString(),x,y-7);
+  ctx.font='600 10px Inter, sans-serif';ctx.fillStyle=V('--text-3');
+  ctx.fillText(o.label||'',x,y+13);
+  ctx.restore();
+}};
+
 // ---------- chart factory ----------
 function mkBar(id,labels,data,opts={}){
   if(charts[id])charts[id].destroy();
@@ -611,20 +677,21 @@ function mkBar(id,labels,data,opts={}){
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.parsed[opts.horizontal?'x':'y'].toLocaleString()}}},
       scales:{x:{grid:{display:!opts.horizontal},ticks:{autoSkip:false}},y:{beginAtZero:true,ticks:{precision:0}}}}});
 }
-function mkDonut(id,labels,data,cols){
+function mkDonut(id,labels,data,cols,ctr){
   if(charts[id])charts[id].destroy();
   const mob=isMobile();
-  charts[id]=new Chart(document.getElementById(id),{type:'doughnut',
+  charts[id]=new Chart(document.getElementById(id),{type:'doughnut',plugins:[centerTxt],
     data:{labels,datasets:[{data,backgroundColor:cols||COLORS,borderColor:V('--bg-surface'),borderWidth:2}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
-      plugins:{legend:{position:mob?'bottom':'right',labels:{boxWidth:mob?10:12,padding:mob?6:8,font:{size:mob?10:11}}},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{ctr:{total:ctr?data.reduce((a,b)=>a+b,0):0,label:ctr?ctr.label:''},
+      legend:{position:mob?'bottom':'right',labels:{boxWidth:mob?10:12,padding:mob?6:8,font:{size:mob?10:11}}},
       tooltip:{callbacks:{label:c=>' '+c.label+': '+c.parsed.toLocaleString()}}}}});
 }
 function mkStacked(id,labels,datasets){
   if(charts[id])charts[id].destroy();
   const mob=isMobile();
   charts[id]=new Chart(document.getElementById(id),{type:'bar',
-    data:{labels,datasets},
+    data:{labels,datasets:datasets.map(d=>Object.assign({},d,{maxBarThickness:38}))},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{position:'top',labels:{boxWidth:mob?10:12,padding:mob?6:8,font:{size:mob?10:11}}}},
       scales:{x:{stacked:true,ticks:{font:{size:mob?10:12}}},y:{stacked:true,beginAtZero:true,ticks:{precision:0,font:{size:mob?10:12}}}}}});
@@ -659,35 +726,56 @@ function refresh(){
   const durations=filtered.filter(r=>r.settle_days!=null&&r.settle_days>=0);
   const avgTAT=durations.length?Math.round(durations.reduce((a,r)=>a+(r.settle_days*W(r)),0)/sumW(durations)*10)/10:0;
 
+  // prior-period KPIs for the trend chips
+  const pm=prevMonths();
+  let pPrev=null;
+  if(pm){
+    const pb=applyAll(RAW.filter(r=>pm.set.has(r.month)));
+    const pc=sumW(pb.filter(r=>/closed/i.test(r.status)));
+    const pt=sumW(pb);
+    const pd=pb.filter(r=>r.settle_days!=null&&r.settle_days>=0);
+    pPrev={kVal:state.status==='All'?pc:pt,
+      rate:pt?Math.round(pc/pt*1000)/10:0,
+      tat:pd.length?Math.round(pd.reduce((a,r)=>a+(r.settle_days*W(r)),0)/sumW(pd)*10)/10:0,
+      wip:sumW(pb.filter(r=>/wip/i.test(r.status))),
+      label:pm.label};
+  }
+
   const kLabel=state.status==='All'?'Modules Serviced (Closed)':('Modules Serviced ('+state.status+')');
   document.getElementById('k-closed-label').textContent=kLabel;
   const kVal=state.status==='All'?closed:sumW(filtered);
   document.getElementById('k-closed').textContent=kVal.toLocaleString();
-  document.getElementById('k-closed-note').textContent=selMonths.size===1?MLABEL[[...selMonths][0]]:'';
+  document.getElementById('k-closed-note').textContent=pPrev
+    ?('vs. '+pPrev.kVal.toLocaleString()+' · '+pPrev.label)
+    :(selMonths.size===1?MLABEL[[...selMonths][0]]:'');
+  chip('k-closed-chip',true,kVal,pPrev?pPrev.kVal:null);
   document.getElementById('k-closure').textContent=closureRate+'%';
   const closureNote=document.getElementById('k-closure-note');
   closureNote.textContent=closed.toLocaleString()+' closed of '+total.toLocaleString();
   closureNote.style.color=closureRate>=90?'var(--success)':closureRate>=70?'var(--warn-text)':'var(--danger)';
+  chip('k-closure-chip',true,closureRate,pPrev?pPrev.rate:null);
   document.getElementById('k-tat').textContent=avgTAT;
   const tatNote=document.getElementById('k-tat-note');
   tatNote.textContent=avgTAT<=30?'Within 30-day SOP':'Exceeds 30-day SOP';
   tatNote.style.color=avgTAT<=30?'var(--success)':'var(--danger)';
+  chip('k-tat-chip',false,avgTAT,pPrev?pPrev.tat:null);
   document.getElementById('k-wip').textContent=wip.toLocaleString();
   const wipNote=document.getElementById('k-wip-note');
   wipNote.textContent=wip>0?wip.toLocaleString()+' modules still open':'All resolved';
   wipNote.style.color=wip===0?'var(--success)':wip>100?'var(--danger)':'var(--warn-text)';
+  chip('k-wip-chip',false,wip,pPrev?pPrev.wip:null);
 
   // ---- Top 3 problems (by subcategory, current selection) ----
   const subSum=groupSum(defects,'subcategory');
   const top3=Object.entries(subSum).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]);
   const badgesEl=document.getElementById('top3badges');badgesEl.innerHTML='';
   top3.forEach((s,i)=>{const d=document.createElement('div');d.className='badge b'+i;
-    d.innerHTML=`<span class="rank">${i+1}</span>${s} · ${subSum[s].toLocaleString()}`;badgesEl.appendChild(d);});
+    d.innerHTML=`<span class="rank" style="--rk:var(--c${i})">${i+1}</span>${s} · <b>${subSum[s].toLocaleString()}</b>`;badgesEl.appendChild(d);});
   // trend of those top3 across selected months (respecting non-month filters)
   const baseForTrend=applyAll(RAW).filter(isDefect);
   if(selM.length===1){
     const t3vals=top3.map(s=>sumW(baseForTrend.filter(r=>r.month===selM[0]&&r.subcategory===s)));
-    mkBar('chTop3',top3,t3vals,{colors:top3.map((_,i)=>COLORS[i])});
+    mkBar('chTop3',top3,t3vals,{colors:s=>grads(s,'--c'+s.dataIndex,.95,.5)});
   } else {
     const t3data=top3.map((s,i)=>({label:s,borderColor:COLORS[i],backgroundColor:A('--c'+i,.2),
       data:selM.map(m=>sumW(baseForTrend.filter(r=>r.month===m&&r.subcategory===s)))}));
@@ -697,11 +785,11 @@ function refresh(){
   // ---- Defects by category ----
   const catSum=groupSum(defects,'category');
   const catLabels=CAT_ORDER.filter(c=>c!=='No Issue'&&catSum[c]);
-  mkBar('chCat',catLabels,catLabels.map(c=>catSum[c]),{colors:catLabels.map((_,i)=>COLORS[i%COLORS.length])});
+  mkBar('chCat',catLabels,catLabels.map(c=>catSum[c]),{colors:s=>grads(s,'--c'+(s.dataIndex%COLORS.length),.95,.5)});
 
   // ---- Pareto of subcategories ----
   const ps=Object.entries(subSum).sort((a,b)=>b[1]-a[1]).slice(0,12);
-  mkBar('chPareto',ps.map(x=>x[0]),ps.map(x=>x[1]),{horizontal:true,colors:V('--c1')});
+  mkBar('chPareto',ps.map(x=>x[0]),ps.map(x=>x[1]),{horizontal:true,colors:s=>grads(s,'--c1',.95,.55)});
 
   // ---- Monthly closed vs WIP ----
   const allByM=applyAll(RAW);
@@ -721,21 +809,21 @@ function refresh(){
   // ---- Customer type ----
   const cust=groupSum(defects,'customer_type');
   const ce=Object.entries(cust).sort((a,b)=>b[1]-a[1]);
-  mkBar('chCust',ce.map(x=>x[0]),ce.map(x=>x[1]),{colors:V('--c4')});
+  mkBar('chCust',ce.map(x=>x[0]),ce.map(x=>x[1]),{colors:s=>grads(s,'--c4',.95,.5)});
 
   // ---- Plant ----
   const plant=groupSum(defects.filter(r=>HIDE_NA(r.plant)),'plant');
   const pe=Object.entries(plant).sort((a,b)=>b[1]-a[1]);
-  mkDonut('chPlant',pe.map(x=>x[0]),pe.map(x=>x[1]));
+  mkDonut('chPlant',pe.map(x=>x[0]),pe.map(x=>x[1]),null,{label:'MODULES'});
 
   // ---- Status ----
   const st=groupSum(defects,'status');
   const stKeys=Object.keys(st);
-  mkDonut('chStatus',stKeys,Object.values(st),stKeys.map(k=>/closed/i.test(k)?V('--success'):V('--warning')));
+  mkDonut('chStatus',stKeys,Object.values(st),stKeys.map(k=>/closed/i.test(k)?V('--success'):V('--warning')),{label:'DEFECTS'});
 
   // ---- States ----
   const stt=Object.entries(groupSum(defects,'state')).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  mkBar('chState',stt.map(x=>x[0]),stt.map(x=>x[1]),{horizontal:true,colors:V('--c5')});
+  mkBar('chState',stt.map(x=>x[0]),stt.map(x=>x[1]),{horizontal:true,colors:s=>grads(s,'--c5',.95,.55)});
 
   // ---- Defect resolution timeline (avg TAT per month) ----
   const tatByM=selM.map(m=>{
@@ -744,7 +832,7 @@ function refresh(){
     return Math.round(mr.reduce((a,r)=>a+(r.settle_days*W(r)),0)/sumW(mr)*10)/10;
   });
   mkLines('chTATtrend',selM.map(m=>MLABEL[m]),[
-    {label:'Avg TAT (days)',borderColor:COLORS[0],backgroundColor:A('--c0',.2),data:tatByM,fill:true},
+    {label:'Avg TAT (days)',borderColor:COLORS[0],backgroundColor:s=>grads(s,'--c0',.3,.02),data:tatByM,fill:'origin'},
     {label:'30-day SOP',borderColor:V('--danger'),borderDash:[6,4],data:selM.map(()=>30),pointRadius:0,fill:false}
   ]);
 

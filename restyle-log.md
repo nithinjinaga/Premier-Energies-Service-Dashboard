@@ -114,12 +114,38 @@ Undocumented tokens added: `--primary-100 #d6e2ff` (note-box border), `--bg-mute
   previously the table went blank with no explanation.
 - `old var(--txt/--txt2/--good/--warn/--bad)` users migrated to the new token names.
 
+**Elevate pass additions**
+
+- **Token resolver fix:** unregistered custom properties are not converted by
+  `getComputedStyle` — `getPropertyValue('--c0')` returns the raw `#2861ff`, so the previous
+  digit-parse in `A()` produced invalid `rgba(2861,undefined,…)` strings (Chart.js silently
+  dropped them; heatmap tints were weaker than designed). `A()` now resolves tokens through a
+  cached offscreen probe element (`rgb(40,97,255)`), used by alpha fills and the new
+  `grads()` gradient factory.
+- **KPI trend chips** (the reference's signature element): each KPI card gets a `▲/▼ ±x.x%` pill
+  vs the prior period. Rule: the selection must be one contiguous run of months, and the prior
+  period is the run of the same length immediately before it (Feb-26 → Jan-26;
+  Jan–Mar-26 → Oct–Dec-25). Default view (all 21 months) and gappy selections show no chip —
+  no baseline, no fabricated number. Below the value, the note reads `vs. <prev value> · <period>`;
+  single-month selections otherwise keep the month-name note. Direction→color is per-metric
+  (closed/rate: up=good; TAT/WIP: down=good). Prior KPIs re-run the same aggregation formulas on
+  the same static filters — no interaction/methodology change to the current-period numbers.
+- **Donut center totals:** inline Chart.js plugin draws the slice sum + caption (`MODULES` /
+  `DEFECTS`) in the doughnut hole, token-fed colors.
+- **Gradient fills:** `grads()` builds token-tinted vertical ramps (horizontal when `indexAxis:y`)
+  for `chCat/chPareto/chState/chCust/chTop3` bars, per-slot for multi-slot charts, and a soft
+  fade for the TAT area fill. Donuts stay flat (reference language).
+- **mkStacked cap:** single-month stacked pillars blew out full-width; datasets now carry
+  `maxBarThickness:38`.
+- **Hero card:** `chTop3` box is its own height token (`--h-hero`, 340/260/250px per tier) and
+  the card carries `--shadow-2`; top-3 badge rank dots pick their slot color via `--rk`.
+
 ## 7. Token discipline check (machine-verified)
 
 Python scan of the generated `index.html` `<style>` block: after stripping comments and
 excluding `:root{}` token blocks (including the per-breakpoint token *overrides*, which only
 redefine tokens), there are **zero `#hex` literals and zero raw `px` values** in the remaining
-CSS. JS contains no raw color hex either. 78 tokens defined in `:root`.
+CSS. JS contains no raw color hex either. 79 tokens defined in `:root`.
 
 ## 8. WCAG AA — actual pairs used (computed)
 
@@ -152,9 +178,11 @@ emulation (`04b-w400.png`).
 - `05–12`: each of the 8 filters applied singly — selects visibly set (e.g. `cust=C&I`,
   `status=Closed` read back from the live page) and every KPI/chart/table re-filtered.
 - `13-no-result.png`: empty axes + "No records match these filters" row.
-- `14/15`: single month (Mar-2026: Ayana note visible, KPI scope narrows) and 3-month multi-select.
+- `14/15`: single month (Feb-2026: prior-period chips visible, `vs. 4,700 · Jan-26`) and
+  3-month multi-select (chips vs Oct–Dec-25).
 - `00-side-by-side.png`: our 1440 build vs the reference (its own 1440 design frame, downscaled)
-  — same rail/topbar/card language and proportions.
+  — same rail/topbar/card language and proportions. `00b-side-by-side-939.png` keeps the
+  viewport-width-matched full-page variant.
 
 ## 10. Open judgment calls
 
@@ -164,5 +192,5 @@ emulation (`04b-w400.png`).
 - c6 yellow left non-AA (dead slot); documented, not darkened.
 - Chart animation disabled (§6) — a behavior-visible but purely presentational change; revert
   by deleting one line if the team wants entrance motion back.
-- Reference's trend chips (±15.5% green/red pills) are Phase-2 (needs prior-period math); not in
-  scope, so KPI notes carry the semantic color instead.
+- Trend chips: implemented (§6 Elevate pass) with the contiguous-block prior-period rule; hidden
+  rather than invented when no comparable prior period exists (default all-months view).
