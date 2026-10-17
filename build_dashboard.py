@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Premier Energies After-Sales Dashboard — Builder
 
@@ -38,15 +38,23 @@ HTML = r"""<!DOCTYPE html>
    Scale: PNG 1878px = 1440px design viewport (÷1.3). See restyle-log.md.
    ========================================================================== */
 :root{
-  /* surfaces */
-  --bg-app:#f5f7f9;
+  /* surfaces — light theme */
+  --bg-app:#f5f5f7;
   --bg-surface:#ffffff;
   --bg-subtle:#fafafc;
   --bg-muted:#eeeef0;
+  /* glass material — light (Liquid Glass v2, -20% intensity) */
+  --glass:rgba(255,255,255,.58);
+  --glass-2:rgba(255,255,255,.48);
+  --glass-brd:rgba(0,0,0,.056);
+  --glass-brd-2:rgba(0,0,0,.04);
+  --sheen:linear-gradient(180deg,rgba(255,255,255,.74),rgba(255,255,255,.5));
+  --shadow-card:0 1px 2px rgba(0,0,0,.05),0 10px 30px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.7);
+  --row-tint:rgba(0,0,0,.02);
   /* borders */
   --border:#eeeef1;
   --border-strong:#e2e3e6;
-  --grid:#f1f3f6;
+  --grid:rgba(0,0,0,.05);
   /* text */
   --text-1:#191b1e;
   --text-2:#5b5d62;
@@ -71,6 +79,8 @@ HTML = r"""<!DOCTYPE html>
   --gauge-on:#42c78b;
   --gauge-off:#d2d3d6;
   --tooltip-bg:#191b1e;
+  /* KPI icon slots — per-metric accent (closed/rate/tat/wip) */
+  --k1:#0071e3; --k2:#248a3d; --k3:#b25000; --k4:#8a3b12;
   /* 8 chart slots — category order CAT_ORDER; all ≥3:1 vs white except c6 (unused slot, see log) */
   --c0:#2861ff; --c1:#ea6a10; --c2:#2ea276; --c3:#eb4776;
   --c4:#8b5cf6; --c5:#0f9aa5; --c6:#f5b400; --c7:#94949d;
@@ -118,12 +128,58 @@ HTML = r"""<!DOCTYPE html>
   --logo-s:28px;      /* rail/topbar brand mark */
   --bw:1px;
   --bw-2:2px;
+  /* glass skin literals */
+  --edge:16px; --blur:19px; --blur-sm:14px; --blur-lg:24px; --n-lift:-1px; --ring-inset:inset 0 0 0 1px var(--primary-100);
+}
+/* ---------- dark theme (Liquid Glass) ---------- */
+html[data-theme='dark']{
+  --bg-app:#101014;
+  --bg-surface:#1a1a20;
+  --bg-subtle:rgba(255,255,255,.045);
+  --bg-muted:#3a3a42;
+  --glass:rgba(255,255,255,.056);
+  --glass-2:rgba(255,255,255,.036);
+  --glass-brd:rgba(255,255,255,.105);
+  --glass-brd-2:rgba(255,255,255,.064);
+  --sheen:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.028));
+  --shadow-card:0 8px 28px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.09);
+  --row-tint:rgba(255,255,255,.02);
+  --border:rgba(255,255,255,.07);
+  --border-strong:rgba(255,255,255,.12);
+  --grid:rgba(255,255,255,.07);
+  --text-1:#f5f5f7;
+  --text-2:#b8b8c0;
+  --text-3:#8e8e97;
+  --text-4:#63636b;
+  --primary:#0a84ff;
+  --primary-600:#4f9cff;
+  --primary-50:rgba(10,132,255,.14);
+  --primary-100:rgba(10,132,255,.22);
+  --primary-bar:#4f8cff;
+  --success:#30d158;
+  --success-tone:#34d879;
+  --success-50:rgba(48,209,88,.14);
+  --danger:#ff5548;
+  --danger-50:rgba(255,69,58,.14);
+  --warn-text:#ffd60a;
+  --warning:#ff9f0a;
+  --warning-50:rgba(255,159,10,.14);
+  --gauge-on:#30d158;
+  --gauge-off:#3a3a42;
+  --tooltip-bg:#2c2c34;
+  --c0:#4f8cff; --c1:#ff9f0a; --c2:#30d158; --c3:#ff6482;
+  --c4:#a78bfa; --c5:#22c9d6; --c6:#ffd60a; --c7:#98989f;
+  --k1:#4f9cff; --k2:#30d158; --k3:#ffd60a; --k4:#ff9f0a;
+  --shadow-1:0 1px 2px rgba(0,0,0,.3);
+  --shadow-2:0 4px 16px rgba(0,0,0,.4);
+  --shadow-3:0 12px 32px rgba(0,0,0,.5);
+  --focus-ring:0 0 0 3px rgba(79,140,255,.35);
 }
 
 /* ---------- base ---------- */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--font);font-size:var(--fs-body);line-height:1.5;color:var(--text-1);background:var(--bg-app);-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);font-size:var(--fs-body);line-height:1.5;color:var(--text-1);background:var(--bg-app);-webkit-font-smoothing:antialiased;transition:background .45s cubic-bezier(.34,1.3,.64,1),color .45s cubic-bezier(.34,1.3,.64,1)}
 button,input,select{font-family:var(--font)}
 :focus-visible{outline:none;box-shadow:var(--focus-ring)}
 [id^="sec-"]{scroll-margin-top:calc(var(--topbar-h) + var(--s-4))}
@@ -282,7 +338,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
 .loading-title{font-size:var(--fs-h3);color:var(--text-1);font-weight:600;margin-bottom:var(--s-2)}
 .loading-pct{font-size:var(--fs-small);color:var(--text-3)}
 
-/* ---------- responsive: ≤768 (matches isMobile() threshold) ---------- */
+/* ---------- responsive: â‰¤768 (matches isMobile() threshold) ---------- */
 @media (max-width:48em){
   :root{--topbar-h:52px;--fs-h1:20px;--fs-kpi:24px;--fs-h2:15px;--h-chart:240px;--h-chart-tall:260px;--h-kpi:0px;--h-hero:260px;--h-table:440px}
   .rail{display:none}
@@ -311,13 +367,85 @@ tbody tr:hover td{background:var(--bg-subtle)}
   .heatmap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 }
 
-/* ---------- responsive: ≤480 ---------- */
+/* ---------- responsive: â‰¤480 ---------- */
 @media (max-width:30em){
   :root{--fs-h1:18px;--fs-kpi:22px;--h-chart:230px;--h-chart-tall:250px;--h-hero:250px}
   .page{padding:var(--s-3)}
   .fg{min-width:100%}
   .kpis{grid-template-columns:1fr}
   .mp-grid{gap:var(--s-1)}
+}
+
+/* ==========================================================================
+   LIQUID GLASS RESKIN — v2 (overrides cascade above in one block).
+   Floating glass rail + toolbar, glass cards, dual theme. Data logic untouched.
+   See restyle-log.md Â§Glass + prototype: brainstorm/content/prototype-v2.html
+   ========================================================================== */
+.rail{left:var(--edge);top:var(--edge);bottom:var(--edge);width:var(--rail-w);background:var(--glass);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:var(--bw) solid var(--glass-brd-2);border-right:var(--bw) solid var(--glass-brd-2);border-radius:var(--r-lg);box-shadow:var(--shadow-card)}
+.rail-brand{border-bottom:var(--bw) solid var(--glass-brd-2)}
+.rl:hover{background:var(--glass-2)}
+.rl.active{background:var(--primary-50);box-shadow:var(--ring-inset);color:var(--primary-600)}
+.rl.active svg{color:var(--primary-600)}
+.rail-foot{border-top:var(--bw) solid var(--glass-brd-2)}
+@media (min-width:48em){
+  .main{margin-left:calc(var(--rail-w) + var(--s-8));padding:0 var(--edge)}
+  .topbar{position:sticky;top:var(--edge);margin:0 var(--edge) 0 0;padding:var(--s-2) var(--s-4);background:var(--glass);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:var(--bw) solid var(--glass-brd-2);border-radius:var(--r-md);box-shadow:var(--shadow-card);justify-content:space-between}
+  .topbar-end{flex:1;display:flex;justify-content:space-between;align-items:center;gap:var(--s-3)}
+  [id^="sec-"]{scroll-margin-top:calc(var(--topbar-h) + var(--s-8))}
+  .pagehead{padding-top:var(--s-5)}
+}
+@media (max-width:48em){
+  .topbar{margin:0 var(--s-2);background:var(--glass);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:var(--bw) solid var(--glass-brd-2);border-radius:var(--r-md);box-shadow:var(--shadow-card)}
+  .topbar-end{gap:var(--s-2)}
+  .tbl-btn{width:var(--h-touch);height:var(--h-touch)}
+}
+.filters{background:var(--glass);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:var(--bw) solid var(--glass-brd);box-shadow:var(--shadow-card)}
+.filter-toggle,.tablebar input{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
+.fg select{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
+.fg select option{background:var(--bg-surface);color:var(--text-1)}
+.resetbtn{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
+.resetbtn:hover{background:var(--glass)}
+.kpi,.card{background:var(--sheen);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:var(--bw) solid var(--glass-brd);box-shadow:var(--shadow-card)}
+.kpi:hover,.card:hover{transform:translateY(var(--n-lift));border-color:var(--glass-brd);box-shadow:var(--shadow-2),var(--shadow-card)}
+.toptrend{box-shadow:var(--shadow-card)}
+.badge{background:var(--glass);border:var(--bw) solid var(--glass-brd)}
+.badge .rank{background:var(--glass-2)}
+thead th{background:var(--glass);backdrop-filter:blur(var(--blur-sm)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur-sm)) saturate(180%)}
+tbody tr:nth-child(even) td{background:var(--row-tint)}
+tbody tr:hover td{background:var(--row-tint)}
+.pager button{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
+.pager button:hover{background:var(--glass)}
+.pager-jump{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
+.mbtn,.cal-btn{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
+.hdr-search{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
+.month-pop{background:var(--glass);backdrop-filter:blur(var(--blur-lg)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur-lg)) saturate(180%);border:var(--bw) solid var(--glass-brd-2);box-shadow:var(--shadow-3)}
+.mp-all,.mp-chip{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
+.mp-chip:hover{background:var(--glass)}
+.loading{background:var(--bg-app)}
+.kpis .kpi:nth-child(1) .kpi-icon{color:var(--k1)}
+.kpis .kpi:nth-child(2) .kpi-icon{color:var(--k2)}
+.kpis .kpi:nth-child(3) .kpi-icon{color:var(--k3)}
+.kpis .kpi:nth-child(4) .kpi-icon{color:var(--k4)}
+/* theme toggle — sun/moon pill */
+.tbl-btn{flex:none;width:var(--s-10);height:var(--h-btn-sm);display:flex;align-items:center;justify-content:center;border:var(--bw) solid var(--glass-brd-2);background:var(--glass-2);border-radius:var(--r-pill);color:var(--text-2);cursor:pointer;transition:background .2s,border-color .2s;padding:0}
+.tbl-btn:hover{border-color:var(--primary);color:var(--text-1)}
+.tbl-btn svg{width:var(--s-4);height:var(--s-4);stroke:currentColor;fill:none;stroke-width:var(--bw-2);stroke-linecap:round;stroke-linejoin:round}
+html[data-theme='dark'] .tbl-btn .i-moon{display:none}
+html[data-theme='light'] .tbl-btn .i-sun{display:none}
+/* motion + accessibility gates */
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  html{scroll-behavior:auto}
+}
+@media (prefers-reduced-transparency:reduce){
+  .rail,.topbar,.filters,.kpi,.card,.badge,.month-pop,thead th{backdrop-filter:none;-webkit-backdrop-filter:none}
+  .rail,.topbar{background:var(--bg-surface);border-color:var(--border)}
+  .kpi,.card{background:var(--bg-surface)}
+  .filters,.month-pop{background:var(--bg-surface)}
+}
+@media (prefers-contrast:more){
+  .rail,.topbar,.filters,.kpi,.card,.badge,.month-pop,thead th{backdrop-filter:none;-webkit-backdrop-filter:none}
+  .rail,.topbar,.kpi,.card,.filters,.month-pop{background:var(--bg-surface);border:var(--bw) solid var(--border-strong)}
 }
 </style>
 </head>
@@ -345,7 +473,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
 <div class="main">
   <div class="topbar">
     <div class="topbar-brand"><img src="data:image/png;base64,__FAVICON__" alt="Premier Energies"></div>
-    <div class="topbar-end"><div class="months" id="months"></div></div>
+    <div class="topbar-end"><div class="months" id="months"></div><button id="themeBtn" class="tbl-btn" title="Toggle theme" aria-label="Toggle theme"><svg class="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button></div>
   </div>
   <main class="page">
     <header class="pagehead" id="sec-overview">
@@ -451,6 +579,9 @@ tbody tr:hover td{background:var(--bg-subtle)}
   <div class="loading-pct" id="load-pct">0%</div>
 </div>
 <script>
+// theme init first — token values below are theme-scoped
+(function(){let p=null;try{p=localStorage.getItem('pe-theme')}catch(e){}
+document.documentElement.dataset.theme=p||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');})();
 let RAW = [];
 const MONTHS = ["2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08"];
 const MLABEL = {"2024-12":"Dec-24","2025-01":"Jan-25","2025-02":"Feb-25","2025-03":"Mar-25","2025-04":"Apr-25","2025-05":"May-25","2025-06":"Jun-25","2025-07":"Jul-25","2025-08":"Aug-25","2025-09":"Sep-25","2025-10":"Oct-25","2025-11":"Nov-25","2025-12":"Dec-25","2026-01":"Jan-26","2026-02":"Feb-26","2026-03":"Mar-26","2026-04":"Apr-26","2026-05":"May-26","2026-06":"Jun-26","2026-07":"Jul-26","2026-08":"Aug-26"};
@@ -469,8 +600,17 @@ function rgb(n){
   return rgbCache[n]=m?m.slice(0,3).join(','):'40,97,255';
 }
 const A=(n,a)=>'rgba('+rgb(n)+','+a+')';
-const COLORS=['--c0','--c1','--c2','--c3','--c4','--c5','--c6','--c7'].map(V);
+let COLORS=['--c0','--c1','--c2','--c3','--c4','--c5','--c6','--c7'].map(V);
 Chart.defaults.color=V('--text-3');Chart.defaults.borderColor=V('--grid');Chart.defaults.font.family=V('--font');Chart.defaults.animation=false;
+// theme switching: clear rgb cache, re-resolve slots/defaults, full repaint via refresh()
+function applyTheme(t,save){
+  document.documentElement.dataset.theme=t;
+  if(save)try{localStorage.setItem('pe-theme',t)}catch(e){}
+  for(const k in rgbCache)delete rgbCache[k];
+  COLORS=['--c0','--c1','--c2','--c3','--c4','--c5','--c6','--c7'].map(V);
+  Chart.defaults.color=V('--text-3');Chart.defaults.borderColor=V('--grid');
+  if(Object.keys(charts).length)refresh();
+}
 const isMobile=()=>window.innerWidth<=768;
 
 // ---------- state ----------
@@ -480,6 +620,8 @@ let sortK='month',sortDir=1,search='',page=0;
 const PAGE=50;
 let tblRows=[],tblShown=0;
 const charts={};
+document.getElementById('themeBtn').onclick=()=>{applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark',true)};
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{try{if(!localStorage.getItem('pe-theme'))applyTheme(e.matches?'dark':'light')}catch(x){}});
 
 const isDefect=r=>r.category!=='No Issue'&&!(r.category==='Inspection'&&r.subcategory!=='Issue Found');
 const W=r=>r.weight||1;
@@ -655,13 +797,13 @@ function prevMonths(){
   const pidx=MONTHS.slice(i0-idx.length,i0);
   return {set:new Set(pidx),label:pidx.length===1?MLABEL[pidx[0]]:MLABEL[pidx[0]]+'–'+MLABEL[pidx[pidx.length-1]]};
 }
-// KPI trend chip: ▲/▼ % vs prior period, colored by whether the move is good
+// KPI trend chip: â–²/â–¼ % vs prior period, colored by whether the move is good
 function chip(id,goodUp,cur,prev){
   const el=document.getElementById(id);
   if(prev==null||prev===0||!isFinite((cur-prev)/prev)){el.className='chip';el.textContent='';return;}
   const d=(cur-prev)/prev*100,up=d>=0,good=up===goodUp;
   el.className='chip on '+(good?'good':'bad');
-  el.textContent=(up?'▲ ':'▼ ')+Math.abs(d).toFixed(1)+'%';
+  el.textContent=(up?'â–² ':'â–¼ ')+Math.abs(d).toFixed(1)+'%';
 }
 
 // ----------

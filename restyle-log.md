@@ -194,3 +194,67 @@ emulation (`04b-w400.png`).
   by deleting one line if the team wants entrance motion back.
 - Trend chips: implemented (§6 Elevate pass) with the contiguous-block prior-period rule; hidden
   rather than invented when no comparable prior period exists (default all-months view).
+
+## 11. Liquid Glass redesign pass (branch `liquid-glass`, off `trial-1`)
+
+Apple-grade "premium SaaS" reskin per approved prototype
+(`Temp/opencode/brainstorm/content/prototype-v2.html`, glass intensity −20%).
+Data logic, all 8 filters, month multi-select, Ayana exclusion, chips, no-result and
+mobile behavior are untouched — this pass changes tokens, presentational CSS, and one
+theme-manager JS addition in `build_dashboard.py`.
+
+### 11.1 Dual theme
+
+- Tokens split: `:root` = light (unchanged palette except `--bg-app:#f5f5f7`),
+  `html[data-theme='dark']` overrides ~40 color tokens (`--bg-app:#101014`, text
+  `#f5f5f7`/`#b8b8c0`/`#8e8e97`, brightened semantic and chart slots for dark AA/graphics).
+- Theme = `localStorage('pe-theme')` else `prefers-color-scheme`; system changes propagate
+  while no explicit choice is stored. Toggle button (sun/moon) in toolbar persists choice.
+- Theme switch clears the `rgb()` resolution cache, re-derives `COLORS` + `Chart.defaults`
+  from the new theme's tokens, and repaints via the normal `refresh()` path — charts stay
+  token-fed, no per-theme chart code. `COLORS` became a `let` (was `const`).
+
+### 11.2 Glass material (v2 values)
+
+| token | light | dark |
+|---|---|---|
+| `--glass` / `--glass-2` | `rgba(255,255,255,.58/.48)` | `rgba(255,255,255,.056/.036)` |
+| `--glass-brd` / `--glass-brd-2` | `rgba(0,0,0,.056/.04)` | `rgba(255,255,255,.105/.064)` |
+| `--sheen` | white .74→.5 gradient | white .08→.028 gradient |
+| `--shadow-card` | 0 1px 2px / 0 10px 30px black + inset sheen | 0 8px 28px black + inset sheen |
+
+Blur 19px saturate(180%) (24px month popover, 14px table header) = tokens
+`--blur/--blur-lg/--blur-sm`; floats/insets = `--edge:16px`, lift `--n-lift:-1px`.
+All component glass values live in tokens; the glass skin block contains no raw px (§11.4).
+
+### 11.3 Layout / components
+
+- Floating glass rail (inset 16px, radius `--r-lg`), main offset `rail-w + 32`;
+  floating sticky glass toolbar (top margin 16), month controls left, theme toggle right.
+- Filters card, KPI cards, cards, rank badges, table header, pager, month popover — all glass;
+  selects/chips/buttons use `--glass-2` fills + `--glass-brd-2` borders (native option lists
+  forced opaque per theme for legibility).
+- KPI icon accents per metric (`--k1..--k4`: blue/green/amber/orange) via nth-child, no markup change.
+- Zebra + hover rows via `--row-tint`; reduced motion / reduced transparency / more-contrast
+  media gates drop blur → solid surfaces.
+- Motion: 450ms spring-ish theme cross-fade on body, hover lift −1px; all disabled under
+  `prefers-reduced-motion`.
+
+### 11.4 Token discipline (re-scanned)
+
+Same scan as §7, excluding `:root` + `html[data-theme=…]` token scopes (incl. media-wrapped
+overrides): **0 hex, 0 raw px** — 102 tokens across both themes (glass literals tokenized;
+one intermediate build briefly had 47 raw-px leaks, fixed before commit).
+
+### 11.5 Verification
+
+Playwright (Chrome headless, real worktree build + `data.json`):
+- Full regression re-run green: all 8 filters applied+Singly reset (each re-renders KPIs),
+  Feb-26 single-month chips appear, `___none___` no-result state, theme toggle persists and
+  repaints charts, dark/light/700px/400px shots.
+- Computed-style spot-checks after tokenization: rail/KPI `blur(19px) saturate(180%)`,
+  rail/topbar top 16px, active nav inset ring resolves with per-theme `--primary-100`.
+- Dark AA notes: text-2 `#b8b8c0` ≈ 7.9:1 on `#101014` (AA); chart slots ≥3:1 vs card dark
+  surfaces; `--primary` #0a84ff with white bold labels ~4.0:1 — large/bold UI text tier,
+  matches Apple system blue precedent (documented; `-600` carries text-on-dark roles at 6+).
+
