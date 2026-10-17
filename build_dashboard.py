@@ -218,8 +218,7 @@ button,input,select{font-family:var(--font)}
 .pagehead h1{font-size:var(--fs-h1);font-weight:800;letter-spacing:-.022em;line-height:1.25}
 .pagehead .sub{color:var(--text-2);font-size:var(--fs-small);margin-top:var(--s-1)}
 
-/* ---------- note banner ---------- */
-.note-box{display:none;background:var(--primary-50);border:var(--bw) solid var(--primary-100);border-radius:var(--r-lg);padding:var(--s-3) var(--s-4);font-size:var(--fs-small);color:var(--text-2);margin-bottom:var(--s-5)}
+/* ---------- note banner (removed in prototype v2 match) ---------- */
 
 /* ---------- filter bar ---------- */
 .filter-toggle{display:none;width:100%;padding:var(--s-3) var(--s-4);background:var(--bg-surface);border:var(--bw) solid var(--border);border-radius:var(--r-lg);cursor:pointer;font-size:var(--fs-body);font-weight:600;color:var(--primary);text-align:left;margin-bottom:var(--s-5)}
@@ -499,9 +498,7 @@ tbody tr:hover td{background:var(--row-tint)}
 .tbl-btn.knobbtn{width:var(--knob-w);height:var(--knob-h);border-radius:var(--knob-r);display:block;position:relative;padding:0;flex:none}
 .knobbtn .knob{position:absolute;top:var(--knob-oy);left:var(--knob-ox);width:var(--knob-d);height:var(--knob-d);border-radius:50%;background:var(--knob);box-shadow:var(--knob-shadow);transition:transform .4s cubic-bezier(.34,1.4,.64,1),background .4s}
 html[data-theme='light'] .knobbtn .knob{transform:translateX(var(--knob-slide));background:var(--knob-light)}
-/* note band */
-.note-box{display:flex;gap:var(--s-3);align-items:flex-start;background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2);border-radius:var(--r-lg);padding:var(--s-4) var(--s-5);color:var(--text-2);font-size:var(--fs-body);margin-bottom:var(--s-6)}
-.note-box .ni{color:var(--warning);flex:none;font-style:normal}
+/* note band removed in prototype v2 match */
 @media (max-width:48em){
   .kpi{padding:var(--s-4);min-height:0}
   .kpi .kpi-icon{width:var(--icon-badge-m);height:var(--icon-badge-m);padding:var(--icon-pad-m)}
@@ -550,8 +547,6 @@ html[data-theme='light'] .knobbtn .knob{transform:translateX(var(--knob-slide));
       <div class="kpi"><div class="kpi-top"><div class="label">Avg TAT (days)</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg></div><div class="val" id="k-tat">0</div><div class="sub"><div class="note" id="k-tat-note"></div><div class="chip" id="k-tat-chip"></div></div></div>
       <div class="kpi"><div class="kpi-top"><div class="label">Open (WIP)</div><svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div><div class="val" id="k-wip">0</div><div class="sub"><div class="note" id="k-wip-note">awaiting resolution</div><div class="chip" id="k-wip-chip"></div></div></div>
     </div>
-
-    <div class="note-box" id="march-note" style="display:none"><span class="ni">⚠</span> March includes a large single-site inspection block (Ayana, ~178K modules, all "No Issue"). KPIs and charts exclude that block from defect calculations so charts stay readable.</div>
 
     <button class="filter-toggle" id="filterToggle">Filters <span class="arrow">&#9660;</span></button>
     <div class="filters">
@@ -936,7 +931,6 @@ function mkLines(id,labels,datasets){
 // ---------- main refresh ----------
 function refresh(){
   syncHeaderUI();
-  const mN=document.getElementById('march-note');mN.style.cssText=selMonths.has('2026-03')?'':'display:none';
   populateSub();
 
   const mrows=monthFiltered();
