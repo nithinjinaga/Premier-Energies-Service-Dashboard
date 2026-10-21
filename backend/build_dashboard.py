@@ -540,13 +540,13 @@ html[data-theme='light'] .knobbtn .knob{transform:translateX(var(--knob-slide));
   </nav>
   <div class="rail-foot">
     <div class="rail-foot-k">Data through</div>
-    <div class="rail-foot-v">Aug 2026</div>
+    <div class="rail-foot-v" id="data-through">Sep 2026</div>
   </div>
 </aside>
 <div class="main">
   <header class="pagehead" id="sec-overview">
     <h1>Overview</h1>
-    <div class="sub">Field service &amp; module defect tracking · Dec 2024–Aug 2026</div>
+    <div class="sub" id="pagehead-sub">Field service &amp; module defect tracking · Dec 2024–Sep 2026</div>
   </header>
   <div class="topbar">
     <div class="topbar-brand"><img src="data:image/png;base64,__FAVICON__" alt="Premier Energies"></div>
@@ -652,6 +652,10 @@ document.documentElement.dataset.theme=p||(matchMedia('(prefers-color-scheme: da
 let DB=null;
 const MONTHS = ["2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09"];
 const MLABEL = {"2024-12":"Dec-24","2025-01":"Jan-25","2025-02":"Feb-25","2025-03":"Mar-25","2025-04":"Apr-25","2025-05":"May-25","2025-06":"Jun-25","2025-07":"Jul-25","2025-08":"Aug-25","2025-09":"Sep-25","2025-10":"Oct-25","2025-11":"Nov-25","2025-12":"Dec-25","2026-01":"Jan-26","2026-02":"Feb-26","2026-03":"Mar-26","2026-04":"Apr-26","2026-05":"May-26","2026-06":"Jun-26","2026-07":"Jul-26","2026-08":"Aug-26","2026-09":"Sep-26"};
+// "Data through" + header range derive from MONTHS so they never go stale
+const M2FULL=m=>MLABEL[m].replace('-',' 20');
+document.getElementById('data-through').textContent=M2FULL(MONTHS[MONTHS.length-1]);
+document.getElementById('pagehead-sub').textContent='Field service & module defect tracking · '+M2FULL(MONTHS[0])+'–'+M2FULL(MONTHS[MONTHS.length-1]);
 const CAT_ORDER = ["Junction Box Defects","Ribbon Soldering Issue","Cell and Module Defects","Physical and External Damage","Transit Damage","Aesthetic","No Issue","Inspection"];
 const ROOT=getComputedStyle(document.documentElement);
 const V=n=>ROOT.getPropertyValue(n).trim();
