@@ -859,7 +859,7 @@ function mkDonut(id,labels,data,cols,ctr){
   if(charts[id])charts[id].destroy();
   const mob=isMobile();
   charts[id]=new Chart(document.getElementById(id),{type:'doughnut',plugins:[centerTxt],
-    data:{labels,datasets:[{data,backgroundColor:cols||COLORS,borderColor:V('--bg-surface'),borderWidth:2}]},
+    data:{labels,datasets:[{data,backgroundColor:cols||COLORS,borderWidth:0}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
       plugins:{ctr:{total:ctr?data.reduce((a,b)=>a+b,0):0,label:ctr?ctr.label:''},
       legend:{position:mob?'bottom':'right',labels:{boxWidth:mob?10:12,padding:mob?6:8,font:{size:mob?10:11}}},
