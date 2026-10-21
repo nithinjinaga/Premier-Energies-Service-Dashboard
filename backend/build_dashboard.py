@@ -43,23 +43,23 @@ HTML = r"""<!DOCTYPE html>
    Scale: PNG 1878px = 1440px design viewport (÷1.3). See restyle-log.md.
    ========================================================================== */
 :root{
-  /* surfaces — merged theme: dark canvas, one fixed theme (no dark/light toggle) */
-  --bg-app:#101014;
-  --bg-surface:#1a1a20;
-  --bg-subtle:rgba(255,255,255,.045);
-  --bg-muted:#3a3a42;
+  /* surfaces — light theme */
+  --bg-app:#f5f5f7;
+  --bg-surface:#ffffff;
+  --bg-subtle:#fafafc;
+  --bg-muted:#eeeef0;
   /* glass material (Liquid Glass v2, dark-canvas intensity) */
-  --glass:rgba(255,255,255,.056);
-  --glass-2:rgba(255,255,255,.036);
-  --glass-brd:rgba(255,255,255,.105);
-  --glass-brd-2:rgba(255,255,255,.064);
-  --sheen:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.10));
-  --shadow-card:0 1px 2px rgba(0,0,0,.22),0 3px 12px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.09);
-  --row-tint:rgba(255,255,255,.02);
+  --glass:rgba(255,255,255,.58);
+  --glass-2:rgba(255,255,255,.48);
+  --glass-brd:rgba(0,0,0,.056);
+  --glass-brd-2:rgba(0,0,0,.04);
+  --sheen:linear-gradient(180deg,rgba(255,255,255,.74),rgba(255,255,255,.5));
+  --shadow-card:0 1px 2px rgba(0,0,0,.05),0 10px 30px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.7);
+  --row-tint:rgba(0,0,0,.02);
   /* borders */
-  --border:rgba(255,255,255,.07);
-  --border-strong:rgba(255,255,255,.12);
-  --grid:rgba(255,255,255,.07);
+  --border:#eeeef1;
+  --border-strong:#e2e3e6;
+  --grid:rgba(0,0,0,.05);
   /* text */
   --text-1:#191b1e;
   --text-2:#5b5d62;
@@ -82,8 +82,8 @@ HTML = r"""<!DOCTYPE html>
   --warning-50:#fff3ea;
   /* misc viz */
   --gauge-on:#42c78b;
-  --gauge-off:#3a3a42;
-  --tooltip-bg:#2c2c34;
+  --gauge-off:#d2d3d6;
+  --tooltip-bg:#191b1e;
   /* KPI icon slots — per-metric accent (closed/rate/tat/wip) */
   --k1:#0071e3; --k2:#248a3d; --k3:#b25000; --k4:#8a3b12;
   /* 8 chart slots — category order CAT_ORDER; all ≥3:1 vs white except c6 (unused slot, see log) */
@@ -100,10 +100,10 @@ HTML = r"""<!DOCTYPE html>
   --r-xl:20px; --r-lg:12px; --r-md:10px; --r-sm:6px; --r-pill:999px;
   /* elevation — reference is flat; hover shadows estimated (static PNG) */
   --shadow-0:none;
-  --shadow-1:0 1px 2px rgba(0,0,0,.3);
-  --shadow-2:0 4px 16px rgba(0,0,0,.4);
-  --shadow-3:0 12px 32px rgba(0,0,0,.5);
-  --focus-ring:0 0 0 3px rgba(79,140,255,.35);
+  --shadow-1:0 1px 2px rgba(16,24,40,.04);
+  --shadow-2:0 4px 16px rgba(16,24,40,.06);
+  --shadow-3:0 12px 32px rgba(16,24,40,.12);
+  --focus-ring:0 0 0 3px rgba(40,97,255,.25);
   /* component dims */
   --rail-w:216px;
   --topbar-h:56px;    /* sampled 57px */
@@ -136,7 +136,7 @@ HTML = r"""<!DOCTYPE html>
   /* glass skin literals */
   --edge:16px; --blur:19px; --blur-sm:14px; --blur-lg:24px; --n-lift:-1px; --ring-inset:inset 0 0 0 1px var(--primary-100);
   /* prototype-match round 2 */
-  --chip-bg:rgba(255,255,255,.08); --knob:linear-gradient(135deg,#ffd60a,#ff9f0a); --knob-w:52px; --knob-d:23px;
+  --chip-bg:rgba(0,0,0,.05); --knob:linear-gradient(135deg,#ffd60a,#ff9f0a); --knob-w:52px; --knob-d:23px;
   --knob-h:30px; --knob-r:15px; --knob-oy:2.5px; --knob-ox:3px; --knob-slide:22px; --knob-light:linear-gradient(135deg,#4f8cff,#0a84ff); --tool-fs:12px; --tool-py:7px; --tool-px:12px; --mchip-py:5px; --mchip-px:10px;
   --mark:linear-gradient(135deg,#4d9bff,#0a84ff); --mark-glow:0 4px 14px rgba(10,132,255,.3);
   --icon-badge:26px; --icon-badge-m:26px; --icon-pad:6px; --icon-pad-m:6px; --icon-r:8px; --chip-r:7px; --chip-px:7px;
@@ -382,11 +382,7 @@ tbody tr:hover td{background:var(--row-tint)}
 .hdr-search{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
 .month-pop{background:var(--glass);backdrop-filter:blur(var(--blur-lg)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur-lg)) saturate(180%);border:var(--bw) solid var(--glass-brd-2);box-shadow:var(--shadow-3)}
 
-/* dark-glass chrome gets light text (cards on bright glass keep the light-ink look) */
-.rail,.topbar,.filters,.month-pop{
-  --text-1:#f5f5f7; --text-2:#b8b8c0; --text-3:#8e8e97; --text-4:#63636b;
-  --success:#30d158; --danger:#ff5548; --warn-text:#ffd60a; --warning:#ff9f0a; --primary:#0a84ff;
-}
+
 .mp-all,.mp-chip{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
 .mp-chip:hover{background:var(--glass)}
 .loading{background:var(--bg-app)}
