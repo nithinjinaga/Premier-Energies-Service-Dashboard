@@ -1,10 +1,10 @@
 {
   "buildCommand": "",
-  "outputDirectory": ".",
+  "outputDirectory": "frontend",
   "framework": null,
   "headers": [
     {
-      "source": "/data.json",
+      "source": "/data.db",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
       ]

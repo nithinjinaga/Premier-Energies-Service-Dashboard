@@ -3,9 +3,9 @@
 Premier Energies After-Sales — multi-month ingestion.
 
 HOW TO USE:
-1. Place this file in the same folder as your monthly Excel files
+1. Monthly Excel files live in ../Reports (this folder holds the scripts)
 2. Run: python ingest.py
-3. It will produce data.json in the same folder
+3. It will produce data.db in ../frontend
 4. Then run build_dashboard.py to generate the HTML
 
 TO ADD A NEW MONTH:
@@ -17,10 +17,14 @@ TO ADD A NEW MONTH:
 INSTALL REQUIREMENT:
 pip install openpyxl
 """
-import json
 import os
+import sqlite3
 from datetime import datetime
 from openpyxl import load_workbook
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+REPORTS_DIR = os.path.join(BASE_DIR, "..", "Reports")
+FRONTEND_DIR = os.path.join(BASE_DIR, "..", "frontend")
 
 # ── ADD NEW MONTHS HERE ──────────────────────────────────────────────────────
 SOURCES = [
@@ -33,7 +37,7 @@ SOURCES = [
     ("June 26 - Daily & Monthly Analyzed Report.xlsx",  " Monthly Report June-26",        "2026-06", 13, 15, 21),
     ("July 26 - Daily & Monthly Analyzed Report.xlsx",  "Monthly Report July-26",         "2026-07", 13, 15, 21),
     ("Aug 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report Aug-26",          "2026-08", 13, 15, 21),
-
+    ("Sep 26 - Daily & Monthly Analyzed Report.xlsx",   "Monthly Report Sep-26 ",         "2026-09", 13, 15, 21),
 ]
 
 # ── MULTI-MONTH TRACKER FILES ───────────────────────────────────────────────
@@ -264,6 +268,18 @@ HIER = {
     "lightening issue":             ("Customer Issue", "Lightning Case"),
     "mc4 connector damaged":        ("Physical and External Damage", "MC4 Connectors Damaged"),
     "p & n jb damaged by theft/riot incident": ("Junction Box Defects", "JB Issue"),
+    # Additional (Sep 2026)
+    "discoloration":                ("Aesthetic", "Discoloration"),
+    "dust observed":                ("Aesthetic", "Aesthetic"),
+    "bird dropping on the module":  ("Aesthetic", "Aesthetic"),
+    "white/grey marks were observed on the glass, which appear to be surface dirt or dried water/mineral deposits": ("Aesthetic", "Aesthetic"),
+    "hardened potting material was observed on the front glass": ("Aesthetic", "Aesthetic"),
+    "jb wire cutting":              ("Junction Box Defects", "JB Wire Cutting"),
+    "under evalution":              ("Inspection", "Under Evaluation"),
+    "back glass broken by external": ("Physical and External Damage", "Glass Breakage"),
+    "hot spot issue":               ("Cell and Module Defects", "Hotspot"),
+    "c23 cell damaged":             ("Cell and Module Defects", "Cell Damage"),
+    "module breakage and burn":     ("Physical and External Damage", "Glass Breakage"),
 }
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -331,6 +347,7 @@ unmapped = {}
 rows = []
 
 for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
+    fname = os.path.join(REPORTS_DIR, fname)
     if not os.path.exists(fname):
         print(f"WARNING: {fname} not found — skipping")
         continue
@@ -428,6 +445,7 @@ for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
     wb.close()
 
 for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
+    fname = os.path.join(REPORTS_DIR, fname)
     if not os.path.exists(fname):
         print(f"WARNING: {fname} not found — skipping")
         continue
@@ -552,6 +570,26 @@ for m in sorted(mc):
 KEEP = {"month","serial","complaint_by","customer_type","project","state","status",
         "plant","category","subcategory","settle_days","weight","is_aggregate","complaint_no","resolution"}
 slim = [{k: r[k] for k in KEEP if k in r} for r in rows]
-with open("data.json", "w") as f:
-    json.dump(slim, f, separators=(",", ":"))
-print("\nWrote data.json — now run build_dashboard.py")
+COLS = ["month","serial","complaint_by","customer_type","project","state","status",
+        "plant","category","subcategory","settle_days","weight","is_aggregate","complaint_no","resolution"]
+db_path = os.path.join(FRONTEND_DIR, "data.db")
+if os.path.exists(db_path):
+    os.remove(db_path)
+conn = sqlite3.connect(db_path)
+cur = conn.cursor()
+cur.execute("""CREATE TABLE complaints (
+    month TEXT NOT NULL, serial TEXT, complaint_by TEXT,
+    customer_type TEXT, project TEXT, state TEXT, status TEXT,
+    plant TEXT, category TEXT, subcategory TEXT,
+    settle_days REAL, weight REAL NOT NULL DEFAULT 1,
+    is_aggregate INTEGER NOT NULL DEFAULT 0,
+    complaint_no TEXT, resolution TEXT
+)""")
+cur.executemany(
+    f"INSERT INTO complaints ({','.join(COLS)}) VALUES ({','.join('?' for _ in COLS)})",
+    [tuple(int(r.get(c)) if c == "is_aggregate" else r.get(c) for c in COLS) for r in slim]
+)
+conn.commit()
+conn.close()
+db_size = os.path.getsize(db_path) / (1024 * 1024)
+print(f"Wrote data.db ({db_size:.1f} MB) — now run build_dashboard.py")
