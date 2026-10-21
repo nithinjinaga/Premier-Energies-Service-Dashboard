@@ -351,6 +351,12 @@ tbody tr:hover td{background:var(--row-tint)}
 .mbtn,.cal-btn{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
 .hdr-search{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
 .month-pop{background:var(--glass);backdrop-filter:blur(var(--blur-lg)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur-lg)) saturate(180%);border:var(--bw) solid var(--glass-brd-2);box-shadow:var(--shadow-3)}
+
+/* dark-glass chrome gets light text (cards on bright glass keep the light-ink look) */
+.rail,.topbar,.filters,.month-pop{
+  --text-1:#f5f5f7; --text-2:#b8b8c0; --text-3:#8e8e97; --text-4:#63636b;
+  --success:#30d158; --danger:#ff5548; --warn-text:#ffd60a; --warning:#ff9f0a; --primary:#0a84ff;
+}
 .mp-all,.mp-chip{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
 .mp-chip:hover{background:var(--glass)}
 .loading{background:var(--bg-app)}
