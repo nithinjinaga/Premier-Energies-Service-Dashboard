@@ -143,7 +143,7 @@ button,input,select{font-family:var(--font)}
 .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:flex-end;gap:var(--s-3);min-height:var(--topbar-h);padding:0 var(--s-8);background:var(--bg-surface);border-bottom:var(--bw) solid var(--border)}
 .topbar-brand{display:none;align-items:center;gap:var(--s-2);font-weight:600;font-size:var(--fs-h3)}
 .topbar-brand img{width:var(--logo-s);height:var(--logo-s);object-fit:contain}
-.topbar-end{display:flex;align-items:center}
+.topbar-end{display:flex;align-items:center;gap:var(--s-2)}
 .page{padding:var(--s-6) var(--s-8) var(--s-10);max-width:var(--w-page)}
 .pagehead{margin-bottom:var(--s-5)}
 .pagehead h1{font-size:var(--fs-h1);font-weight:800;letter-spacing:-.022em;line-height:1.25}
@@ -693,7 +693,7 @@ function buildHeaderTools(){
   popAllEl.onclick=()=>{selMonths=new Set(MONTHS);refresh();};
   head.appendChild(popAllEl); monthPopEl.appendChild(head);
   const hint=document.createElement('div'); hint.className='mp-hint'; hint.innerHTML='Click a month · hold ⇧ Shift to compare several';
-  const rstBtn=document.getElementById('rst-top'); rstBtn.parentNode.insertBefore(hdrSearchWrap, rstBtn);
+  const rstBtn=document.getElementById('rst-top'); rstBtn.parentNode.insertBefore(hdrSearchWrap, rstBtn.nextSibling);
   monthPopEl.appendChild(hint);
   const SHORTM=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const years=[...new Set(MONTHS.map(m=>m.slice(0,4)))];
