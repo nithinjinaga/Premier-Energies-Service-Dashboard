@@ -279,7 +279,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
 .mp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-2)}
 .mp-chip{padding:var(--s-2) 0;text-align:center;border-radius:var(--r-md);cursor:pointer;font-size:var(--fs-small);font-weight:600;transition:.12s;border:var(--bw) solid var(--border);background:var(--bg-subtle);color:var(--text-1)}
 .mp-chip:hover{border-color:var(--primary)}
-.mp-chip.sel{border-color:var(--primary);background:var(--primary);color:var(--bg-surface)}
+.mp-chip.sel{border-color:var(--text-2);background:var(--text-2);color:var(--bg-surface)}
 .mp-foot{margin-top:var(--s-4);padding-top:var(--s-3);border-top:var(--bw) solid var(--border);font-size:var(--fs-micro);color:var(--text-3)}
 .mp-foot span{color:var(--text-1);font-weight:600}
 
