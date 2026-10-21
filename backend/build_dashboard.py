@@ -54,7 +54,7 @@ HTML = r"""<!DOCTYPE html>
   --glass-brd:rgba(255,255,255,.105);
   --glass-brd-2:rgba(255,255,255,.064);
   --sheen:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.028));
-  --shadow-card:0 8px 28px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.09);
+  --shadow-card:inset 0 1px 0 rgba(255,255,255,.09);
   --row-tint:rgba(255,255,255,.02);
   /* borders */
   --border:rgba(255,255,255,.07);
@@ -217,7 +217,7 @@ button,input,select{font-family:var(--font)}
 .chartbox{position:relative;height:var(--h-chart)}
 .chartbox.tall{height:var(--h-chart-tall)}
 .chartbox.hero{height:var(--h-hero)}
-.toptrend{margin-bottom:var(--s-6);box-shadow:var(--shadow-2)}
+.toptrend{margin-bottom:var(--s-6)}
 
 /* ---------- top-3 strip ---------- */
 .badges{display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--w-badge-min),1fr));gap:var(--s-3);margin-bottom:var(--s-4)}
@@ -368,8 +368,8 @@ tbody tr:hover td{background:var(--bg-subtle)}
 .resetbtn{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
 .resetbtn:hover{background:var(--glass)}
 .kpi,.card{background:var(--sheen);backdrop-filter:blur(var(--blur)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur)) saturate(180%);border:var(--bw) solid var(--glass-brd);box-shadow:var(--shadow-card)}
-.kpi:hover,.card:hover{transform:translateY(var(--n-lift));border-color:var(--glass-brd);box-shadow:var(--shadow-2),var(--shadow-card)}
-.toptrend{box-shadow:var(--shadow-card)}
+.kpi:hover,.card:hover{transform:translateY(var(--n-lift));border-color:var(--glass-brd-2)}
+
 .badge{background:var(--glass);border:var(--bw) solid var(--glass-brd)}
 .badge .rank{background:var(--glass-2)}
 thead th{background:var(--glass);backdrop-filter:blur(var(--blur-sm)) saturate(180%);-webkit-backdrop-filter:blur(var(--blur-sm)) saturate(180%)}
