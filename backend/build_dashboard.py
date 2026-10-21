@@ -43,23 +43,23 @@ HTML = r"""<!DOCTYPE html>
    Scale: PNG 1878px = 1440px design viewport (÷1.3). See restyle-log.md.
    ========================================================================== */
 :root{
-  /* surfaces — light theme */
-  --bg-app:#f5f5f7;
-  --bg-surface:#ffffff;
-  --bg-subtle:#fafafc;
-  --bg-muted:#eeeef0;
-  /* glass material — light (Liquid Glass v2, -20% intensity) */
-  --glass:rgba(255,255,255,.58);
-  --glass-2:rgba(255,255,255,.48);
-  --glass-brd:rgba(0,0,0,.056);
-  --glass-brd-2:rgba(0,0,0,.04);
-  --sheen:linear-gradient(180deg,rgba(255,255,255,.74),rgba(255,255,255,.5));
-  --shadow-card:0 1px 2px rgba(0,0,0,.05),0 10px 30px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.7);
-  --row-tint:rgba(0,0,0,.02);
+  /* surfaces — merged theme: dark canvas, one fixed theme (no dark/light toggle) */
+  --bg-app:#101014;
+  --bg-surface:#1a1a20;
+  --bg-subtle:rgba(255,255,255,.045);
+  --bg-muted:#3a3a42;
+  /* glass material (Liquid Glass v2, dark-canvas intensity) */
+  --glass:rgba(255,255,255,.056);
+  --glass-2:rgba(255,255,255,.036);
+  --glass-brd:rgba(255,255,255,.105);
+  --glass-brd-2:rgba(255,255,255,.064);
+  --sheen:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.028));
+  --shadow-card:0 8px 28px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.09);
+  --row-tint:rgba(255,255,255,.02);
   /* borders */
-  --border:#eeeef1;
-  --border-strong:#e2e3e6;
-  --grid:rgba(0,0,0,.05);
+  --border:rgba(255,255,255,.07);
+  --border-strong:rgba(255,255,255,.12);
+  --grid:rgba(255,255,255,.07);
   /* text */
   --text-1:#191b1e;
   --text-2:#5b5d62;
@@ -82,8 +82,8 @@ HTML = r"""<!DOCTYPE html>
   --warning-50:#fff3ea;
   /* misc viz */
   --gauge-on:#42c78b;
-  --gauge-off:#d2d3d6;
-  --tooltip-bg:#191b1e;
+  --gauge-off:#3a3a42;
+  --tooltip-bg:#2c2c34;
   /* KPI icon slots — per-metric accent (closed/rate/tat/wip) */
   --k1:#0071e3; --k2:#248a3d; --k3:#b25000; --k4:#8a3b12;
   /* 8 chart slots — category order CAT_ORDER; all ≥3:1 vs white except c6 (unused slot, see log) */
@@ -100,10 +100,10 @@ HTML = r"""<!DOCTYPE html>
   --r-xl:20px; --r-lg:12px; --r-md:10px; --r-sm:6px; --r-pill:999px;
   /* elevation — reference is flat; hover shadows estimated (static PNG) */
   --shadow-0:none;
-  --shadow-1:0 1px 2px rgba(16,24,40,.04);
-  --shadow-2:0 4px 16px rgba(16,24,40,.06);
-  --shadow-3:0 12px 32px rgba(16,24,40,.12);
-  --focus-ring:0 0 0 3px rgba(40,97,255,.25);
+  --shadow-1:0 1px 2px rgba(0,0,0,.3);
+  --shadow-2:0 4px 16px rgba(0,0,0,.4);
+  --shadow-3:0 12px 32px rgba(0,0,0,.5);
+  --focus-ring:0 0 0 3px rgba(79,140,255,.35);
   /* component dims */
   --rail-w:216px;
   --topbar-h:56px;    /* sampled 57px */
@@ -136,58 +136,12 @@ HTML = r"""<!DOCTYPE html>
   /* glass skin literals */
   --edge:16px; --blur:19px; --blur-sm:14px; --blur-lg:24px; --n-lift:-1px; --ring-inset:inset 0 0 0 1px var(--primary-100);
   /* prototype-match round 2 */
-  --chip-bg:rgba(0,0,0,.05); --knob:linear-gradient(135deg,#ffd60a,#ff9f0a); --knob-w:52px; --knob-d:23px;
+  --chip-bg:rgba(255,255,255,.08); --knob:linear-gradient(135deg,#ffd60a,#ff9f0a); --knob-w:52px; --knob-d:23px;
   --knob-h:30px; --knob-r:15px; --knob-oy:2.5px; --knob-ox:3px; --knob-slide:22px; --knob-light:linear-gradient(135deg,#4f8cff,#0a84ff); --tool-fs:12px; --tool-py:7px; --tool-px:12px; --mchip-py:5px; --mchip-px:10px;
   --mark:linear-gradient(135deg,#4d9bff,#0a84ff); --mark-glow:0 4px 14px rgba(10,132,255,.3);
   --icon-badge:26px; --icon-badge-m:26px; --icon-pad:6px; --icon-pad-m:6px; --icon-r:8px; --chip-r:7px; --chip-px:7px;
   --fs-nav:12.5px; --fs-label:9.5px; --fs-brand:13px; --fs-foot:10px; --nav-py:8px; --nav-px:10px; --nav-r:9px; --nav-ic:16px; --nav-ic-r:5px;
   --knob-shadow:0 2px 8px rgba(0,0,0,.35); --pad-tiny:2px; --fpanel-vacant:180px; --fpanel-w:880px; --hero-photo:url("data:image/jpeg;base64,__HERO_BG__") center/cover no-repeat fixed;
-}
-/* ---------- dark theme (Liquid Glass) ---------- */
-html[data-theme='dark']{
-  --bg-app:#101014;
-  --bg-surface:#1a1a20;
-  --bg-subtle:rgba(255,255,255,.045);
-  --bg-muted:#3a3a42;
-  --glass:rgba(255,255,255,.056);
-  --glass-2:rgba(255,255,255,.036);
-  --glass-brd:rgba(255,255,255,.105);
-  --glass-brd-2:rgba(255,255,255,.064);
-  --sheen:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.028));
-  --shadow-card:0 8px 28px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.09);
-  --row-tint:rgba(255,255,255,.02);
-  --border:rgba(255,255,255,.07);
-  --border-strong:rgba(255,255,255,.12);
-  --grid:rgba(255,255,255,.07);
-  --text-1:#f5f5f7;
-  --text-2:#b8b8c0;
-  --text-3:#8e8e97;
-  --text-4:#63636b;
-  --primary:#0a84ff;
-  --primary-600:#4f9cff;
-  --primary-50:rgba(10,132,255,.14);
-  --primary-100:rgba(10,132,255,.22);
-  --primary-bar:#4f8cff;
-  --success:#30d158;
-  --success-tone:#34d879;
-  --success-50:rgba(48,209,88,.14);
-  --danger:#ff5548;
-  --danger-50:rgba(255,69,58,.14);
-  --warn-text:#ffd60a;
-  --warning:#ff9f0a;
-  --warning-50:rgba(255,159,10,.14);
-  --gauge-on:#30d158;
-  --gauge-off:#3a3a42;
-  --tooltip-bg:#2c2c34;
-  --c0:#4f8cff; --c1:#ff9f0a; --c2:#30d158; --c3:#ff6482;
-  --c4:#a78bfa; --c5:#22c9d6; --c6:#ffd60a; --c7:#98989f;
-  --k1:#4f9cff; --k2:#30d158; --k3:#ffd60a; --k4:#ff9f0a;
-  --shadow-1:0 1px 2px rgba(0,0,0,.3);
-  --shadow-2:0 4px 16px rgba(0,0,0,.4);
-  --shadow-3:0 12px 32px rgba(0,0,0,.5);
-  --focus-ring:0 0 0 3px rgba(79,140,255,.35);
-  --chip-bg:rgba(255,255,255,.08);
-  --mark-glow:0 4px 16px rgba(10,132,255,.45);
 }
 
 /* ---------- base ---------- */
@@ -503,7 +457,6 @@ tbody tr:hover td{background:var(--row-tint)}
 .tbl-btn.wide{padding:var(--tool-py) var(--tool-px);color:var(--text-1);font-weight:600;font-size:var(--tool-fs)}
 .tbl-btn.knobbtn{width:var(--knob-w);height:var(--knob-h);border-radius:var(--knob-r);display:block;position:relative;padding:0;flex:none}
 .knobbtn .knob{position:absolute;top:var(--knob-oy);left:var(--knob-ox);width:var(--knob-d);height:var(--knob-d);border-radius:50%;background:var(--knob);box-shadow:var(--knob-shadow);transition:transform .4s cubic-bezier(.34,1.4,.64,1),background .4s}
-html[data-theme='light'] .knobbtn .knob{transform:translateX(var(--knob-slide));background:var(--knob-light)}
 /* note band removed in prototype v2 match */
 /* filters: on-demand floating panel (prototype v2) */
 .filters{position:fixed;display:none;top:calc(var(--edge) + var(--topbar-h) + var(--s-3));right:var(--edge);left:auto;width:min(var(--fpanel-w),calc(100vw - var(--rail-w) - var(--s-8)));max-height:calc(100vh - var(--fpanel-vacant));overflow:auto;z-index:45;margin-bottom:0}
@@ -550,7 +503,7 @@ html[data-theme='light'] .knobbtn .knob{transform:translateX(var(--knob-slide));
   </header>
   <div class="topbar">
     <div class="topbar-brand"><img src="data:image/png;base64,__FAVICON__" alt="Premier Energies"></div>
-    <div class="topbar-end"><div class="months" id="months"></div><button id="f-on" class="fchip" type="button" title="Show filters"><svg viewBox="0 0 24 24"><path d="M22 3H2l10 10v8l2-2v-6z"/></svg><span><b id="f-on-n">0</b> filters on</span></button><button id="rst-top" class="tbl-btn wide" type="button">Reset</button><button id="themeBtn" class="tbl-btn knobbtn" title="Toggle theme" aria-label="Toggle theme"><span class="knob"></span></button></div>
+    <div class="topbar-end"><div class="months" id="months"></div><button id="f-on" class="fchip" type="button" title="Show filters"><svg viewBox="0 0 24 24"><path d="M22 3H2l10 10v8l2-2v-6z"/></svg><span><b id="f-on-n">0</b> filters on</span></button><button id="rst-top" class="tbl-btn wide" type="button">Reset</button></div>
   </div>
   <main class="page">
     <div class="kpis">
@@ -646,9 +599,6 @@ html[data-theme='light'] .knobbtn .knob{transform:translateX(var(--knob-slide));
   <div class="loading-pct" id="load-pct">0%</div>
 </div>
 <script>
-// theme init first — token values below are theme-scoped
-(function(){let p=null;try{p=localStorage.getItem('pe-theme')}catch(e){}
-document.documentElement.dataset.theme=p||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');})();
 let DB=null;
 const MONTHS = ["2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09"];
 const MLABEL = {"2024-12":"Dec-24","2025-01":"Jan-25","2025-02":"Feb-25","2025-03":"Mar-25","2025-04":"Apr-25","2025-05":"May-25","2025-06":"Jun-25","2025-07":"Jul-25","2025-08":"Aug-25","2025-09":"Sep-25","2025-10":"Oct-25","2025-11":"Nov-25","2025-12":"Dec-25","2026-01":"Jan-26","2026-02":"Feb-26","2026-03":"Mar-26","2026-04":"Apr-26","2026-05":"May-26","2026-06":"Jun-26","2026-07":"Jul-26","2026-08":"Aug-26","2026-09":"Sep-26"};
@@ -673,15 +623,6 @@ function rgb(n){
 const A=(n,a)=>'rgba('+rgb(n)+','+a+')';
 let COLORS=['--c0','--c1','--c2','--c3','--c4','--c5','--c6','--c7'].map(V);
 Chart.defaults.color=V('--text-3');Chart.defaults.borderColor=V('--grid');Chart.defaults.font.family=V('--font');Chart.defaults.animation=false;
-// theme switching: clear rgb cache, re-resolve slots/defaults, full repaint via refresh()
-function applyTheme(t,save){
-  document.documentElement.dataset.theme=t;
-  if(save)try{localStorage.setItem('pe-theme',t)}catch(e){}
-  for(const k in rgbCache)delete rgbCache[k];
-  COLORS=['--c0','--c1','--c2','--c3','--c4','--c5','--c6','--c7'].map(V);
-  Chart.defaults.color=V('--text-3');Chart.defaults.borderColor=V('--grid');
-  if(Object.keys(charts).length)refresh();
-}
 const isMobile=()=>window.innerWidth<=768;
 
 // ---------- state ----------
@@ -691,8 +632,6 @@ let sortK='month',sortDir=1,search='',page=0;
 const PAGE=50;
 let totalTableRows=0;
 const charts={};
-document.getElementById('themeBtn').onclick=()=>{applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark',true)};
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{try{if(!localStorage.getItem('pe-theme'))applyTheme(e.matches?'dark':'light')}catch(x){}});
 
 // ---------- SQL helpers ----------
 const DEFECT_COND="category != 'No Issue' AND NOT (category = 'Inspection' AND subcategory != 'Issue Found')";
