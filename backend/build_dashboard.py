@@ -484,7 +484,7 @@ tbody tr:hover td{background:var(--row-tint)}
   </div>
   <div class="rail-label">Menu</div>
   <nav class="rail-nav">
-    <a class="rl active" href="#sec-overview"><div class="rl-ic" aria-hidden="true"></div>Overview</a>
+    <a class="rl active" href="#sec-overview"><div class="rl-ic" aria-hidden="true"></div>After Sales Dashboard</a>
     <a class="rl" href="#sec-defects"><div class="rl-ic" aria-hidden="true"></div>Defect Breakdown</a>
     <a class="rl" href="#sec-segments"><div class="rl-ic" aria-hidden="true"></div>Segments</a>
     <a class="rl" href="#sec-geo"><div class="rl-ic" aria-hidden="true"></div>Geography &amp; TAT</a>
@@ -499,7 +499,7 @@ tbody tr:hover td{background:var(--row-tint)}
 </aside>
 <div class="main">
   <header class="pagehead" id="sec-overview">
-    <h1>Overview</h1>
+    <h1>After Sales Dashboard</h1>
     <div class="sub" id="pagehead-sub">Field service &amp; module defect tracking · Dec 2024–Sep 2026</div>
   </header>
   <div class="topbar">
