@@ -293,7 +293,7 @@ tbody tr:hover td{background:var(--bg-subtle)}
 .heatmap .cell:hover{outline:var(--bw-2) solid var(--primary)}
 
 /* ---------- loading ---------- */
-.loading{position:fixed;inset:0;background:var(--bg-surface);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+.loading{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
 .loading-logo{position:relative;width:var(--logo);height:var(--logo);margin-bottom:var(--s-5)}
 .loading-logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .loading-dim{filter:grayscale(1) opacity(.2)}
