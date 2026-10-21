@@ -431,10 +431,10 @@ tbody tr:hover td{background:var(--row-tint)}
 .grid{gap:var(--s-3);margin-bottom:var(--s-3)}
 /* nav rows — prototype v2: compact rows, bolted-square markers */
 .rl{height:auto;padding:var(--nav-py) var(--nav-px);border-radius:var(--nav-r);font-size:var(--fs-nav);font-weight:500;color:var(--text-2)}
-.rl svg{display:none}
-.rl-ic{width:var(--nav-ic);height:var(--nav-ic);flex:none;border-radius:var(--nav-ic-r);background:currentColor;opacity:.5}
+.rl-ic{width:var(--nav-ic);height:var(--nav-ic);flex:none;color:var(--text-3)}
 .rl.active{background:color-mix(in srgb,var(--primary) 16%,transparent);box-shadow:inset 0 0 0 var(--bw) color-mix(in srgb,var(--primary) 28%,transparent);color:var(--primary);font-weight:600}
-.rl.active .rl-ic{opacity:1}
+.rl:hover:not(.active){background:rgba(0,0,0,.04);color:var(--text-1)}
+.rl.active .rl-ic{color:var(--primary)}
 .rail-logo{width:var(--logo-s);height:var(--logo-s);flex:none;object-fit:contain;border-radius:var(--r-md)}
 .rail-brand{height:auto;border-bottom:0;padding:var(--s-1) var(--s-3) var(--s-4)}
 .rail-name{font-size:var(--fs-brand);font-weight:700}
@@ -484,13 +484,13 @@ tbody tr:hover td{background:var(--row-tint)}
   </div>
   <div class="rail-label">Menu</div>
   <nav class="rail-nav">
-    <a class="rl active" href="#sec-overview"><div class="rl-ic" aria-hidden="true"></div>After Sales Dashboard</a>
-    <a class="rl" href="#sec-defects"><div class="rl-ic" aria-hidden="true"></div>Defect Breakdown</a>
-    <a class="rl" href="#sec-segments"><div class="rl-ic" aria-hidden="true"></div>Segments</a>
-    <a class="rl" href="#sec-geo"><div class="rl-ic" aria-hidden="true"></div>Geography &amp; TAT</a>
-    <a class="rl" href="#sec-production"><div class="rl-ic" aria-hidden="true"></div>Production</a>
-    <a class="rl" href="#sec-trend"><div class="rl-ic" aria-hidden="true"></div>Volume &amp; Trend</a>
-    <a class="rl" href="#sec-records"><div class="rl-ic" aria-hidden="true"></div>Records</a>
+    <a class="rl active" href="#sec-overview"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>After Sales Dashboard</a>
+    <a class="rl" href="#sec-defects"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>Defect Breakdown</a>
+    <a class="rl" href="#sec-segments"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 8.5 4.75L12 11.5 3.5 6.75 12 2z"/><path d="m3.5 11.25 8.5 4.75 8.5-4.75"/><path d="m3.5 15.75 8.5 4.75 8.5-4.75"/></svg>Segments</a>
+    <a class="rl" href="#sec-geo"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>Geography &amp; TAT</a>
+    <a class="rl" href="#sec-production"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg>Production</a>
+    <a class="rl" href="#sec-trend"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></svg>Volume &amp; Trend</a>
+    <a class="rl" href="#sec-records"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M9 20V10"/></svg>Records</a>
   </nav>
   <div class="rail-foot">
     <div class="rail-foot-k">Data through</div>
@@ -1084,6 +1084,13 @@ function renderTable(){
   document.getElementById('next').disabled=page>=pages-1;
   document.getElementById('pgjump').max=pages;
 }
+
+// ---------- rail scroll-spy ----------
+const NAV_LINKS=[...document.querySelectorAll('.rail .rl')];
+function setActiveNav(href){NAV_LINKS.forEach(l=>{const on=l.getAttribute('href')===href;l.classList.toggle('active',on);l.toggleAttribute('aria-current',on);});}
+const navSpy=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)setActiveNav('#'+e.target.id);})},{rootMargin:'-35% 0px -60% 0px'});
+document.querySelectorAll('[id^="sec-"]').forEach(s=>navSpy.observe(s));
+NAV_LINKS.forEach(l=>l.addEventListener('click',()=>setActiveNav(l.getAttribute('href'))));
 
 // ---------- events ----------
 document.getElementById('f-customer').onchange=e=>{state.customer=e.target.value;state.custname='All';page=0;populateCustCascade();refresh();};
