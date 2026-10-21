@@ -23,7 +23,7 @@
   --glass-2:rgba(255,255,255,.036);
   --glass-brd:rgba(255,255,255,.105);
   --glass-brd-2:rgba(255,255,255,.064);
-  --sheen:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.028));
+  --sheen:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.10));
   --shadow-card:inset 0 1px 0 rgba(255,255,255,.09);
   --row-tint:rgba(255,255,255,.02);
   /* borders */
@@ -370,7 +370,6 @@ tbody tr:hover td{background:var(--row-tint)}
 @media (prefers-reduced-transparency:reduce){
   .rail,.topbar,.filters,.kpi,.card,.badge,.month-pop,thead th{backdrop-filter:none;-webkit-backdrop-filter:none}
   .rail,.topbar{background:var(--bg-surface);border-color:var(--border)}
-  .kpi,.card{background:var(--bg-surface)}
   .filters,.month-pop{background:var(--bg-surface)}
 }
 @media (prefers-contrast:more){
