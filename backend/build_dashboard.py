@@ -723,7 +723,7 @@ function buildHeaderTools(){
   popAllEl.onclick=()=>{selMonths=new Set(MONTHS);refresh();};
   head.appendChild(popAllEl); monthPopEl.appendChild(head);
   const hint=document.createElement('div'); hint.className='mp-hint'; hint.innerHTML='Click a month · hold ⇧ Shift to compare several';
-  monthPopEl.appendChild(hdrSearchWrap);
+  const rstBtn=document.getElementById('rst-top'); rstBtn.parentNode.insertBefore(hdrSearchWrap, rstBtn);
   monthPopEl.appendChild(hint);
   const SHORTM=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const years=[...new Set(MONTHS.map(m=>m.slice(0,4)))];
