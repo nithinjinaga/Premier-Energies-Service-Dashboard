@@ -851,11 +851,13 @@ function mkLines(id,labels,datasets){
   if(charts[id])charts[id].destroy();
   const mob=isMobile();
   charts[id]=new Chart(document.getElementById(id),{type:'line',
-    data:{labels,datasets},
+    data:{labels,datasets:datasets.map((d,i)=>Object.assign({
+      fill:d.fill!==undefined?d.fill:'origin',
+      backgroundColor:d.backgroundColor||(c=>grads(c,COLORS[i%COLORS.length],.18,.01))},d))},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'top',labels:{boxWidth:mob?10:14,padding:mob?6:8,font:{size:mob?10:12}}}},
-      scales:{x:{ticks:{font:{size:mob?10:12}}},y:{beginAtZero:true,ticks:{precision:0,font:{size:mob?10:12}}}},
-      elements:{line:{tension:.3,borderWidth:mob?2:3},point:{radius:mob?3:4,hoverRadius:mob?5:6}}}});
+      plugins:{legend:{position:'top',labels:{usePointStyle:true,pointStyle:'circle',padding:mob?6:8,font:{size:mob?10:12}}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:mob?10:12}}},y:{grid:{display:false},beginAtZero:true,ticks:{precision:0,font:{size:mob?10:12}}}},
+      elements:{line:{tension:.3,borderWidth:mob?2:3},point:{radius:0,hitRadius:14,hoverRadius:mob?4:5.5,hoverBorderWidth:0,pointBackgroundColor:c=>c.dataset.borderColor||COLORS[0]}}}});
 }
 
 // ---------- main refresh ----------
