@@ -176,8 +176,8 @@ button,input,select{font-family:var(--font)}
 .topbar-end{display:flex;align-items:center;gap:var(--s-2)}
 .page{padding:var(--s-6) var(--s-8) var(--s-10);max-width:var(--w-page)}
 .pagehead{margin-bottom:var(--s-5)}
-.pagehead h1{font-size:var(--fs-h1);font-weight:800;letter-spacing:-.022em;line-height:1.25}
-.pagehead .sub{color:var(--text-2);font-size:var(--fs-small);margin-top:var(--s-1)}
+.pagehead h1{font-size:calc(var(--fs-h1) + 2px);font-weight:800;letter-spacing:-.022em;line-height:1.25;text-transform:uppercase}
+.pagehead .sub{color:#404349;font-size:var(--fs-small);margin-top:var(--s-1)}
 
 /* ---------- note banner (removed in prototype v2 match) ---------- */
 
