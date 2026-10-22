@@ -297,7 +297,8 @@ tbody tr:hover td{background:var(--bg-subtle)}
 .heatmap .cell:hover{outline:var(--bw-2) solid var(--primary)}
 
 /* ---------- loading ---------- */
-.loading{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+.loading{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .35s}
+.loading.done{opacity:0;pointer-events:none}
 .loading-logo{position:relative;width:var(--logo);height:var(--logo);margin-bottom:var(--s-5)}
 .loading-logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .loading-dim{filter:grayscale(1) opacity(.2)}
@@ -386,7 +387,7 @@ tbody tr:hover td{background:var(--row-tint)}
 .hdr-search{background:var(--glass-2);border:var(--bw) solid var(--glass-brd-2)}
 
 
-.loading{background:var(--bg-app)}
+.loading{background:#fff}
 .kpis .kpi:nth-child(1) .kpi-icon{color:var(--k1)}
 .kpis .kpi:nth-child(2) .kpi-icon{color:var(--k2)}
 .kpis .kpi:nth-child(3) .kpi-icon{color:var(--k3)}
@@ -1182,10 +1183,11 @@ document.getElementById('pgjump').onkeydown=e=>{if(e.key==='Enter')jumpToPage();
         (CUST_TYPE_TO_NAME[r.customer_type]=CUST_TYPE_TO_NAME[r.customer_type]||new Set()).add(r.complaint_by);
         (CUST_NAME_TO_TYPE[r.complaint_by]=CUST_NAME_TO_TYPE[r.complaint_by]||new Set()).add(r.customer_type);
       });
-    document.getElementById('loading').style.display='none';
+    const ld=document.getElementById('loading');
     populateFilters();
     buildHeaderTools();
     refresh();
+    ld.classList.add('done');setTimeout(()=>ld.style.display='none',400);
   }catch(err){
     document.getElementById('loading').innerHTML='<div style="color:var(--danger)">Failed to load data: '+err.message+'</div>';
   }
