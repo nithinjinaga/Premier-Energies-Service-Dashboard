@@ -242,6 +242,10 @@ tbody tr:hover td{background:var(--bg-subtle)}
 .mp-all{height:var(--s-8);padding:0 var(--s-4);border:var(--bw) solid var(--border-strong);background:var(--bg-surface);color:var(--text-2);border-radius:var(--r-md);cursor:pointer;font-size:var(--fs-small);font-weight:600;transition:.12s}
 .mp-all:hover{border-color:var(--text-2);color:var(--text-1)}
 .mp-all.active{background:var(--text-2);color:var(--bg-surface);border-color:var(--text-2)}
+.fd-list{position:fixed;z-index:200;background:var(--bg-surface);border:var(--bw) solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-3);padding:var(--s-2);max-height:min(46vh,320px);overflow:auto;min-width:120px}
+.fd-row{padding:var(--s-2) var(--s-3);border-radius:var(--r-md);cursor:pointer;font-size:var(--fs-body);font-weight:500;color:var(--text-1)}
+.fd-row.hit{background:var(--bg-subtle)}
+.fd-row.sel{background:var(--text-2);color:var(--bg-surface)}
 .mp-hint{font-size:var(--fs-micro);color:var(--text-3);margin-bottom:var(--s-4)}
 .mp-year{margin-top:var(--s-4)}
 .mp-year:first-of-type{margin-top:0}
@@ -1059,6 +1063,48 @@ function setActiveNav(href){NAV_LINKS.forEach(l=>{const on=l.getAttribute('href'
 const navSpy=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)setActiveNav('#'+e.target.id);})},{rootMargin:'-35% 0px -60% 0px'});
 document.querySelectorAll('[id^="sec-"]').forEach(s=>navSpy.observe(s));
 NAV_LINKS.forEach(l=>l.addEventListener('click',()=>setActiveNav(l.getAttribute('href'))));
+
+// ---------- custom filter dropdowns ----------
+// native <select> stays as source of truth; clicks/keys are re-routed to a styled list so
+// the OS popup (blue highlight, sharp border) never appears. Cascades/reset untouched.
+let fdSel=null,fdList=null,fdHit=0;
+function fdClose(){if(fdSel){fdList.remove();fdList=null;fdSel.setAttribute('aria-expanded','false');fdSel=null;}}
+function fdPaint(){[...fdList.children].forEach((r,i)=>{const on=i===fdHit;r.classList.toggle('hit',on&&!r.classList.contains('sel'));r.setAttribute('aria-selected',fdSel.options[i].selected);if(on)r.scrollIntoView({block:'nearest'});});fdList.id=fdSel.id+'-fd';fdSel.setAttribute('aria-activedescendant',fdSel.id+'-opt'+fdHit);}
+function fdOpen(s){
+  fdClose();fdSel=s;s.setAttribute('aria-expanded','true');
+  fdList=document.createElement('div');fdList.className='fd-list';fdList.setAttribute('role','listbox');
+  [...s.options].forEach((o,i)=>{const r=document.createElement('div');r.id=s.id+'-opt'+i;r.className='fd-row'+(o.selected?' sel':'');r.setAttribute('role','option');r.textContent=o.textContent;
+    r.onmousedown=e=>e.preventDefault();
+    r.onclick=()=>{if(s.value!==o.value){s.value=o.value;s.dispatchEvent(new Event('change',{bubbles:true}));}fdHit=i;fdClose();s.focus();};
+    fdList.appendChild(r);});
+  document.body.appendChild(fdList);
+  fdHit=Math.max(0,[...s.options].findIndex(o=>o.selected));
+  const b=s.getBoundingClientRect(),h=fdList.offsetHeight;
+  fdList.style.left=b.left+'px';fdList.style.width=Math.max(b.width,120)+'px';
+  fdList.style.top=(b.bottom+h>window.innerHeight-8?b.top-h-4:b.bottom+4)+'px';
+  fdPaint();
+}
+function fdCommit(){const o=fdSel.options[fdHit];if(fdSel.value!==o.value){fdSel.value=o.value;fdSel.dispatchEvent(new Event('change',{bubbles:true}));}fdClose();fdSel.focus();}
+function fdMove(d){const n=fdList.children.length;fdHit=(fdHit+d+n)%n;fdPaint();}
+function fdTypeahead(k){const t=k.toLowerCase(),opts=[...fdSel.options];for(let i=1;i<=opts.length;i++){const j=(fdHit+i)%opts.length;if(opts[j].textContent.toLowerCase().startsWith(t)){fdHit=j;fdPaint();return;}}}
+document.querySelectorAll('.fg select').forEach(s=>{
+  s.setAttribute('aria-haspopup','listbox');s.setAttribute('aria-expanded','false');
+  s.addEventListener('mousedown',e=>{e.preventDefault();s.focus();fdList&&fdSel===s?fdClose():fdOpen(s);});
+  s.addEventListener('blur',()=>fdClose());
+  s.addEventListener('keydown',e=>{
+    if(fdSel===s){
+      if(e.key==='ArrowDown'){e.preventDefault();fdMove(1);}
+      else if(e.key==='ArrowUp'){e.preventDefault();fdMove(-1);}
+      else if(e.key==='Home'){fdHit=0;fdPaint();}
+      else if(e.key==='End'){fdHit=fdList.children.length-1;fdPaint();}
+      else if(e.key==='Enter'){e.preventDefault();fdCommit();}
+      else if(e.key===' '){e.preventDefault();fdCommit();}
+      else if(e.key==='Escape'||e.key==='Tab'){fdClose();}
+      else if(e.key.length===1&&e.key!==' '){e.preventDefault();fdTypeahead(e.key);}
+    }else if(e.key==='Enter'||e.key===' '||e.key==='ArrowDown'){e.preventDefault();s.focus();fdOpen(s);}
+  });
+});
+window.addEventListener('scroll',e=>{if(fdList&&!fdList.contains(e.target))fdClose();},{capture:true,passive:true});
 
 // ---------- events ----------
 document.getElementById('f-customer').onchange=e=>{state.customer=e.target.value;state.custname='All';page=0;populateCustCascade();refresh();};
