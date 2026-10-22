@@ -148,6 +148,8 @@ HTML = r"""<!DOCTYPE html>
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:var(--font);font-size:var(--fs-body);line-height:1.5;color:var(--text-1);background:var(--hero-photo) var(--bg-app);-webkit-font-smoothing:antialiased;transition:background .45s cubic-bezier(.34,1.3,.64,1),color .45s cubic-bezier(.34,1.3,.64,1)}
+/* dark-backdrop experiment — delete this rule to restore the light wallpaper */
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:rgba(9,11,19,.85);pointer-events:none}
 button,input,select{font-family:var(--font)}
 :focus-visible{outline:none;box-shadow:var(--focus-ring)}
 [id^="sec-"]{scroll-margin-top:calc(var(--topbar-h) + var(--s-4))}
