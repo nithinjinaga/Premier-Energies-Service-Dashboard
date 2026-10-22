@@ -486,7 +486,7 @@ tbody tr:hover td{background:var(--row-tint)}
   </div>
   <div class="rail-label">Menu</div>
   <nav class="rail-nav">
-    <a class="rl active" href="#sec-overview"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>After Sales Dashboard</a>
+    <a class="rl active" href="#sec-top3"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Top 3 Problems — Trend</a>
     <a class="rl" href="#sec-defects"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>Defect Breakdown</a>
     <a class="rl" href="#sec-segments"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 8.5 4.75L12 11.5 3.5 6.75 12 2z"/><path d="m3.5 11.25 8.5 4.75 8.5-4.75"/><path d="m3.5 15.75 8.5 4.75 8.5-4.75"/></svg>Segments</a>
     <a class="rl" href="#sec-geo"><svg class="rl-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>Geography &amp; TAT</a>
@@ -528,7 +528,7 @@ tbody tr:hover td{background:var(--row-tint)}
       <button class="resetbtn" id="reset">Reset filters</button>
     </div>
 
-    <div class="card toptrend">
+    <div class="card toptrend" id="sec-top3">
       <h3>Top 3 Problems — Trend</h3>
       <div class="hint">The 3 largest defect types for the current month selection, tracked across all months. Recalculates as you change filters.</div>
       <div class="badges" id="top3badges"></div>
@@ -1093,9 +1093,20 @@ function renderTable(){
 // ---------- rail scroll-spy ----------
 const NAV_LINKS=[...document.querySelectorAll('.rail .rl')];
 function setActiveNav(href){NAV_LINKS.forEach(l=>{const on=l.getAttribute('href')===href;l.classList.toggle('active',on);l.toggleAttribute('aria-current',on);});}
-const navSpy=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)setActiveNav('#'+e.target.id);})},{rootMargin:'-35% 0px -60% 0px'});
-document.querySelectorAll('[id^="sec-"]').forEach(s=>navSpy.observe(s));
+// sections are sparse banners with content gaps — deterministic rule: last section
+// whose top has crossed the 35% viewport line wins, so the highlight never sticks stale
+function spyPick(){
+  const line=innerHeight*.35;let cur=NAV_LINKS[0].getAttribute('href');
+  NAV_LINKS.forEach(l=>{const el=document.getElementById(l.getAttribute('href').slice(1));
+    if(el&&el.getBoundingClientRect().top<=line)cur=l.getAttribute('href');});
+  setActiveNav(cur);
+}
+let spyRaf=0;
+const spyScroll=()=>{if(!spyRaf)spyRaf=requestAnimationFrame(()=>{spyRaf=0;spyPick();});};
+window.addEventListener('scroll',spyScroll,{passive:true});
+window.addEventListener('resize',spyScroll,{passive:true});
 NAV_LINKS.forEach(l=>l.addEventListener('click',()=>setActiveNav(l.getAttribute('href'))));
+spyPick();
 
 // ---------- custom filter dropdowns ----------
 // native <select> stays as source of truth; clicks/keys are re-routed to a styled list so
