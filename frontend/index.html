@@ -724,6 +724,7 @@ function buildHeaderTools(){
   mpShowEl=foot.querySelector('#mp-showing');
 
   document.addEventListener('mousedown',e=>{
+    if(fdList&&fdList.contains(e.target))return; // dropdown rows live on <body> — not "outside"
     if(calOpen && !monthPopEl.contains(e.target) && !calBtnEl.contains(e.target)){calOpen=false;syncHeaderUI();}
     if(hdrSearchOpen && !hdrSearchWrap.contains(e.target)){hdrSearchOpen=false;syncHeaderUI();}
     const fB=document.getElementById('f-on'),fP=document.querySelector('.filters');
