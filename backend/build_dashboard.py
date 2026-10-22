@@ -506,7 +506,7 @@ tbody tr:hover td{background:var(--row-tint)}
   </header>
   <div class="topbar">
     <div class="topbar-brand"><img src="data:image/png;base64,__FAVICON__" alt="Premier Energies"></div>
-    <div class="topbar-end"><div class="months" id="months"></div><button id="f-on" class="fchip" type="button" title="Show filters"><svg viewBox="0 0 24 24"><path d="M22 3H2l10 10v8l2-2v-6z"/></svg><span><b id="f-on-n">0</b> filters on</span></button><button id="rst-top" class="tbl-btn wide" type="button">Reset</button></div>
+    <div class="topbar-end"><div class="months" id="months"></div><button id="f-on" class="fchip" type="button" title="Show filters"><svg viewBox="0 0 24 24"><path d="M22 3H2l10 10v8l2-2v-6z"/></svg></button><button id="rst-top" class="tbl-btn wide" type="button">Reset</button></div>
   </div>
   <main class="page">
     <div class="kpis">
