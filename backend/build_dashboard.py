@@ -35,8 +35,8 @@ HTML = r"""<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard 2026</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,__FAVICON__">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" integrity="sha384-9nhczxUqK87bcKHh20fSQcTGD4qq5GhayNYSYWqwBkINBhOfQLg/P5HG5lF1urn4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.min.js" integrity="sha384-duTnTXzdX2OJqAotlbsY+3m2wDVo2ups6zXrknvFg2oMp8ldxmiMP8USHQmRu6z0" crossorigin="anonymous"></script>
 <style>
 /* ==========================================================================
    Design tokens — sampled from design reference/Shopeers dashboard — editable.png
@@ -642,6 +642,7 @@ const HIDE_NA=v=>!/^(n\/?a|na)$/i.test(v);
 
 function query(sql){const stmt=DB.prepare(sql);const rows=[];while(stmt.step())rows.push(stmt.getAsObject());stmt.free();return rows;}
 function esc(s){return String(s).replace(/'/g,"''");}
+function h(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function monthList(){return MONTHS.filter(m=>selMonths.has(m)).map(m=>"'"+m+"'").join(',');}
 function buildWhere(opts){
   if(!opts)opts={};
@@ -954,7 +955,7 @@ function refresh(){
   const top3=top3rows.map(r=>r.subcategory);
   const badgesEl=document.getElementById('top3badges');badgesEl.innerHTML='';
   top3rows.forEach((r,i)=>{const d=document.createElement('div');d.className='badge b'+i;
-    d.innerHTML=`<span class="rank" style="--rk:var(--c${i})">${i+1}</span>${r.subcategory} · <b>${r.total.toLocaleString()}</b>`;badgesEl.appendChild(d);});
+    d.innerHTML=`<span class="rank" style="--rk:var(--c${i})">${i+1}</span>${h(r.subcategory)} · <b>${r.total.toLocaleString()}</b>`;badgesEl.appendChild(d);});
   // trend of those top3 across selected months (respecting non-month filters)
   const wdTrend=buildWhere({defects:true,months:false});
   if(selM.length===1){
@@ -1041,16 +1042,16 @@ function refresh(){
   if(!custs.length||!catLabels.length){hel.innerHTML='<div class="hint">No data for current selection.</div>';}
   else{
     let html='<table><thead><tr><th></th>';
-    catLabels.forEach(c=>{html+=`<th>${c}</th>`;});
+    catLabels.forEach(c=>{html+=`<th>${h(c)}</th>`;});
     html+='</tr></thead><tbody>';
     custs.forEach(cu=>{
-      html+=`<tr><th class="rowlbl">${cu}</th>`;
+      html+=`<tr><th class="rowlbl">${h(cu)}</th>`;
       catLabels.forEach(c=>{
         const v=(hm[cu]&&hm[cu][c])||0;
         const t=maxV?v/maxV:0;
         const bg=v?A('--c0',(0.12+t*0.85)):'var(--bg-app)';
         const fg=t>0.55?'var(--bg-surface)':'var(--text-1)';
-        html+=`<td><div class="cell" style="background:${bg};color:${fg}" title="${cu} · ${c}: ${v.toLocaleString()}">${v?v.toLocaleString():''}</div></td>`;
+        html+=`<td><div class="cell" style="background:${bg};color:${fg}" title="${h(cu)} · ${h(c)}: ${v.toLocaleString()}">${v?v.toLocaleString():''}</div></td>`;
       });
       html+='</tr>';
     });
@@ -1078,9 +1079,9 @@ function renderTable(){
   rows.forEach(r=>{
     const tr=document.createElement('tr');
     const stcls=/wip/i.test(r.status)?'wip':'closed';
-    tr.innerHTML=`<td>${MLABEL[r.month]||r.month}</td><td>${r.serial||'—'}</td>
-      <td>${r.customer_type}</td><td>${r.state}</td><td>${r.category}</td><td>${r.subcategory}</td>
-      <td>${r.plant}</td><td><span class="pill ${stcls}">${r.status}</span></td><td>${r.complaint_no||'—'}</td>`;
+    tr.innerHTML=`<td>${h(MLABEL[r.month]||r.month)}</td><td>${h(r.serial||'—')}</td>
+      <td>${h(r.customer_type)}</td><td>${h(r.state)}</td><td>${h(r.category)}</td><td>${h(r.subcategory)}</td>
+      <td>${h(r.plant)}</td><td><span class="pill ${stcls}">${h(r.status)}</span></td><td>${h(r.complaint_no||'—')}</td>`;
     tb.appendChild(tr);
   });
   document.querySelector('.tableScroll').scrollTop=0;
@@ -1203,7 +1204,7 @@ document.getElementById('pgjump').onkeydown=e=>{if(e.key==='Enter')jumpToPage();
     refresh();
     ld.classList.add('done');setTimeout(()=>ld.style.display='none',400);
   }catch(err){
-    document.getElementById('loading').innerHTML='<div style="color:var(--danger)">Failed to load data: '+err.message+'</div>';
+    document.getElementById('loading').innerHTML='<div style="color:var(--danger)">Failed to load data: '+h(err.message)+'</div>';
   }
 })();
 

@@ -2,6 +2,6 @@ cd backend
 python ingest.py
 python build_dashboard.py
 cd ..
-git add -A
+git add frontend/data.db frontend/index.html
 git commit -m "Update data"
-git push origin main
+git push origin staging

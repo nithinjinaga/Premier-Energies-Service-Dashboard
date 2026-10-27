@@ -283,6 +283,8 @@ HIER = {
 }
 # ─────────────────────────────────────────────────────────────────────────────
 
+PLANT_MAP = {"P4": "P4 - PEIPL", "P2": "P2 - PEPPL", "P5": "P5 - PEGPL", "P1": "P1 - PEL"}
+
 STATE_MAP = {
     "Tamil nadu": "Tamil Nadu", "Tamilnadu": "Tamil Nadu", " Tamilnadu": "Tamil Nadu",
     "kerala": "Kerala",
@@ -306,33 +308,11 @@ def clean(v):
     if v is None: return ""
     return str(v).replace("\xa0", " ").strip()
 
-def fmt_date(v):
-    if v is None: return ""
-    s = str(v)
-    return s.split(" ")[0] if " " in s else s
-
 def date_month(d):
     if d is None: return None
     if isinstance(d, datetime): return d.strftime("%Y-%m")
     try: return datetime.strptime(str(d).split(" ")[0], "%Y-%m-%d").strftime("%Y-%m")
     except (ValueError, TypeError): return None
-
-def calc_tat(received_raw, settle_raw):
-    if received_raw is None or settle_raw is None:
-        return None
-    try:
-        if isinstance(received_raw, datetime):
-            d1 = received_raw
-        else:
-            d1 = datetime.strptime(str(received_raw).split(" ")[0], "%Y-%m-%d")
-        if isinstance(settle_raw, datetime):
-            d2 = settle_raw
-        else:
-            d2 = datetime.strptime(str(settle_raw).split(" ")[0], "%Y-%m-%d")
-        diff = (d2 - d1).days
-        return diff if diff >= 0 else None
-    except (ValueError, TypeError):
-        return None
 
 def read_tat(val):
     if val is None:
@@ -346,207 +326,108 @@ def read_tat(val):
 unmapped = {}
 rows = []
 
-for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
-    fname = os.path.join(REPORTS_DIR, fname)
-    if not os.path.exists(fname):
-        print(f"WARNING: {fname} not found — skipping")
-        continue
-    print(f"Reading {fname} -> sheet '{sheet}'...")
-    wb = load_workbook(fname, read_only=True, data_only=True)
-    ws = wb[sheet]
-    cm = col_map(eval_idx)
+def collect(ws, cm, month_of, min_len):
+    """Read one sheet into `rows`. month_of(v) -> 'YYYY-MM' or None (skip row)."""
     agg = {}
-
     for row in ws.iter_rows(min_row=2, values_only=True):
         v = list(row)
-        if len(v) <= cm["serial"]: continue
+        if len(v) <= min_len: continue
+        month = month_of(v)
+        if month is None: continue
+
         raw_eval = clean(v[cm["evaluation"]])
         if not raw_eval:
             raw_eval = clean(v[cm["reported_problem"]]) if len(v) > cm["reported_problem"] else ""
         if not raw_eval and not norm_serial(v[cm["serial"]]) and not clean(v[cm["status"]]): continue
 
-        key_eval = raw_eval.lower()
-        mapped = HIER.get(key_eval)
+        mapped = HIER.get(raw_eval.lower())
         serial = norm_serial(v[cm["serial"]])
-
         if mapped is None:
             unmapped[raw_eval] = unmapped.get(raw_eval, 0) + 1
             category, subcat = ("Unmapped", raw_eval or "Unknown")
         else:
             category, subcat = mapped
 
-        status = clean(v[cm["status"]]) or "Unknown"
-        if status.lower() == "closed":
-            settle_date_raw = v[cm["settle_date"]] if len(v) > cm["settle_date"] else None
-            rec_month = date_month(settle_date_raw) or month
-        else:
-            rec_month = month
-
+        cust_type = clean(v[cm["customer_type"]])
+        plant = clean(v[cm["plant"]])
         rec = {
-            "month":         rec_month,
+            "month":         month,
             "serial":        serial,
             "complaint_by":  clean(v[cm["complaint_by"]]) or "Unknown",
-            "customer_type": {"Pump":"Solar Pump"}.get(clean(v[cm["customer_type"]]), clean(v[cm["customer_type"]])) or "Unknown",
+            "customer_type": {"Pump": "Solar Pump"}.get(cust_type, cust_type) or "Unknown",
             "project":       clean(v[cm["project"]]) or "Unknown",
             "state":         norm_state(v[cm["state"]]),
-            "status":        status,
-            "plant":         {"P4":"P4 - PEIPL","P2":"P2 - PEPPL","P5":"P5 - PEGPL","P1":"P1 - PEL"}.get(clean(v[cm["plant"]]), clean(v[cm["plant"]])) or "Unknown",
+            "status":        clean(v[cm["status"]]) or "Unknown",
+            "plant":         PLANT_MAP.get(plant, plant) or "Unknown",
             "module_type":   clean(v[cm["module_type"]]) or "Unknown",
-            "evaluation_raw":raw_eval,
             "category":      category,
             "subcategory":   subcat,
             "complaint_no":  clean(v[cm["complaint_no"]]),
-            "action":        clean(v[cm["action"]]),
             "resolution":    clean(v[cm["resolution"]]),
-            "wp":            clean(v[cm["wp"]]),
-            "make_year":     clean(v[cm["make_year"]]),
-            "location":      clean(v[cm["location"]]),
             "settle_days":   read_tat(v[cm["settle_days"]] if len(v) > cm["settle_days"] else None),
-            "visit_date":    fmt_date(v[cm["visit_date"]] if len(v) > cm["visit_date"] else None),
-            "received_date": fmt_date(v[cm["received_date"]]),
             "weight":        1,
         }
 
         # Collapse large blank-serial No-Issue blocks into single aggregate rows
         if (category == "No Issue" or (category == "Inspection" and subcat != "Issue Found")) and not serial:
-            akey = (rec_month, rec["complaint_by"], rec["project"], rec["customer_type"],
+            akey = (month, rec["complaint_by"], rec["project"], rec["customer_type"],
                     rec["state"], rec["plant"], rec["module_type"])
-            if akey not in agg:
-                agg[akey] = dict(rec)
-                agg[akey]["weight"] = 0
-                agg[akey]["is_aggregate"] = True
-                agg[akey]["_tat_sum"] = 0.0
-                agg[akey]["_tat_count"] = 0
-            agg[akey]["weight"] += 1
-            sd = rec.get("settle_days")
+            a = agg.setdefault(akey, dict(rec, weight=0, is_aggregate=True, _tat_sum=0.0, _tat_count=0))
+            a["weight"] += 1
+            sd = rec["settle_days"]
             if sd is not None and sd >= 0:
-                agg[akey]["_tat_sum"] += sd
-                agg[akey]["_tat_count"] += 1
+                a["_tat_sum"] += sd
+                a["_tat_count"] += 1
         else:
             rec["is_aggregate"] = False
             rows.append(rec)
 
-    for akey, arec in agg.items():
-        if arec["_tat_count"] > 0:
-            arec["settle_days"] = round(arec["_tat_sum"] / arec["_tat_count"], 1)
-        else:
-            arec["settle_days"] = None
-        del arec["_tat_sum"]
-        del arec["_tat_count"]
+    for arec in agg.values():
+        tat_sum, tat_count = arec.pop("_tat_sum"), arec.pop("_tat_count")
+        arec["settle_days"] = round(tat_sum / tat_count, 1) if tat_count else None
         if arec["weight"] >= 50:
             rows.append(arec)
-        else:
-            base = dict(arec)
-            w = base.pop("weight")
-            base["weight"] = 1
-            base["is_aggregate"] = False
-            for _ in range(w):
-                rows.append(dict(base))
+        else:  # small blocks stay as individual rows
+            base = dict(arec, weight=1, is_aggregate=False)
+            rows.extend(dict(base) for _ in range(arec["weight"]))
+
+def open_sheet(fname, sheet):
+    path = os.path.join(REPORTS_DIR, fname)
+    if not os.path.exists(path):
+        print(f"WARNING: {path} not found — skipping")
+        return None, None
+    wb = load_workbook(path, read_only=True, data_only=True)
+    return wb, wb[sheet]
+
+for fname, sheet, month, eval_idx, serial_idx, action_idx in SOURCES:
+    wb, ws = open_sheet(fname, sheet)
+    if wb is None: continue
+    print(f"Reading {fname} -> sheet '{sheet}'...")
+    cm = col_map(eval_idx)
+
+    def month_of(v, cm=cm, month=month):
+        if clean(v[cm["status"]]).lower() == "closed":
+            sd = v[cm["settle_date"]] if len(v) > cm["settle_date"] else None
+            return date_month(sd) or month
+        return month
+
+    collect(ws, cm, month_of, cm["serial"])
     wb.close()
 
 for fname, sheet, eval_idx, min_month, max_month in TRACKER_SOURCES:
-    fname = os.path.join(REPORTS_DIR, fname)
-    if not os.path.exists(fname):
-        print(f"WARNING: {fname} not found — skipping")
-        continue
+    wb, ws = open_sheet(fname, sheet)
+    if wb is None: continue
     print(f"Reading tracker {fname} -> sheet '{sheet}' (months {min_month} to {max_month})...")
-    wb = load_workbook(fname, read_only=True, data_only=True)
-    ws = wb[sheet]
     cm = col_map(eval_idx)
-    agg = {}
 
-    def parse_month(d):
-        if d is None: return None
-        if isinstance(d, datetime): return d.strftime("%Y-%m")
-        try: return datetime.strptime(str(d).split(" ")[0], "%Y-%m-%d").strftime("%Y-%m")
-        except (ValueError, TypeError): return None
-
-    for row in ws.iter_rows(min_row=2, values_only=True):
-        v = list(row)
-        if len(v) <= max(cm.values()): continue
-
-        status = clean(v[cm["status"]])
-        if status.lower().startswith("closed"):
-            month = parse_month(v[cm["settle_date"]]) or parse_month(v[0])
+    def month_of(v, cm=cm, lo=min_month, hi=max_month):
+        if clean(v[cm["status"]]).lower().startswith("closed"):
+            m = date_month(v[cm["settle_date"]]) or date_month(v[0])
         else:
-            month = parse_month(v[0])
-        if month is None: continue
-        if not (min_month <= month <= max_month): continue
+            m = date_month(v[0])
+        return m if m and lo <= m <= hi else None
 
-        raw_eval = clean(v[cm["evaluation"]])
-        if not raw_eval:
-            raw_eval = clean(v[cm["reported_problem"]]) if len(v) > cm["reported_problem"] else ""
-        if not raw_eval and not norm_serial(v[cm["serial"]]) and not clean(v[cm["status"]]): continue
-
-        key_eval = raw_eval.lower()
-        mapped = HIER.get(key_eval)
-        serial = norm_serial(v[cm["serial"]])
-
-        if mapped is None:
-            unmapped[raw_eval] = unmapped.get(raw_eval, 0) + 1
-            category, subcat = ("Unmapped", raw_eval or "Unknown")
-        else:
-            category, subcat = mapped
-
-        rec = {
-            "month":         month,
-            "serial":        serial,
-            "complaint_by":  clean(v[cm["complaint_by"]]) or "Unknown",
-            "customer_type": {"Pump":"Solar Pump"}.get(clean(v[cm["customer_type"]]), clean(v[cm["customer_type"]])) or "Unknown",
-            "project":       clean(v[cm["project"]]) or "Unknown",
-            "state":         norm_state(v[cm["state"]]),
-            "status":        clean(v[cm["status"]]) or "Unknown",
-            "plant":         {"P4":"P4 - PEIPL","P2":"P2 - PEPPL","P5":"P5 - PEGPL","P1":"P1 - PEL"}.get(clean(v[cm["plant"]]), clean(v[cm["plant"]])) or "Unknown",
-            "module_type":   clean(v[cm["module_type"]]) or "Unknown",
-            "evaluation_raw":raw_eval,
-            "category":      category,
-            "subcategory":   subcat,
-            "complaint_no":  clean(v[cm["complaint_no"]]),
-            "action":        clean(v[cm["action"]]),
-            "resolution":    clean(v[cm["resolution"]]),
-            "wp":            clean(v[cm["wp"]]),
-            "make_year":     clean(v[cm["make_year"]]),
-            "location":      clean(v[cm["location"]]),
-            "settle_days":   read_tat(v[cm["settle_days"]] if len(v) > cm["settle_days"] else None),
-            "visit_date":    fmt_date(v[cm["visit_date"]] if len(v) > cm["visit_date"] else None),
-            "received_date": fmt_date(v[cm["received_date"]]),
-            "weight":        1,
-        }
-
-        if (category == "No Issue" or (category == "Inspection" and subcat != "Issue Found")) and not serial:
-            akey = (rec["month"], rec["complaint_by"], rec["project"], rec["customer_type"],
-                    rec["state"], rec["plant"], rec["module_type"])
-            if akey not in agg:
-                agg[akey] = dict(rec)
-                agg[akey]["weight"] = 0
-                agg[akey]["is_aggregate"] = True
-                agg[akey]["_tat_sum"] = 0.0
-                agg[akey]["_tat_count"] = 0
-            agg[akey]["weight"] += 1
-            sd = rec.get("settle_days")
-            if sd is not None and sd >= 0:
-                agg[akey]["_tat_sum"] += sd
-                agg[akey]["_tat_count"] += 1
-        else:
-            rec["is_aggregate"] = False
-            rows.append(rec)
-
-    for akey, arec in agg.items():
-        if arec["_tat_count"] > 0:
-            arec["settle_days"] = round(arec["_tat_sum"] / arec["_tat_count"], 1)
-        else:
-            arec["settle_days"] = None
-        del arec["_tat_sum"]
-        del arec["_tat_count"]
-        if arec["weight"] >= 50:
-            rows.append(arec)
-        else:
-            base = dict(arec)
-            w = base.pop("weight")
-            base["weight"] = 1
-            base["is_aggregate"] = False
-            for _ in range(w):
-                rows.append(dict(base))
+    collect(ws, cm, month_of, max(cm.values()))
     wb.close()
 
 print(f"\nTotal embedded rows: {len(rows):,}")
@@ -567,15 +448,13 @@ print("\nPer-month counts:")
 for m in sorted(mc):
     print(f"   {m}: {mc[m]:,}")
 
-KEEP = {"month","serial","complaint_by","customer_type","project","state","status",
-        "plant","category","subcategory","settle_days","weight","is_aggregate","complaint_no","resolution"}
-slim = [{k: r[k] for k in KEEP if k in r} for r in rows]
 COLS = ["month","serial","complaint_by","customer_type","project","state","status",
         "plant","category","subcategory","settle_days","weight","is_aggregate","complaint_no","resolution"]
 db_path = os.path.join(FRONTEND_DIR, "data.db")
-if os.path.exists(db_path):
-    os.remove(db_path)
-conn = sqlite3.connect(db_path)
+tmp_path = db_path + ".tmp"  # build aside so a crash never leaves the live db deleted
+if os.path.exists(tmp_path):
+    os.remove(tmp_path)
+conn = sqlite3.connect(tmp_path)
 cur = conn.cursor()
 cur.execute("""CREATE TABLE complaints (
     month TEXT NOT NULL, serial TEXT, complaint_by TEXT,
@@ -587,9 +466,10 @@ cur.execute("""CREATE TABLE complaints (
 )""")
 cur.executemany(
     f"INSERT INTO complaints ({','.join(COLS)}) VALUES ({','.join('?' for _ in COLS)})",
-    [tuple(int(r.get(c)) if c == "is_aggregate" else r.get(c) for c in COLS) for r in slim]
+    [tuple(int(r[c]) if c == "is_aggregate" else r.get(c) for c in COLS) for r in rows]
 )
 conn.commit()
 conn.close()
+os.replace(tmp_path, db_path)
 db_size = os.path.getsize(db_path) / (1024 * 1024)
 print(f"Wrote data.db ({db_size:.1f} MB) — now run build_dashboard.py")
